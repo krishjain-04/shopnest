@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings
 SECRET_KEY = 'django-insecure-p&aa(q5j#69qa(ep#$ug_p)kz=vicab7+2xbm^(&6dav6pm4jf'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['shopnest-nr57.onrender.com']
 
 # Application definition
 INSTALLED_APPS = [
