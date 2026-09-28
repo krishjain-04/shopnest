@@ -1,0 +1,70 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Add Category - ShopNest Admin{% endblock %}
+
+{% block nav_categories %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <a href="{% url 'admin_categories' %}">Categories</a>
+    <span class="text-secondary">/</span>
+    <span>Add Category</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-folder-plus text-primary"></i> Add New Category
+            </h1>
+            <p class="page-subtitle">Create a primary category for grouping store catalog products</p>
+        </div>
+        <div>
+            <a href="{% url 'admin_categories' %}" class="btn btn-light btn-sm border text-secondary d-flex align-items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Back to Categories
+            </a>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">
+                        <i class="fa-solid fa-pen-nib text-primary"></i> Category Details
+                    </h3>
+                </div>
+                <div class="admin-card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- Category Name -->
+                        <div class="mb-4">
+                            <label class="form-label-custom" for="categoryName">
+                                Category Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="name" id="categoryName" class="form-control form-control-custom" placeholder="e.g. Electronics, Fashion, Home Decor" required autofocus>
+                            <div class="form-hint">
+                                <i class="fa-solid fa-circle-info me-1"></i> A URL-friendly slug will be automatically generated from this name upon saving.
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex align-items-center justify-content-end gap-2 pt-3 border-top">
+                            <a href="{% url 'admin_categories' %}" class="btn btn-light btn-sm border px-3 py-2 text-secondary">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-sm px-4 py-2 fw-semibold shadow-sm">
+                                <i class="fa-solid fa-check me-1"></i> Save Category
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

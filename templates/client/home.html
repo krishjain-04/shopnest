@@ -1,0 +1,1442 @@
+{% extends "client/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- =========================================================
+     HERO SECTION
+========================================================= -->
+
+<section class="home-hero-section">
+
+
+<div class="container">
+
+    <div class="home-hero-content">
+
+        <div class="row align-items-center g-4">
+
+            <div class="col-lg-7">
+
+                <span class="hero-badge">
+                    <i class="fa-solid fa-bolt me-2"></i>
+                    Premium Shopping Experience
+                </span>
+
+                <h1 class="hero-title">
+                    Discover Products
+                    <span>You'll Love.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Explore our latest collection of premium products,
+                    exclusive deals and customer favourites — all in one place.
+                </p>
+
+                <div class="hero-actions">
+
+                    <a href="{% url 'product_list' %}"
+                       class="btn btn-primary hero-shop-btn">
+                        <i class="fa-solid fa-bag-shopping me-2"></i>
+                        Shop Now
+                    </a>
+
+                    <a href="{% url 'all_categories' %}"
+                       class="btn btn-outline-light hero-category-btn">
+                        Explore Categories
+                        <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-5">
+
+                <div class="hero-visual">
+
+                    <div class="hero-floating-card hero-card-one">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        <div>
+                            <strong>Fast Delivery</strong>
+                            <small>Quick & reliable</small>
+                        </div>
+                    </div>
+
+                    <div class="hero-product-circle">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                    </div>
+
+                    <div class="hero-floating-card hero-card-two">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <div>
+                            <strong>Secure Shopping</strong>
+                            <small>Safe & trusted</small>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     SHOP BY CATEGORY
+========================================================= -->
+
+<section class="home-category-section py-5">
+
+
+<div class="container">
+
+    <div class="section-heading-row">
+
+        <div>
+            <span class="section-eyebrow">
+                EXPLORE
+            </span>
+
+            <h2 class="section-title">
+                Shop by Category
+            </h2>
+
+            <p class="section-subtitle">
+                Find exactly what you're looking for.
+            </p>
+        </div>
+
+        <a href="{% url 'all_categories' %}"
+           class="section-view-all">
+            View All
+            <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+
+    </div>
+
+
+    <div class="row g-3 g-md-4">
+
+        {% for category in categories|slice:":6" %}
+
+        <div class="col-6 col-md-4 col-lg-2">
+
+            <a href="{% url 'category_detail' category.slug %}"
+               class="home-category-card text-decoration-none">
+
+             <div class="category-icon-wrapper">
+ 
+                
+                <i class="{{ category.category_icon }}"></i>
+   
+
+</div>
+
+                <h6>
+                    {{ category.name }}
+                </h6>
+
+                <span>
+                    {{ category.product_count }} Products
+                </span>
+
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- =========================================================
+     FEATURED PRODUCTS
+========================================================= -->
+
+<section class="home-products-section py-5">
+
+
+<div class="container">
+
+    <div class="section-heading-row">
+
+        <div>
+            <span class="section-eyebrow">
+                HANDPICKED FOR YOU
+            </span>
+
+            <h2 class="section-title">
+                Featured Products
+            </h2>
+
+            <p class="section-subtitle">
+                Our specially selected products you shouldn't miss.
+            </p>
+        </div>
+
+        <a href="{% url 'product_list' %}"
+           class="section-view-all">
+            View All
+            <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+
+    </div>
+
+
+    {% if featured_products %}
+
+    <div class="row g-3 g-md-4">
+
+        {% for product in featured_products %}
+
+        <div class="col-6 col-md-4 col-lg-3 d-flex align-items-stretch">
+
+            <!-- =================================================
+                 PRODUCT CARD
+            ================================================== -->
+            <div class="card home-product-card w-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative h-100 d-flex flex-column">
+
+
+                <!-- STOCK BADGE -->
+                <div class="position-absolute top-0 end-0 m-2 m-md-3 z-2">
+
+                    {% if product.stock > 0 %}
+
+                    <span class="badge badge-stock-in rounded-pill px-2 py-1 fw-medium">
+                        In Stock
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge badge-stock-out rounded-pill px-2 py-1 fw-medium">
+                        Out of Stock
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- IMAGE + WISHLIST -->
+                <div class="home-product-img-wrapper position-relative overflow-hidden">
+
+
+                    <!-- WISHLIST -->
+                    <button type="button"
+                            class="btn btn-light btn-sm rounded-circle position-absolute top-0 start-0 m-2 m-md-3 z-3 shadow-sm btn-wishlist border"
+                            data-product-id="{{ product.id }}"
+                            data-url="{% url 'toggle_wishlist' product.id %}"
+                            onclick="toggleWishlistAjax(this)"
+                            title="Toggle Wishlist"
+                            aria-label="Toggle Wishlist">
+
+                        <i class="{% if product.id in user_wishlist_product_ids %}fa-solid fa-heart text-danger{% else %}fa-regular fa-heart{% endif %}">
+                        </i>
+
+                    </button>
+
+
+                    <!-- PRODUCT IMAGE -->
+                    <a href="{% url 'product_detail' product.slug %}"
+                       class="d-block w-100 h-100">
+
+                        {% if product.main_image %}
+
+                        <img src="{{ product.main_image.url }}"
+                             alt="{{ product.name }}"
+                             class="home-product-img"
+                             loading="lazy">
+
+                        {% else %}
+
+                        <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+
+                            <i class="fa-regular fa-image fs-2"></i>
+
+                        </div>
+
+                        {% endif %}
+
+                    </a>
+
+                </div>
+
+
+                <!-- CARD BODY -->
+                <div class="card-body p-3 p-md-4 d-flex flex-column justify-content-between">
+
+                    <div>
+
+                        <!-- BRAND -->
+                        <div class="text-uppercase text-muted fw-semibold home-product-brand mb-1">
+                            {{ product.brand.name }}
+                        </div>
+
+
+                        <!-- PRODUCT NAME -->
+                        <h6 class="fw-bold mb-2 home-product-name">
+
+                            <a href="{% url 'product_detail' product.slug %}"
+                               class="text-dark text-decoration-none line-clamp-2">
+
+                                {{ product.name }}
+
+                            </a>
+
+                        </h6>
+
+
+                        <!-- RATING -->
+                        <div class="d-flex align-items-center gap-1 mb-2 home-product-rating">
+
+                            <i class="fa-solid fa-star text-warning"></i>
+
+                            <span class="fw-bold text-dark ms-1">
+                                {{ product.avg_rating|default:"0.0"|floatformat:1 }}
+                            </span>
+
+                            <span class="text-muted">
+                                ({{ product.review_count|default:"0" }})
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PRICE + ACTIONS -->
+                    <div class="mt-2 pt-2 border-top">
+
+
+                        <!-- PRICE -->
+                        <div class="d-flex align-items-baseline gap-2 mb-3">
+
+                            {% if product.discount_price and product.discount_price < product.price %}
+
+                            <span class="fw-bold text-dark fs-5">
+                                ₹{{ product.discount_price }}
+                            </span>
+
+                            <span class="text-muted text-decoration-line-through home-old-price">
+                                ₹{{ product.price }}
+                            </span>
+
+                            {% if product.discount_percentage > 0 %}
+
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill home-discount-badge fw-bold ms-auto">
+                                {{ product.discount_percentage }}% OFF
+                            </span>
+
+                            {% endif %}
+
+                            {% else %}
+
+                            <span class="fw-bold text-dark fs-5">
+                                ₹{{ product.price }}
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ACTION BUTTONS -->
+                        <div class="d-grid gap-2">
+
+                            {% if product.stock > 0 %}
+
+                            <form action="{% url 'add_to_cart' product.id %}"
+                                  method="POST"
+                                  class="w-100 home-add-to-cart-form">
+
+                                {% csrf_token %}
+
+                                <input type="hidden"
+                                       name="quantity"
+                                       value="1">
+
+                                <button type="submit"
+                                        class="btn btn-primary btn-sm w-100 py-2 rounded-3 fw-bold home-add-to-cart-btn">
+
+                                    <i class="fa-solid fa-cart-shopping me-1"></i>
+
+                                    <span>
+                                        Add to Cart
+                                    </span>
+
+                                </button>
+
+                            </form>
+
+                            {% else %}
+
+                            <button class="btn btn-secondary btn-sm py-2 rounded-3 fw-bold w-100"
+                                    disabled>
+
+                                <i class="fa-solid fa-ban me-1"></i>
+                                Out of Stock
+
+                            </button>
+
+                            {% endif %}
+
+
+                            <!-- VIEW DETAILS -->
+                            <a href="{% url 'product_detail' product.slug %}"
+                               class="btn btn-outline-secondary btn-sm py-2 rounded-3 fw-semibold text-center">
+
+                                <i class="fa-regular fa-eye me-1"></i>
+                                View Details
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-products-state">
+        <i class="fa-solid fa-box-open"></i>
+        <h5>No Featured Products</h5>
+        <p>Featured products will appear here.</p>
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+</section>
+
+<!-- =========================================================
+     NEW ARRIVALS
+========================================================= -->
+
+<section class="home-new-arrivals-section py-5">
+
+<div class="container">
+
+    <div class="section-heading-row">
+
+        <div>
+            <span class="section-eyebrow">
+                JUST ARRIVED
+            </span>
+
+            <h2 class="section-title">
+                New Arrivals
+            </h2>
+
+            <p class="section-subtitle">
+                Fresh products added recently to our store.
+            </p>
+        </div>
+
+        <a href="{% url 'product_list' %}?sort=newest"
+           class="section-view-all">
+            View All
+            <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+
+    </div>
+
+
+    {% if new_arrivals %}
+
+    <div class="row g-3 g-md-4">
+
+        {% for product in new_arrivals %}
+
+        <div class="col-6 col-md-4 col-lg-3 d-flex align-items-stretch">
+
+            <div class="card home-product-card w-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative h-100 d-flex flex-column">
+
+
+                <!-- STOCK -->
+                <div class="position-absolute top-0 end-0 m-2 m-md-3 z-2">
+
+                    {% if product.stock > 0 %}
+
+                    <span class="badge badge-stock-in rounded-pill px-2 py-1 fw-medium">
+                        In Stock
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge badge-stock-out rounded-pill px-2 py-1 fw-medium">
+                        Out of Stock
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- IMAGE -->
+                <div class="home-product-img-wrapper position-relative overflow-hidden">
+
+                    <button type="button"
+                            class="btn btn-light btn-sm rounded-circle position-absolute top-0 start-0 m-2 m-md-3 z-3 shadow-sm btn-wishlist border"
+                            data-product-id="{{ product.id }}"
+                            data-url="{% url 'toggle_wishlist' product.id %}"
+                            onclick="toggleWishlistAjax(this)"
+                            title="Toggle Wishlist">
+
+                        <i class="{% if product.id in user_wishlist_product_ids %}fa-solid fa-heart text-danger{% else %}fa-regular fa-heart{% endif %}">
+                        </i>
+
+                    </button>
+
+                    <a href="{% url 'product_detail' product.slug %}"
+                       class="d-block w-100 h-100">
+
+                        {% if product.main_image %}
+
+                        <img src="{{ product.main_image.url }}"
+                             alt="{{ product.name }}"
+                             class="home-product-img"
+                             loading="lazy">
+
+                        {% else %}
+
+                        <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                            <i class="fa-regular fa-image fs-2"></i>
+                        </div>
+
+                        {% endif %}
+
+                    </a>
+
+                </div>
+
+
+                <!-- BODY -->
+                <div class="card-body p-3 p-md-4 d-flex flex-column justify-content-between">
+
+                    <div>
+
+                        <div class="text-uppercase text-muted fw-semibold home-product-brand mb-1">
+                            {{ product.brand.name }}
+                        </div>
+
+                        <h6 class="fw-bold mb-2 home-product-name">
+
+                            <a href="{% url 'product_detail' product.slug %}"
+                               class="text-dark text-decoration-none line-clamp-2">
+
+                                {{ product.name }}
+
+                            </a>
+
+                        </h6>
+
+                        <div class="d-flex align-items-center gap-1 mb-2 home-product-rating">
+
+                            <i class="fa-solid fa-star text-warning"></i>
+
+                            <span class="fw-bold text-dark ms-1">
+                                {{ product.avg_rating|default:"0.0"|floatformat:1 }}
+                            </span>
+
+                            <span class="text-muted">
+                                ({{ product.review_count|default:"0" }})
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mt-2 pt-2 border-top">
+
+                        <div class="d-flex align-items-baseline gap-2 mb-3">
+
+                            {% if product.discount_price and product.discount_price < product.price %}
+
+                            <span class="fw-bold text-dark fs-5">
+                                ₹{{ product.discount_price }}
+                            </span>
+
+                            <span class="text-muted text-decoration-line-through home-old-price">
+                                ₹{{ product.price }}
+                            </span>
+
+                            {% if product.discount_percentage > 0 %}
+
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill home-discount-badge fw-bold ms-auto">
+                                {{ product.discount_percentage }}% OFF
+                            </span>
+
+                            {% endif %}
+
+                            {% else %}
+
+                            <span class="fw-bold text-dark fs-5">
+                                ₹{{ product.price }}
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="d-grid gap-2">
+
+                            {% if product.stock > 0 %}
+
+                            <form action="{% url 'add_to_cart' product.id %}"
+                                  method="POST"
+                                  class="w-100 home-add-to-cart-form">
+
+                                {% csrf_token %}
+
+                                <input type="hidden"
+                                       name="quantity"
+                                       value="1">
+
+                                <button type="submit"
+                                        class="btn btn-primary btn-sm w-100 py-2 rounded-3 fw-bold home-add-to-cart-btn">
+
+                                    <i class="fa-solid fa-cart-shopping me-1"></i>
+
+                                    <span>Add to Cart</span>
+
+                                </button>
+
+                            </form>
+
+                            {% else %}
+
+                            <button class="btn btn-secondary btn-sm py-2 rounded-3 fw-bold w-100"
+                                    disabled>
+
+                                <i class="fa-solid fa-ban me-1"></i>
+                                Out of Stock
+
+                            </button>
+
+                            {% endif %}
+
+                            <a href="{% url 'product_detail' product.slug %}"
+                               class="btn btn-outline-secondary btn-sm py-2 rounded-3 fw-semibold">
+
+                                <i class="fa-regular fa-eye me-1"></i>
+                                View Details
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+</section>
+
+<!-- =========================================================
+     BEST SELLERS
+========================================================= -->
+
+<section class="home-best-sellers-section py-5">
+
+<div class="container">
+
+    <div class="section-heading-row">
+
+        <div>
+            <span class="section-eyebrow">
+                CUSTOMER FAVOURITES
+            </span>
+
+            <h2 class="section-title">
+                Best Sellers
+            </h2>
+
+            <p class="section-subtitle">
+                Products loved and purchased by our customers.
+            </p>
+        </div>
+
+        <a href="{% url 'product_list' %}"
+           class="section-view-all">
+            Shop All
+            <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+
+    </div>
+
+
+    {% if best_sellers %}
+
+    <div class="row g-3 g-md-4">
+
+        {% for product in best_sellers %}
+
+        <div class="col-6 col-md-4 col-lg-3 d-flex align-items-stretch">
+
+            <div class="card home-product-card w-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative h-100 d-flex flex-column">
+
+                <div class="position-absolute top-0 start-0 m-2 m-md-3 z-2">
+
+                    <span class="badge bg-warning text-dark rounded-pill px-2 py-1 fw-bold">
+                        <i class="fa-solid fa-fire me-1"></i>
+                        Bestseller
+                    </span>
+
+                </div>
+
+
+                <div class="position-absolute top-0 end-0 m-2 m-md-3 z-2">
+
+                    {% if product.stock > 0 %}
+
+                    <span class="badge badge-stock-in rounded-pill px-2 py-1 fw-medium">
+                        In Stock
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge badge-stock-out rounded-pill px-2 py-1 fw-medium">
+                        Out of Stock
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="home-product-img-wrapper position-relative overflow-hidden">
+
+                    <button type="button"
+                            class="btn btn-light btn-sm rounded-circle position-absolute top-0 start-0 m-2 m-md-3 z-3 shadow-sm btn-wishlist border"
+                            data-product-id="{{ product.id }}"
+                            data-url="{% url 'toggle_wishlist' product.id %}"
+                            onclick="toggleWishlistAjax(this)"
+                            title="Toggle Wishlist">
+
+                        <i class="{% if product.id in user_wishlist_product_ids %}fa-solid fa-heart text-danger{% else %}fa-regular fa-heart{% endif %}">
+                        </i>
+
+                    </button>
+
+
+                    <a href="{% url 'product_detail' product.slug %}"
+                       class="d-block w-100 h-100">
+
+                        {% if product.main_image %}
+
+                        <img src="{{ product.main_image.url }}"
+                             alt="{{ product.name }}"
+                             class="home-product-img"
+                             loading="lazy">
+
+                        {% else %}
+
+                        <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                            <i class="fa-regular fa-image fs-2"></i>
+                        </div>
+
+                        {% endif %}
+
+                    </a>
+
+                </div>
+
+
+                <div class="card-body p-3 p-md-4 d-flex flex-column justify-content-between">
+
+                    <div>
+
+                        <div class="text-uppercase text-muted fw-semibold home-product-brand mb-1">
+                            {{ product.brand.name }}
+                        </div>
+
+                        <h6 class="fw-bold mb-2 home-product-name">
+
+                            <a href="{% url 'product_detail' product.slug %}"
+                               class="text-dark text-decoration-none line-clamp-2">
+
+                                {{ product.name }}
+
+                            </a>
+
+                        </h6>
+
+                        <div class="d-flex align-items-center gap-1 mb-2 home-product-rating">
+
+                            <i class="fa-solid fa-star text-warning"></i>
+
+                            <span class="fw-bold text-dark ms-1">
+                                {{ product.avg_rating|default:"0.0"|floatformat:1 }}
+                            </span>
+
+                            <span class="text-muted">
+                                ({{ product.review_count|default:"0" }})
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mt-2 pt-2 border-top">
+
+                        <div class="d-flex align-items-baseline gap-2 mb-3">
+
+                            {% if product.discount_price and product.discount_price < product.price %}
+
+                            <span class="fw-bold text-dark fs-5">
+                                ₹{{ product.discount_price }}
+                            </span>
+
+                            <span class="text-muted text-decoration-line-through home-old-price">
+                                ₹{{ product.price }}
+                            </span>
+
+                            {% if product.discount_percentage > 0 %}
+
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill home-discount-badge fw-bold ms-auto">
+                                {{ product.discount_percentage }}% OFF
+                            </span>
+
+                            {% endif %}
+
+                            {% else %}
+
+                            <span class="fw-bold text-dark fs-5">
+                                ₹{{ product.price }}
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="d-grid gap-2">
+
+                            {% if product.stock > 0 %}
+
+                            <form action="{% url 'add_to_cart' product.id %}"
+                                  method="POST"
+                                  class="w-100 home-add-to-cart-form">
+
+                                {% csrf_token %}
+
+                                <input type="hidden"
+                                       name="quantity"
+                                       value="1">
+
+                                <button type="submit"
+                                        class="btn btn-primary btn-sm w-100 py-2 rounded-3 fw-bold home-add-to-cart-btn">
+
+                                    <i class="fa-solid fa-cart-shopping me-1"></i>
+
+                                    <span>Add to Cart</span>
+
+                                </button>
+
+                            </form>
+
+                            {% else %}
+
+                            <button class="btn btn-secondary btn-sm py-2 rounded-3 fw-bold w-100"
+                                    disabled>
+
+                                <i class="fa-solid fa-ban me-1"></i>
+                                Out of Stock
+
+                            </button>
+
+                            {% endif %}
+
+
+                            <a href="{% url 'product_detail' product.slug %}"
+                               class="btn btn-outline-secondary btn-sm py-2 rounded-3 fw-semibold">
+
+                                <i class="fa-regular fa-eye me-1"></i>
+                                View Details
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-products-state">
+
+        <i class="fa-solid fa-chart-line"></i>
+
+        <h5>Best Sellers Coming Soon</h5>
+
+        <p>
+            Once customers start purchasing products,
+            your best sellers will appear here.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+</section>
+
+<!-- =========================================================
+     STATIC FEATURES
+========================================================= -->
+
+<section class="home-features-section py-5">
+
+<div class="container">
+
+    <div class="row g-3 g-md-4">
+
+        <div class="col-6 col-lg-3">
+
+            <div class="home-feature-card">
+
+                <div class="feature-icon">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+
+                <div>
+                    <h6>Fast Delivery</h6>
+                    <p>Quick delivery to your doorstep.</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-6 col-lg-3">
+
+            <div class="home-feature-card">
+
+                <div class="feature-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <div>
+                    <h6>Secure Payments</h6>
+                    <p>Safe and secure checkout.</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-6 col-lg-3">
+
+            <div class="home-feature-card">
+
+                <div class="feature-icon">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </div>
+
+                <div>
+                    <h6>Easy Returns</h6>
+                    <p>Simple and hassle-free returns.</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-6 col-lg-3">
+
+            <div class="home-feature-card">
+
+                <div class="feature-icon">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+
+                <div>
+                    <h6>Customer Support</h6>
+                    <p>We're here whenever you need us.</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+/* =========================================================
+   CSRF COOKIE
+========================================================= */
+
+function getCookie(name) {
+
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== '') {
+
+        const cookies = document.cookie.split(';');
+
+        for (let i = 0; i < cookies.length; i++) {
+
+            const cookie = cookies[i].trim();
+
+            if (
+                cookie.substring(0, name.length + 1) ===
+                (name + '=')
+            ) {
+
+                cookieValue = decodeURIComponent(
+                    cookie.substring(name.length + 1)
+                );
+
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
+
+/* =========================================================
+   WISHLIST AJAX
+========================================================= */
+
+function toggleWishlistAjax(button) {
+
+    const url = button.getAttribute('data-url');
+    const icon = button.querySelector('i');
+
+    if (!url) {
+        return;
+    }
+
+    button.disabled = true;
+
+    fetch(url, {
+
+        method: 'POST',
+
+        headers: {
+
+            'X-CSRFToken': getCookie('csrftoken'),
+
+            'X-Requested-With': 'XMLHttpRequest',
+
+            'Content-Type': 'application/json'
+
+        }
+
+    })
+
+    .then(function(response) {
+
+        if (
+            response.status === 401 ||
+            response.redirected
+        ) {
+
+            window.location.href =
+                "{% url 'login' %}";
+
+            return null;
+        }
+
+        if (!response.ok) {
+            throw new Error('Wishlist request failed.');
+        }
+
+        return response.json();
+
+    })
+
+    .then(function(data) {
+
+        if (!data) {
+            return;
+        }
+
+        if (data.added) {
+
+            icon.classList.remove('fa-regular');
+
+            icon.classList.add(
+                'fa-solid',
+                'text-danger'
+            );
+
+        } else {
+
+            icon.classList.remove(
+                'fa-solid',
+                'text-danger'
+            );
+
+            icon.classList.add('fa-regular');
+
+        }
+
+     const badge =document.getElementById('navbar-wishlist-count');
+
+              if ( badge && data.wishlist_count !== undefined) {
+
+    badge.textContent =
+        data.wishlist_count;
+
+    if (data.wishlist_count > 0) {
+        badge.style.display = '';
+    } else {
+        badge.style.display = 'none';
+    }
+
+}
+
+    })
+
+    .catch(function(error) {
+
+        console.error(
+            'Wishlist error:',
+            error
+        );
+
+    })
+
+    .finally(function() {
+
+        button.disabled = false;
+
+    });
+
+}
+
+
+/* =========================================================
+   AJAX ADD TO CART
+========================================================= */
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function() {
+
+        document
+            .querySelectorAll('.home-add-to-cart-form')
+            .forEach(function(form) {
+
+                form.addEventListener(
+                    'submit',
+                    function(e) {
+
+                        e.preventDefault();
+
+                        const button =
+                            form.querySelector(
+                                '.home-add-to-cart-btn'
+                            );
+
+                        if (
+                            !button ||
+                            button.disabled
+                        ) {
+                            return;
+                        }
+
+
+                        const buttonText =
+                            button.querySelector('span');
+
+                        const icon =
+                            button.querySelector('i');
+
+
+                        const originalText =
+                            buttonText
+                                ? buttonText.textContent
+                                : 'Add to Cart';
+
+
+                        const originalIcon =
+                            icon
+                                ? icon.className
+                                : 'fa-solid fa-cart-shopping me-1';
+
+
+                        button.disabled = true;
+
+
+                        if (buttonText) {
+                            buttonText.textContent =
+                                'Adding...';
+                        }
+
+
+                        const formData =
+                            new FormData(form);
+
+
+                        fetch(
+                            form.action,
+                            {
+                                method: 'POST',
+
+                                body: formData,
+
+                                headers: {
+                                    'X-Requested-With':
+                                        'XMLHttpRequest'
+                                }
+                            }
+                        )
+
+                        .then(function(response) {
+
+                            if (
+                                response.status === 401 ||
+                                response.redirected
+                            ) {
+
+                                window.location.href =
+                                    "{% url 'login' %}";
+
+                                return null;
+                            }
+
+
+                            if (!response.ok) {
+
+                                throw new Error(
+                                    'Add to cart request failed.'
+                                );
+
+                            }
+
+
+                            return response.json();
+
+                        })
+
+                        .then(function(data) {
+
+                            if (!data) {
+                                return;
+                            }
+
+
+                            if (data.success) {
+
+                                const cartBadge =
+                                    document.getElementById(
+                                        'navbar-cart-count'
+                                    );
+
+
+                                if (cartBadge) {
+
+                                    if (
+                                        data.cart_count !==
+                                        undefined
+                                    ) {
+
+                                        cartBadge.textContent =
+                                            data.cart_count;
+
+                                    } else {
+
+                                        let currentCount =
+                                            parseInt(
+                                                cartBadge.textContent,
+                                                10
+                                            );
+
+                                        if (
+                                            isNaN(
+                                                currentCount
+                                            )
+                                        ) {
+
+                                            currentCount = 0;
+
+                                        }
+
+                                        cartBadge.textContent =
+                                            currentCount + 1;
+
+                                    }
+
+                                    cartBadge.style.display =
+                                        '';
+
+                                }
+
+
+                                if (buttonText) {
+
+                                    buttonText.textContent =
+                                        'Added';
+
+                                }
+
+
+                                if (icon) {
+
+                                    icon.className =
+                                        'fa-solid fa-check me-1';
+
+                                }
+
+
+                                setTimeout(
+                                    function() {
+
+                                        if (buttonText) {
+
+                                            buttonText.textContent =
+                                                originalText;
+
+                                        }
+
+                                        if (icon) {
+
+                                            icon.className =
+                                                originalIcon;
+
+                                        }
+
+                                        button.disabled =
+                                            false;
+
+                                    },
+                                    1200
+                                );
+
+                            } else {
+
+                                if (buttonText) {
+
+                                    buttonText.textContent =
+                                        data.message ||
+                                        originalText;
+
+                                }
+
+                                button.disabled =
+                                    false;
+
+                            }
+
+                        })
+
+                        .catch(function(error) {
+
+                            console.error(
+                                'Add to cart error:',
+                                error
+                            );
+
+                            if (buttonText) {
+
+                                buttonText.textContent =
+                                    'Try Again';
+
+                            }
+
+
+                            setTimeout(
+                                function() {
+
+                                    if (buttonText) {
+
+                                        buttonText.textContent =
+                                            originalText;
+
+                                    }
+
+                                    if (icon) {
+
+                                        icon.className =
+                                            originalIcon;
+
+                                    }
+
+                                    button.disabled =
+                                        false;
+
+                                },
+                                1500
+                            );
+
+                        });
+
+                    }
+                );
+
+            });
+
+    });
+
+</script>
+
+{% endblock %}

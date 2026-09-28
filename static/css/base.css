@@ -1,0 +1,417 @@
+/* ==========================================================================
+   GLOBAL & ROOT DESIGN SYSTEM
+   ========================================================================== */
+:root {
+    --primary-color: #0d6efd;
+    --primary-hover: #0b5ed7;
+    --dark-color: #212529;
+    --light-bg: #f8f9fa;
+    --border-color: #e9ecef;
+    --transition-speed: 0.25s;
+    --font-family: 'Poppins', sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    color: var(--dark-color);
+    background-color: #fff;
+}
+
+.main-wrapper {
+    min-height: 80vh;
+}
+
+/* Utilities */
+.max-w-md {
+    max-width: 450px;
+}
+
+/* ==========================================================================
+   NAVBAR COMPONENT STYLES
+   ========================================================================== */
+.logo-text {
+    letter-spacing: -0.5px;
+}
+
+/* Nav Link Styling & Hover Effects */
+.navbar-nav .nav-link {
+    color: var(--dark-color);
+    padding: 0.5rem 0.8rem;
+    transition: color var(--transition-speed) ease;
+    position: relative;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: var(--primary-color);
+}
+
+@media (min-width: 992px) {
+    /* Create bottom underline pseudo-element for standard nav links */
+    .navbar-nav .nav-link:not(.dropdown-toggle)::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 50%;
+        background-color: var(--primary-color);
+        transition: all var(--transition-speed) ease;
+        transform: translateX(-50%);
+    }
+
+    /* Expand underline on hover or when active */
+    .navbar-nav .nav-link:not(.dropdown-toggle):hover::after,
+    .navbar-nav .nav-link:not(.dropdown-toggle).active::after {
+        width: 70%;
+    }
+}
+
+.main-navbar {
+    z-index: 1055 !important;
+}
+
+.main-navbar .dropdown-menu {
+    z-index: 1060 !important;
+}
+
+/* Search Bar Styling */
+.search-form .form-control {
+    border-color: var(--border-color);
+    box-shadow: none;
+    transition: all var(--transition-speed) ease;
+}
+
+.search-form .form-control:focus {
+    background-color: #fff !important;
+    border-color: var(--primary-color);
+}
+
+.search-form .btn {
+    border-color: var(--border-color);
+    transition: background-color var(--transition-speed) ease;
+}
+
+.search-form .btn:hover {
+    background-color: var(--border-color);
+    color: var(--dark-color);
+}
+
+/* Dropdown Menus */
+.dropdown-menu {
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--light-bg);
+    color: var(--primary-color);
+}
+
+.dropdown-item:hover i {
+    color: var(--primary-color) !important;
+}
+
+/* Action Icons & Badges */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.btn-icon:hover {
+    background-color: var(--light-bg);
+    color: var(--primary-color) !important;
+}
+
+.btn-icon .badge {
+    font-size: 0.65rem;
+    padding: 0.25em 0.45em;
+}
+
+
+/* ========================================================================== 
+   MOBILE NAVBAR ACTIONS
+   Wishlist + Cart + User + Menu
+   ========================================================================== */
+
+.mobile-navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.mobile-nav-icon {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 18px;
+    position: relative;
+    transition:
+        background-color var(--transition-speed) ease,
+        color var(--transition-speed) ease,
+        transform var(--transition-speed) ease;
+}
+
+.mobile-nav-icon:hover {
+    background-color: var(--light-bg);
+    color: var(--primary-color) !important;
+    transform: translateY(-1px);
+}
+
+
+/* ========================================================================== 
+   MOBILE BADGES
+   ========================================================================== */
+
+.mobile-nav-icon .badge {
+    font-size: 0.58rem;
+    min-width: 17px;
+    height: 17px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+
+/* ========================================================================== 
+   MOBILE MENU BUTTON
+   ========================================================================== */
+
+.mobile-menu-toggle {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Remove Bootstrap's default button outline */
+.mobile-menu-toggle:focus {
+    box-shadow: none !important;
+}
+
+
+/* ========================================================================== 
+   MOBILE USER DROPDOWN
+   ========================================================================== */
+
+.mobile-user-dropdown {
+    min-width: 220px;
+    margin-top: 8px !important;
+}
+
+
+/* ========================================================================== 
+   MOBILE BREAKPOINT
+   ========================================================================== */
+
+@media (max-width: 991.98px) {
+
+    .main-navbar .container {
+        position: relative;
+    }
+
+    .mobile-navbar-actions {
+        margin-left: auto;
+    }
+
+    /*
+       Keep logo and mobile icons on the same row.
+    */
+    .logo-text {
+        margin-right: 8px;
+    }
+
+    /*
+       Make sure collapse opens below the main navbar row.
+    */
+    .navbar-collapse {
+        width: 100%;
+    }
+
+    /*
+       Mobile menu links spacing.
+    */
+    .navbar-nav {
+        padding-top: 12px;
+    }
+
+    .navbar-nav .nav-link {
+        padding: 0.7rem 0.25rem;
+    }
+
+    /*
+       Search bar inside mobile menu.
+    */
+    .search-form {
+        width: 100%;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
+    }
+
+    /*
+       Remove desktop action icons completely on mobile.
+    */
+    .d-lg-flex {
+        display: none !important;
+    }
+}
+
+
+/* ========================================================================== 
+   SMALL MOBILE SCREENS
+   ========================================================================== */
+
+@media (max-width: 575.98px) {
+
+    .main-navbar {
+        padding-top: 0.65rem !important;
+        padding-bottom: 0.65rem !important;
+    }
+
+    .logo-text {
+        font-size: 1.45rem !important;
+        letter-spacing: -0.6px;
+    }
+
+    .mobile-navbar-actions {
+        gap: 4px;
+    }
+
+    .mobile-nav-icon,
+    .mobile-menu-toggle {
+        width: 34px;
+        height: 34px;
+    }
+
+    .mobile-nav-icon {
+        font-size: 16px;
+    }
+
+    .mobile-menu-toggle .navbar-toggler-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .mobile-nav-icon .badge {
+        font-size: 0.55rem;
+        min-width: 16px;
+        height: 16px;
+    }
+}
+
+
+/* ========================================================================== 
+   EXTRA SMALL MOBILE
+   ========================================================================== */
+
+@media (max-width: 380px) {
+
+    .logo-text {
+        font-size: 1.25rem !important;
+    }
+
+    .mobile-navbar-actions {
+        gap: 2px;
+    }
+
+    .mobile-nav-icon,
+    .mobile-menu-toggle {
+        width: 32px;
+        height: 32px;
+    }
+
+    .mobile-nav-icon {
+        font-size: 15px;
+    }
+}
+
+
+/* ==========================================================================
+   FOOTER SECTION STYLES (CONFLICT FIXED)
+   ========================================================================== */
+
+/* Footer Typography & Spacing */
+.tracking-tight {
+    letter-spacing: -0.025em;
+}
+
+.tracking-wider {
+    letter-spacing: 0.05em;
+}
+
+/* Explicit Light Text Color for Muted Footer Elements */
+footer .text-muted,
+footer p.text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Footer Navigation Links */
+.footer-links a {
+    color: rgba(255, 255, 255, 0.75) !important;
+    transition: color var(--transition-speed, 0.25s) ease, transform var(--transition-speed, 0.25s) ease;
+    display: inline-block;
+}
+
+.footer-links a:hover {
+    color: #6f44dd !important;
+    transform: translateX(3px);
+}
+
+/* Newsletter Input & Buttons */
+footer .form-control {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+}
+
+footer .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+footer .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    color: #ffffff !important;
+}
+
+/* Social Media Button States */
+.social-icon-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    transition: background-color var(--transition-speed, 0.25s) ease, border-color var(--transition-speed, 0.25s) ease, transform var(--transition-speed, 0.25s) ease;
+}
+
+.social-icon-btn:hover {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+}

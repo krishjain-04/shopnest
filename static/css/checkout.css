@@ -1,0 +1,48 @@
+/* ==========================================================================
+   CHECKOUT PAGE STYLES
+   ========================================================================== */
+
+/* Payment Selection Option Highlight */
+.payment-option {
+    cursor: pointer;
+    transition: border-color var(--transition-speed, 0.3s) ease, background-color var(--transition-speed, 0.3s) ease;
+}
+
+.payment-option:hover {
+    background-color: var(--bs-light);
+}
+
+.form-check-input:checked ~ .form-check-label {
+    color: var(--bs-dark);
+}
+
+.payment-option:has(.form-check-input:checked) {
+    border-color: var(--primary-color, #0d6efd) !important;
+    background-color: rgba(13, 110, 253, 0.03);
+}
+
+/* Sticky Summary Card on Desktop */
+@media (min-width: 992px) {
+    .sticky-summary {
+        position: sticky;
+        top: 90px;
+    }
+}
+
+/* Scrollable Product List for Large Summaries */
+.max-height-products {
+    max-height: 280px;
+}
+
+/* Form Controls Custom Focus */
+.form-control:focus,
+.form-select:focus {
+    box-shadow: none;
+    border-color: var(--primary-color, #0d6efd);
+}
+
+/* Utility Spacing */
+.py-2\.5 {
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+}

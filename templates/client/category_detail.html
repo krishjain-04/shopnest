@@ -1,0 +1,72 @@
+{% extends 'client/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/category_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4 category-detail-wrapper">
+  
+  <!-- BREADCRUMB -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'all_categories' %}" class="text-decoration-none">Categories</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+    </ol>
+  </nav>
+
+  <!-- BANNER HEADER -->
+  <div class="category-header-banner p-4 p-md-5 rounded-4 mb-5 text-white shadow-sm position-relative overflow-hidden">
+    <div class="position-relative z-2">
+      <span class="badge bg-white text-dark mb-2 px-3 py-2 fw-bold text-uppercase">Category</span>
+      <h1 class="display-5 fw-bold mb-2">{{ category.name }}</h1>
+      <p class="mb-0 opacity-90 fs-6">Choose a subcategory to browse targeted items and deals</p>
+    </div>
+  </div>
+
+  <!-- SUBCATEGORIES GRID -->
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h3 class="fw-bold text-dark mb-0">Explore Subcategories</h3>
+    <span class="text-muted small">{{ subcategories|length }} Available</span>
+  </div>
+
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for subcategory in subcategories %}
+      <div class="col">
+        <a href="{% url 'subcategory_detail' category.slug subcategory.slug %}" class="text-decoration-none text-dark">
+          <div class="card h-100 border-0 shadow-sm subcat-card">
+            <div class="card-body p-4 d-flex align-items-center">
+              
+              <div class="subcat-icon-wrapper me-3 d-flex align-items-center justify-content-center">
+                    <i class="{{ subcategory.category_icon }}"></i>
+
+              </div>
+
+              <div class="flex-grow-1 overflow-hidden">
+                <h5 class="fw-bold mb-1 text-truncate">{{ subcategory.name }}</h5>
+                <span class="text-muted small d-block mb-2">{{ subcategory.products.count }} Products</span>
+                <span class="badge bg-primary-subtle text-primary fw-semibold px-2 py-1 subcat-badge">
+                  Browse Items <i class="fa-solid fa-chevron-right ms-1"></i>
+                </span>
+              </div>
+
+            </div>
+          </div>
+        </a>
+      </div>
+    {% empty %}
+      <div class="col-12 py-5 text-center">
+        <div class="p-5 bg-white rounded-4 shadow-sm">
+          <i class="fa-solid fa-folder-open display-1 text-muted mb-3"></i>
+          <h4>No Subcategories Found</h4>
+          <p class="text-muted">There are currently no subcategories listed under {{ category.name }}.</p>
+          <a href="{% url 'all_categories' %}" class="btn btn-primary px-4 rounded-pill">Back to All Categories</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

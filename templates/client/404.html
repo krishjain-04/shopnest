@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}404 - Page Not Found | LUXESTORE{% endblock %}
+
+{% block content %}
+
+<!-- MAIN 404 SECTION -->
+<section class="py-5 min-vh-100 d-flex align-items-center bg-light">
+    <div class="container py-4">
+        <div class="row justify-content-center text-center">
+            <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+                
+                <!-- 404 ILLUSTRATION / VISUAL -->
+                <div class="position-relative mb-4 d-inline-block">
+                    <h1 class="display-1 fw-black text-primary opacity-10 user-select-none mb-0" style="font-size: clamp(8rem, 20vw, 14rem); line-height: 0.8; font-weight: 900;">
+                        404
+                    </h1>
+                    <div class="position-absolute top-50 start-50 translate-middle w-100">
+                        <span class="bg-primary-subtle text-primary p-4 rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm">
+                            <i class="fa-solid fa-compass-drafting display-4"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- FRIENDLY ERROR MESSAGE -->
+                <h2 class="fw-bold text-dark mb-3">Oops! Lost in Space?</h2>
+                <p class="text-muted leading-relaxed mb-4 px-md-4">
+                    The page you are looking for might have been removed, had its name changed, or is temporarily unavailable. Let's get you back on track!
+                </p>
+
+                <!-- ACTION BUTTONS -->
+                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                    <!-- Back to Home Button -->
+                    <a href="index.html" class="btn btn-primary btn-lg px-4 py-2.5 fw-semibold shadow-sm fs-6 d-inline-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-house"></i> Back to Home
+                    </a>
+
+                    <!-- Search Products Button -->
+                    <a href="products.html" class="btn btn-outline-dark btn-lg px-4 py-2.5 fw-semibold fs-6 d-inline-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i> Search Products
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

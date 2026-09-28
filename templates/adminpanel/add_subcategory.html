@@ -1,0 +1,86 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Add Subcategory - ShopNest Admin{% endblock %}
+
+{% block nav_subcategories %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <a href="{% url 'admin_subcategories' %}">Subcategories</a>
+    <span class="text-secondary">/</span>
+    <span>Add Subcategory</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-plus-circle text-info"></i> Add New Subcategory
+            </h1>
+            <p class="page-subtitle">Create a sub-tier category assigned to a parent category</p>
+        </div>
+        <div>
+            <a href="{% url 'admin_subcategories' %}" class="btn btn-light btn-sm border text-secondary d-flex align-items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Back to Subcategories
+            </a>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">
+                        <i class="fa-solid fa-pen-nib text-info"></i> Subcategory Configuration
+                    </h3>
+                </div>
+                <div class="admin-card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- Parent Category Selection -->
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="parentCategorySelect">
+                                Parent Main Category <span class="text-danger">*</span>
+                            </label>
+                            <select name="category" id="parentCategorySelect" class="form-select form-select-custom" required>
+                                <option value="">-- Choose Parent Category --</option>
+                                {% for cat in categories %}
+                                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-hint">
+                                Select which root category this subcategory falls under.
+                            </div>
+                        </div>
+
+                        <!-- Subcategory Name -->
+                        <div class="mb-4">
+                            <label class="form-label-custom" for="subCategoryName">
+                                Subcategory Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="name" id="subCategoryName" class="form-control form-control-custom" placeholder="e.g. Mobiles, Laptops, Mens Wear" required>
+                            <div class="form-hint">
+                                A URL slug will automatically be generated from this title.
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex align-items-center justify-content-end gap-2 pt-3 border-top">
+                            <a href="{% url 'admin_subcategories' %}" class="btn btn-light btn-sm border px-3 py-2 text-secondary">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-sm px-4 py-2 fw-semibold shadow-sm">
+                                <i class="fa-solid fa-check me-1"></i> Save Subcategory
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

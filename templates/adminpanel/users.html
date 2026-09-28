@@ -1,0 +1,128 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Manage Customers - ShopNest Admin{% endblock %}
+
+{% block nav_users %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <span>Customers</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-users text-primary"></i> Registered Customers
+            </h1>
+            <p class="page-subtitle">Manage registered user accounts, activity status, and profile information</p>
+        </div>
+        <div>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-light btn-sm border text-secondary d-flex align-items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard Overview
+            </a>
+        </div>
+    </div>
+
+    <!-- Users Table Card -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="d-flex align-items-center gap-2">
+                <h3 class="admin-card-title">
+                    <i class="fa-solid fa-user-group text-muted"></i> Customer Accounts
+                </h3>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill small">
+                    {{ users|length }} Total Users
+                </span>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">Avatar</th>
+                        <th>Username / Customer</th>
+                        <th>Email Address</th>
+                        <th>Phone</th>
+                        <th>Account Status</th>
+                        <th>Joined Date</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <!-- Profile Pic -->
+                        <td>
+                            {% if u.profile and u.profile.profile_image %}
+                                <img src="{{ u.profile.profile_image.url }}" alt="{{ u.username }}" class="user-avatar-img">
+                            {% else %}
+                                <div class="user-avatar-placeholder">
+                                    <i class="fa-solid fa-user text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+
+                        <!-- Username -->
+                        <td>
+                            <div class="fw-bold text-dark">{{ u.username }}</div>
+                            {% if u.get_full_name %}
+                                <small class="text-muted" style="font-size: 0.76rem;">{{ u.get_full_name }}</small>
+                            {% endif %}
+                        </td>
+
+                        <!-- Email -->
+                        <td>
+                            <span class="text-muted">{{ u.email|default:"N/A" }}</span>
+                        </td>
+
+                        <!-- Phone -->
+                        <td>
+                            <span class="text-muted">{{ u.profile.phone|default:"N/A" }}</span>
+                        </td>
+
+                        <!-- Status -->
+                        <td>
+                            {% if u.is_active %}
+                                <span class="badge-pill-custom badge-success-soft">
+                                    <i class="fa-solid fa-circle-check"></i> Active
+                                </span>
+                            {% else %}
+                                <span class="badge-pill-custom badge-danger-soft">
+                                    <i class="fa-solid fa-ban"></i> Blocked
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Joined Date -->
+                        <td class="text-muted small">
+                            <i class="fa-regular fa-calendar me-1"></i>{{ u.date_joined|date:"d M Y" }}
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="text-end">
+                            <a href="{% url 'admin_user_detail' u.id %}" class="btn btn-primary btn-sm px-3 py-1 shadow-xs fw-semibold" title="View Customer Profile">
+                                <i class="fa-solid fa-id-card me-1"></i> Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-users-slash"></i>
+                                <h6>No Registered Customers Found</h6>
+                                <p>When shoppers sign up on the storefront, their profiles will appear here.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

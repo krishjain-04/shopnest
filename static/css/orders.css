@@ -1,0 +1,130 @@
+/* Card Selection Styling */
+.address-card {
+    border: 2px solid #e9ecef;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.address-card:hover {
+    border-color: #0d6efd;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.08);
+}
+
+.address-card.selected {
+    border-color: #0d6efd;
+    background-color: #f8faff;
+}
+
+/* Success Icon Keyframe Animation */
+.success-checkmark {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+}
+
+.success-checkmark .check-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    stroke-width: 2;
+    stroke: #198754;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #198754;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s stroke;
+}
+
+.success-checkmark .check-icon .icon-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 3;
+    stroke-miterlimit: 10;
+    stroke: #198754;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-checkmark .check-icon .icon-check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+    100% { stroke-dashoffset: 0; }
+}
+
+/* Order Status Timeline */
+
+.status-timeline {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 2rem 0;
+}
+
+/* Background Gray Line (Pura Rasta Gray Rehega) */
+.status-timeline::before {
+    content: '';
+    position: absolute;
+    top: 18px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: #e9ecef;
+    z-index: 1;
+}
+
+.timeline-step {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+}
+
+/* Step Circle Icon */
+.timeline-step .step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-weight: bold;
+    border: 3px solid #ffffff; /* Gray line ko circle ke andar chhupane ke liye */
+    position: relative;
+    z-index: 3;
+}
+
+/* Completed and Active Icons Ko Green Karein */
+.timeline-step.completed .step-icon,
+.timeline-step.active .step-icon {
+    background-color: #198754 !important; /* Green */
+    color: #ffffff !important;
+}
+
+/* GREEN CONNECTING LINE FIX */
+.timeline-step.completed::after {
+    content: '';
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    width: 100%;
+    height: 4px;
+    background-color: #198754; /* Green */
+    z-index: 2;
+}
+
+/* Last step & Active step ke aage line ruk jayegi */
+.timeline-step.active::after,
+.timeline-step:last-child::after {
+    display: none !important;
+}
+
+/* Keep checkout summary below navbar dropdowns */
+.checkout-summary-card {
+    z-index: 10 !important;
+}

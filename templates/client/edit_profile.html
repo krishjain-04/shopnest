@@ -1,0 +1,107 @@
+{% extends "client/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+                <h3 class="fw-bold text-center mb-4">Edit Profile</h3>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="d-flex align-items-center gap-4 mb-4">
+                        <div class="image-preview-container">
+                            {% if profile.profile_image %}
+                                <img id="avatarPreview" src="{{ profile.profile_image.url }}" alt="Preview" class="rounded-circle border" style="width: 100px; height: 100px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-light d-flex align-items-center justify-content-center border rounded-circle" style="width: 100px; height: 100px;" id="avatarPlaceholder">
+                                    <i class="fa-regular fa-user fs-2 text-muted"></i>
+                                </div>
+                                <img id="avatarPreview" src="" alt="Preview" class="rounded-circle border d-none" style="width: 100px; height: 100px; object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="id_profile_image" class="form-label fw-semibold">Profile Picture</label>
+                            <input class="form-control" type="file" name="profile_image" id="id_profile_image" accept="image/*" onchange="previewImage(event)">
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">First Name</label>
+                            <input type="text" name="first_name" class="form-control" value="{{ user.first_name|default:'' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" value="{{ user.last_name|default:'' }}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Phone</label>
+                            <input type="text" name="phone" class="form-control" value="{{ profile.phone|default:'' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Pincode</label>
+                            <input type="text" name="pincode" class="form-control" value="{{ profile.pincode|default:'' }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Address</label>
+                            <textarea name="address" class="form-control" rows="2">{{ profile.address|default:'' }}</textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">City</label>
+                            <input type="text" name="city" class="form-control" value="{{ profile.city|default:'' }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">State</label>
+                            <input type="text" name="state" class="form-control" value="{{ profile.state|default:'' }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Country</label>
+                            <input type="text" name="country" class="form-control" value="{{ profile.country|default:'' }}">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-3 mt-4">
+                        <a href="{% url 'profile' %}" class="btn btn-light px-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4 fw-semibold">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        const output = document.getElementById('avatarPreview');
+        const placeholder = document.getElementById('avatarPlaceholder');
+        output.src = reader.result;
+        output.classList.remove('d-none');
+        if (placeholder) {
+            placeholder.classList.add('d-none');
+        }
+    }
+    if (event.target.files[0]) {
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+</script>
+{% endblock %}

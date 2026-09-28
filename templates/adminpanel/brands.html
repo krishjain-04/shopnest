@@ -1,0 +1,118 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Manage Brands - ShopNest Admin{% endblock %}
+
+{% block nav_brands %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <span>Brands</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-certificate text-danger"></i> Brands
+            </h1>
+            <p class="page-subtitle">Manage manufacturers and product brand trademarks</p>
+        </div>
+        <div>
+            <a href="{% url 'add_brand' %}" class="btn btn-primary btn-sm px-3 py-2 shadow-sm fw-semibold d-flex align-items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Add New Brand
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Table Card -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="d-flex align-items-center gap-2">
+                <h3 class="admin-card-title">
+                    <i class="fa-solid fa-list text-muted"></i> All Brands
+                </h3>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill small">
+                    {{ brands|length }} Total
+                </span>
+            </div>
+            <div>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-light btn-sm border text-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">ID</th>
+                        <th style="width: 90px;">Logo</th>
+                        <th>Brand Name</th>
+                        <th>Slug</th>
+                        <th>Created Date</th>
+                        <th class="text-end" style="width: 140px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in brands %}
+                    <tr>
+                        <td class="text-muted fw-semibold">#{{ b.id }}</td>
+                        <td>
+                            {% if b.logo %}
+                                <img src="{{ b.logo.url }}" alt="{{ b.name }}" class="brand-thumb">
+                            {% else %}
+                                <div class="brand-thumb-placeholder">
+                                    <i class="fa-solid fa-image text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="fw-bold text-dark">{{ b.name }}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-secondary border font-monospace px-2 py-1">
+                                {{ b.slug }}
+                            </span>
+                        </td>
+                        <td class="text-muted small">
+                            <i class="fa-regular fa-calendar me-1"></i>{{ b.created_at|date:"d M Y" }}
+                        </td>
+
+                        <td class="text-end text-nowrap">
+    <a href="{% url 'edit_brand' b.id %}"
+       class="btn btn-outline-primary btn-sm px-2 py-1 me-1">
+        <i class="fa-solid fa-pen-to-square me-1"></i> Edit
+    </a>
+
+    <a href="{% url 'delete_brand' b.id %}"
+       class="btn btn-outline-danger btn-sm px-2 py-1"
+       onclick="return confirm('Are you sure you want to delete brand \'{{ b.name|escapejs }}\'?');">
+        <i class="fa-solid fa-trash-can me-1"></i> Delete
+    </a>
+</td>
+      
+                        
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-certificate"></i>
+                                <h6>No Brands Found</h6>
+                                <p>Add brands to categorize your products by manufacturer and label.</p>
+                                <a href="{% url 'add_brand' %}" class="btn btn-primary btn-sm px-3">
+                                    <i class="fa-solid fa-plus me-1"></i> Add Brand
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Manage Categories - ShopNest Admin{% endblock %}
+
+{% block nav_categories %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <span>Categories</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-layer-group text-primary"></i> Categories
+            </h1>
+            <p class="page-subtitle">Manage high-level catalog product categories</p>
+        </div>
+        <div>
+            <a href="{% url 'add_category' %}" class="btn btn-primary btn-sm px-3 py-2 shadow-sm fw-semibold d-flex align-items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Add New Category
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Table Card -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="d-flex align-items-center gap-2">
+                <h3 class="admin-card-title">
+                    <i class="fa-solid fa-list text-muted"></i> All Categories
+                </h3>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill small">
+                    {{ categories|length }} Total
+                </span>
+            </div>
+            <div>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-light btn-sm border text-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">ID</th>
+                        <th>Category Name</th>
+                        <th>Slug</th>
+                        <th>Created Date</th>
+                        <th class="text-end" style="width: 140px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat in categories %}
+                    <tr>
+                        <td class="text-muted fw-semibold">#{{ cat.id }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="fulfillment-icon categories" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                                    <i class="fa-solid fa-folder"></i>
+                                </div>
+                                <span class="fw-bold text-dark">{{ cat.name }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-secondary border font-monospace px-2 py-1">
+                                {{ cat.slug }}
+                            </span>
+                        </td>
+                        <td class="text-muted small">
+                            <i class="fa-regular fa-calendar me-1"></i>{{ cat.created_at|date:"d M Y, h:i A" }}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'delete_category' cat.id %}" class="btn btn-outline-danger btn-sm px-2 py-1" onclick="return confirm('Are you sure you want to delete category \'{{ cat.name|escapejs }}\'? This may affect related products and subcategories.');" title="Delete Category">
+                                <i class="fa-solid fa-trash-can me-1"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-folder-open"></i>
+                                <h6>No Categories Found</h6>
+                                <p>Get started by creating your store's first root category.</p>
+                                <a href="{% url 'add_category' %}" class="btn btn-primary btn-sm px-3">
+                                    <i class="fa-solid fa-plus me-1"></i> Add Category
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

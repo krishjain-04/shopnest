@@ -1,0 +1,898 @@
+/* ===================================================================
+   ShopNest Admin Console - Master Stylesheet
+   File: static/admincss/admindashboard.css
+   =================================================================== */
+
+:root {
+  --admin-font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Sidebar */
+  --sidebar-bg: #0f172a;
+  --sidebar-hover: #1e293b;
+  --sidebar-active-bg: rgba(59, 130, 246, 0.15);
+  --sidebar-active-text: #60a5fa;
+  --sidebar-text: #94a3b8;
+  --sidebar-text-bright: #f8fafc;
+  --sidebar-border: #1e293b;
+  
+  /* Theme & Neutrals */
+  --card-border: #e2e8f0;
+  --card-bg: #ffffff;
+  --body-bg: #f8fafc;
+  --heading-color: #0f172a;
+  --text-muted: #64748b;
+  --border-subtle: #f1f5f9;
+  
+  /* Brand Accent Colors */
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --info-color: #06b6d4;
+  --purple-color: #8b5cf6;
+  
+  /* Shadows */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px -1px rgba(0, 0, 0, 0.07);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.03);
+  
+  /* Radii */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+body {
+  font-family: var(--admin-font);
+  background-color: var(--body-bg);
+  color: #1e293b;
+  min-height: 100vh;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===================================================================
+   Sidebar Navigation Styles
+   =================================================================== */
+.admin-sidebar {
+  background-color: var(--sidebar-bg);
+  width: 270px;
+  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1040;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--sidebar-border);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sidebar-hover) transparent;
+}
+
+.admin-sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background: var(--sidebar-hover);
+  border-radius: 4px;
+}
+
+.sidebar-brand {
+  padding: 1.35rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--sidebar-border);
+  text-decoration: none;
+  color: var(--sidebar-text-bright);
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.35);
+}
+
+.brand-text h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.brand-text span {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #60a5fa;
+  letter-spacing: 0.08em;
+}
+
+.sidebar-menu {
+  padding: 1.25rem 0.9rem;
+  flex-grow: 1;
+}
+
+.menu-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  padding: 0.5rem 0.85rem 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.menu-label:first-child {
+  margin-top: 0;
+}
+
+.nav-link-admin {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.65rem 0.9rem;
+  color: var(--sidebar-text);
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: all 0.18s ease-in-out;
+  margin-bottom: 0.2rem;
+  position: relative;
+}
+
+.nav-link-admin i {
+  font-size: 0.95rem;
+  width: 20px;
+  text-align: center;
+  color: #64748b;
+  transition: color 0.18s ease-in-out;
+}
+
+.nav-link-admin:hover {
+  background-color: var(--sidebar-hover);
+  color: var(--sidebar-text-bright);
+}
+
+.nav-link-admin:hover i {
+  color: #93c5fd;
+}
+
+.nav-link-admin.active {
+  background-color: var(--sidebar-active-bg);
+  color: var(--sidebar-active-text);
+  font-weight: 600;
+}
+
+.nav-link-admin.active i {
+  color: #3b82f6;
+}
+
+.nav-link-admin.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 3.5px;
+  background: #3b82f6;
+  border-radius: 0 4px 4px 0;
+}
+
+.sidebar-user {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--sidebar-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* ===================================================================
+   Main Content Layout & Header
+   =================================================================== */
+.admin-main {
+  margin-left: 270px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-header {
+  height: 70px;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--card-border);
+  padding: 0 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  box-shadow: var(--shadow-xs);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.btn-sidebar-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.75rem;
+  color: #475569;
+  font-size: 1rem;
+}
+
+.btn-sidebar-toggle:hover {
+  background-color: #f1f5f9;
+}
+
+.content-container {
+  padding: 1.75rem;
+  flex-grow: 1;
+}
+
+/* ===================================================================
+   Page Titles & Breadcrumb Headers
+   =================================================================== */
+.admin-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.page-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--heading-color);
+  margin-bottom: 0.2rem;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.page-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+.admin-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.admin-breadcrumb a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.admin-breadcrumb a:hover {
+  color: var(--primary-color);
+}
+
+/* ===================================================================
+   Cards & Containers
+   =================================================================== */
+.admin-card {
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 1.75rem;
+  overflow: hidden;
+}
+
+.admin-card-header {
+  padding: 1.15rem 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background-color: #ffffff;
+}
+
+.admin-card-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  letter-spacing: -0.01em;
+}
+
+.admin-card-body {
+  padding: 1.5rem;
+}
+
+/* ===================================================================
+   Hero / Welcome Banner
+   =================================================================== */
+.welcome-banner {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 2rem;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.75rem;
+}
+
+.welcome-banner::after {
+  content: '';
+  position: absolute;
+  right: -50px;
+  top: -50px;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(59, 130, 246, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.welcome-banner h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.welcome-banner p {
+  color: #94a3b8;
+  margin-bottom: 0;
+  font-size: 0.92rem;
+}
+
+.banner-badge {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* ===================================================================
+   Metric Stat Cards
+   =================================================================== */
+.stat-card {
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-card);
+  padding: 1.35rem 1.4rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.stat-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--heading-color);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.stat-icon.revenue { background-color: #ecfdf5; color: #059669; }
+.stat-icon.orders { background-color: #eff6ff; color: #2563eb; }
+.stat-icon.pending { background-color: #fffbeb; color: #d97706; }
+.stat-icon.products { background-color: #f5f3ff; color: #7c3aed; }
+
+.stat-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.85rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed #f1f5f9;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ===================================================================
+   Fulfillment Items
+   =================================================================== */
+.fulfillment-item {
+  padding: 0.95rem 1.15rem;
+  border-radius: var(--radius-sm);
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  transition: background-color 0.15s ease;
+}
+
+.fulfillment-item:last-child {
+  margin-bottom: 0;
+}
+
+.fulfillment-item:hover {
+  background: #f1f5f9;
+}
+
+.fulfillment-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+}
+
+.fulfillment-icon.pending { background: #fef3c7; color: #b45309; }
+.fulfillment-icon.delivered { background: #d1fae5; color: #047857; }
+.fulfillment-icon.cancelled { background: #fee2e2; color: #b91c1c; }
+.fulfillment-icon.cart { background: #e0f2fe; color: #0369a1; }
+.fulfillment-icon.wishlist { background: #fce7f3; color: #be185d; }
+.fulfillment-icon.categories { background: #ede9fe; color: #6d28d9; }
+
+/* ===================================================================
+   Tables
+   =================================================================== */
+.admin-table {
+  width: 100%;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.admin-table thead th {
+  background-color: #f8fafc;
+  color: #64748b;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.admin-table tbody td {
+  padding: 1rem 1.25rem;
+  color: #334155;
+  font-size: 0.88rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.product-thumb,
+.brand-thumb,
+.user-avatar-img {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.product-thumb-placeholder,
+.brand-thumb-placeholder,
+.user-avatar-placeholder {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: #f1f5f9;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.user-avatar-img,
+.user-avatar-placeholder {
+  border-radius: 50%;
+}
+
+/* ===================================================================
+   Forms & Inputs
+   =================================================================== */
+.form-label-custom {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+.form-control-custom,
+.form-select-custom {
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.88rem;
+  color: #1e293b;
+  background-color: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+
+.form-control-custom:focus,
+.form-select-custom:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.form-control-custom::placeholder {
+  color: #94a3b8;
+}
+
+.form-hint {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.35rem;
+}
+
+.file-upload-box {
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  text-align: center;
+  background-color: #f8fafc;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.file-upload-box:hover {
+  border-color: #3b82f6;
+  background-color: #f0f7ff;
+}
+
+.file-upload-box input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.image-preview-wrapper {
+  position: relative;
+  display: inline-block;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.image-preview-wrapper img {
+  display: block;
+  max-width: 140px;
+  max-height: 140px;
+  object-fit: cover;
+}
+
+/* ===================================================================
+   Gallery Images Grid
+   =================================================================== */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 0.85rem;
+}
+
+.gallery-card {
+  position: relative;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #ffffff;
+  text-align: center;
+  padding: 0.35rem;
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  border-radius: var(--radius-xs);
+}
+
+.gallery-delete-btn {
+  margin-top: 0.35rem;
+  width: 100%;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.4rem;
+}
+
+/* ===================================================================
+   Quick Action Tiles
+   =================================================================== */
+.quick-action-tile {
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: #1e293b;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  height: 100%;
+}
+
+.quick-action-tile:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  color: #0f172a;
+}
+
+.quick-action-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+/* ===================================================================
+   Badges & Pills
+   =================================================================== */
+.badge-pill-custom {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  letter-spacing: 0.01em;
+}
+
+.badge-success-soft { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+.badge-warning-soft { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.badge-danger-soft { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.badge-info-soft { background-color: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+.badge-primary-soft { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+.badge-purple-soft { background-color: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+.badge-secondary-soft { background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+/* Status specific tags */
+.status-badge-pending { background-color: #fef3c7; color: #92400e; }
+.status-badge-processing { background-color: #e0f2fe; color: #075985; }
+.status-badge-shipped { background-color: #f3e8ff; color: #6b21a8; }
+.status-badge-delivered { background-color: #d1fae5; color: #065f46; }
+.status-badge-cancelled { background-color: #fee2e2; color: #991b1b; }
+.status-badge-paid { background-color: #d1fae5; color: #065f46; }
+.status-badge-active { background-color: #d1fae5; color: #065f46; }
+.status-badge-blocked { background-color: #fee2e2; color: #991b1b; }
+
+/* ===================================================================
+   Empty State
+   =================================================================== */
+.empty-state {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  color: #94a3b8;
+}
+
+.empty-state i {
+  font-size: 2.75rem;
+  margin-bottom: 0.85rem;
+  color: #cbd5e1;
+}
+
+.empty-state h6 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.35rem;
+}
+
+.empty-state p {
+  font-size: 0.88rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ===================================================================
+   Admin Login Page Styles
+   =================================================================== */
+.admin-login-body {
+  min-height: 100vh;
+  background: radial-gradient(circle at 10% 20%, #1e293b 0%, #0f172a 90%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  font-family: var(--admin-font);
+}
+
+.login-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.login-card-header {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  padding: 2.25rem 2rem 1.75rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+.login-card-body {
+  padding: 2rem 2.25rem;
+}
+
+/* ===================================================================
+   Responsive Breakpoints
+   =================================================================== */
+@media (max-width: 991.98px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .admin-sidebar.show {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
+
+  .btn-sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1030;
+    display: none;
+  }
+
+  .sidebar-backdrop.show {
+    display: block;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .content-container {
+    padding: 1rem;
+  }
+
+  .admin-header {
+    padding: 0 1rem;
+  }
+
+  .admin-page-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  .welcome-banner {
+    padding: 1.25rem 1.35rem;
+  }
+
+  .welcome-banner h2 {
+    font-size: 1.3rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+}

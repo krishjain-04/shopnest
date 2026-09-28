@@ -1,0 +1,105 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Manage Subcategories - ShopNest Admin{% endblock %}
+
+{% block nav_subcategories %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <span>Subcategories</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-network-wired text-info"></i> Subcategories
+            </h1>
+            <p class="page-subtitle">Manage second-level category classifications linked to parent categories</p>
+        </div>
+        <div>
+            <a href="{% url 'add_subcategory' %}" class="btn btn-primary btn-sm px-3 py-2 shadow-sm fw-semibold d-flex align-items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Add Subcategory
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Table Card -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="d-flex align-items-center gap-2">
+                <h3 class="admin-card-title">
+                    <i class="fa-solid fa-list text-muted"></i> All Subcategories
+                </h3>
+                <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill small">
+                    {{ subcategories|length }} Total
+                </span>
+            </div>
+            <div>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-light btn-sm border text-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">ID</th>
+                        <th>Subcategory Name</th>
+                        <th>Parent Category</th>
+                        <th>Slug</th>
+                        <th class="text-end" style="width: 140px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in subcategories %}
+                    <tr>
+                        <td class="text-muted fw-semibold">#{{ sub.id }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="fulfillment-icon pending" style="width: 32px; height: 32px; font-size: 0.85rem; background: #e0f2fe; color: #0284c7;">
+                                    <i class="fa-solid fa-diagram-next"></i>
+                                </div>
+                                <span class="fw-bold text-dark">{{ sub.name }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border px-2 py-1">
+                                <i class="fa-solid fa-folder me-1 text-primary"></i>{{ sub.category.name }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-secondary border font-monospace px-2 py-1">
+                                {{ sub.slug }}
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'delete_subcategory' sub.id %}" class="btn btn-outline-danger btn-sm px-2 py-1" onclick="return confirm('Are you sure you want to delete subcategory \'{{ sub.name|escapejs }}\'?');" title="Delete Subcategory">
+                                <i class="fa-solid fa-trash-can me-1"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-network-wired"></i>
+                                <h6>No Subcategories Found</h6>
+                                <p>Organize your products more granularly by creating child subcategories.</p>
+                                <a href="{% url 'add_subcategory' %}" class="btn btn-primary btn-sm px-3">
+                                    <i class="fa-solid fa-plus me-1"></i> Add Subcategory
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

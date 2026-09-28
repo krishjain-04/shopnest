@@ -1,0 +1,285 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Edit Product: {{ product.name }} - ShopNest Admin{% endblock %}
+
+{% block nav_products %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <a href="{% url 'admin_products' %}">Products</a>
+    <span class="text-secondary">/</span>
+    <span>Edit Product</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-pen-to-square text-primary"></i> Edit Product
+            </h1>
+            <p class="page-subtitle">Modifying catalog details for <span class="fw-bold text-dark">#{{ product.id }} {{ product.name }}</span></p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{% url 'admin_products' %}" class="btn btn-light btn-sm border text-secondary d-flex align-items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Back to Products
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Edit Product Form -->
+    <form action="{% url 'edit_product' product.id %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="row g-4">
+            <!-- Left Column: Product Details & Media (8 cols) -->
+            <div class="col-lg-8">
+                <!-- General Info Card -->
+                <div class="admin-card mb-4">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-info-circle text-primary"></i> General Information
+                        </h3>
+                        <span class="badge bg-light text-secondary border font-monospace small">
+                            Slug: {{ product.slug }}
+                        </span>
+                    </div>
+                    <div class="admin-card-body">
+                        <!-- Name -->
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="productName">
+                                Product Title <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="name" id="productName" value="{{ product.name }}" class="form-control form-control-custom" required>
+                        </div>
+
+                        <!-- Short Description -->
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="shortDesc">
+                                Short Summary Description <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="short_description" id="shortDesc" value="{{ product.short_description }}" class="form-control form-control-custom" required>
+                        </div>
+
+                        <!-- Full Description -->
+                        <div class="mb-0">
+                            <label class="form-label-custom" for="fullDesc">
+                                Full Product Description <span class="text-danger">*</span>
+                            </label>
+                            <textarea name="description" id="fullDesc" rows="6" class="form-control form-control-custom" required>{{ product.description }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pricing & Inventory Card -->
+                <div class="admin-card mb-4">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-indian-rupee-sign text-success"></i> Pricing & Inventory
+                        </h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="row g-3">
+                            <!-- Regular Price -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label-custom" for="prodPrice">
+                                    Original Price (₹) <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">₹</span>
+                                    <input type="number" step="0.01" name="price" id="prodPrice" value="{{ product.price }}" class="form-control form-control-custom" required>
+                                </div>
+                            </div>
+
+                            <!-- Discount Price -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label-custom" for="prodDiscountPrice">
+                                    Discount / Sale Price (₹) <span class="text-muted fw-normal">(Optional)</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">₹</span>
+                                    <input type="number" step="0.01" name="discount_price" id="prodDiscountPrice" value="{{ product.discount_price|default:'' }}" class="form-control form-control-custom">
+                                </div>
+                            </div>
+
+                            <!-- Stock -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label-custom" for="prodStock">
+                                    Stock Quantity <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" name="stock" id="prodStock" value="{{ product.stock }}" class="form-control form-control-custom" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Cover Image Card -->
+                <div class="admin-card mb-4">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-image text-purple" style="color: #8b5cf6;"></i> Main Cover Image
+                        </h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="d-flex flex-column flex-sm-row align-items-start gap-4">
+                            {% if product.main_image %}
+                                <div>
+                                    <span class="form-label-custom mb-2">Current Cover:</span>
+                                    <div class="image-preview-wrapper shadow-xs">
+                                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}" style="width: 130px; height: 130px; object-fit: cover;">
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="flex-grow-1 w-100">
+                                <span class="form-label-custom mb-2">Replace Cover Image:</span>
+                                <div class="file-upload-box">
+                                    <i class="fa-solid fa-cloud-arrow-up text-primary fs-3 mb-1 d-block"></i>
+                                    <span class="fw-semibold text-dark small d-block">Choose new cover photo</span>
+                                    <small class="text-muted">Leave empty to keep existing image</small>
+                                    <input type="file" name="main_image" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extra Gallery Photos Manager Card -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="d-flex align-items-center gap-2">
+                            <h3 class="admin-card-title">
+                                <i class="fa-solid fa-images text-info"></i> Product Photo Gallery
+                            </h3>
+                            <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill small">
+                                {{ product.images.all|length }} Photos
+                            </span>
+                        </div>
+                    </div>
+                    <div class="admin-card-body">
+                        <!-- Existing Gallery Grid -->
+                        <span class="form-label-custom mb-2">Uploaded Gallery Photos:</span>
+                        <div class="gallery-grid mb-4">
+                            {% for extra in product.images.all %}
+                                <div class="gallery-card">
+                                    <img src="{{ extra.image.url }}" alt="Gallery Image #{{ extra.id }}">
+                                    <a href="{% url 'delete_product_image' extra.id %}" class="btn btn-outline-danger gallery-delete-btn" onclick="return confirm('Delete this gallery photo?');">
+                                        <i class="fa-solid fa-trash-can"></i> Delete
+                                    </a>
+                                </div>
+                            {% empty %}
+                                <div class="text-muted small py-2">No extra gallery images uploaded yet.</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Upload Multiple Extra Photos -->
+                        <span class="form-label-custom mb-2">Upload Additional Photos (Select multiple):</span>
+                        <div class="file-upload-box">
+                            <i class="fa-solid fa-photo-film text-info fs-3 mb-1 d-block"></i>
+                            <span class="fw-semibold text-dark small d-block">Click or drag & drop extra photos</span>
+                            <small class="text-muted">Hold Ctrl/Cmd to select multiple image files</small>
+                            <input type="file" name="extra_images" multiple accept="image/*">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Taxonomy & Publishing (4 cols) -->
+            <div class="col-lg-4">
+                <!-- Taxonomy Selection Card -->
+                <div class="admin-card mb-4">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-sitemap text-primary"></i> Category Hierarchy
+                        </h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <!-- Primary Category -->
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="catSelect">
+                                Main Category <span class="text-danger">*</span>
+                            </label>
+                            <select name="category" id="catSelect" class="form-select form-select-custom" required>
+                                {% for cat in categories %}
+                                    <option value="{{ cat.id }}" {% if cat.id == product.category.id %}selected{% endif %}>
+                                        {{ cat.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Subcategory -->
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="subCatSelect">
+                                Subcategory <span class="text-danger">*</span>
+                            </label>
+                            <select name="subcategory" id="subCatSelect" class="form-select form-select-custom" required>
+                                {% for sub in subcategories %}
+                                    <option value="{{ sub.id }}" {% if sub.id == product.subcategory.id %}selected{% endif %}>
+                                        {{ sub.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Third Category -->
+                        <div class="mb-0">
+                            <label class="form-label-custom" for="thirdCatSelect">
+                                Third Category <span class="text-danger">*</span>
+                            </label>
+                            <select name="thirdcategory" id="thirdCatSelect" class="form-select form-select-custom" required>
+                                {% for tc in thirdcategories %}
+                                    <option value="{{ tc.id }}" {% if tc.id == product.thirdcategory.id %}selected{% endif %}>
+                                        {{ tc.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brand Card -->
+                <div class="admin-card mb-4">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-certificate text-danger"></i> Brand Association
+                        </h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <label class="form-label-custom" for="brandSelect">
+                            Select Brand <span class="text-danger">*</span>
+                        </label>
+                        <select name="brand" id="brandSelect" class="form-select form-select-custom" required>
+                            {% for b in brands %}
+                                <option value="{{ b.id }}" {% if b.id == product.brand.id %}selected{% endif %}>
+                                    {{ b.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Save Action Card -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-floppy-disk text-success"></i> Save Changes
+                        </h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary py-2 fw-semibold shadow-sm">
+                                <i class="fa-solid fa-check me-1"></i> Update Product & Photos
+                            </button>
+                            <a href="{% url 'admin_products' %}" class="btn btn-light border py-2 text-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

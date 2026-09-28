@@ -1,0 +1,238 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Customer Profile: {{ customer.username }} - ShopNest Admin{% endblock %}
+
+{% block nav_users %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <a href="{% url 'admin_users' %}">Customers</a>
+    <span class="text-secondary">/</span>
+    <span>{{ customer.username }}</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-light text-dark border font-monospace px-2 py-1">
+                    User #{{ customer.id }}
+                </span>
+                {% if customer.is_active %}
+                    <span class="badge-pill-custom badge-success-soft">
+                        <i class="fa-solid fa-circle-check"></i> Active Account
+                    </span>
+                {% else %}
+                    <span class="badge-pill-custom badge-danger-soft">
+                        <i class="fa-solid fa-ban"></i> Account Blocked
+                    </span>
+                {% endif %}
+            </div>
+            <h1 class="page-title mb-0">Customer Details</h1>
+            <p class="page-subtitle">
+                Joined on {{ customer.date_joined|date:"d M Y, h:i A" }}
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'admin_users' %}" class="btn btn-light btn-sm border text-secondary d-flex align-items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Back to Customers
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column: Customer Profile & Status Toggle (4 cols) -->
+        <div class="col-lg-4">
+            <!-- Profile Identity Card -->
+            <div class="admin-card mb-4 text-center">
+                <div class="admin-card-body p-4">
+                    <div class="mx-auto mb-3" style="width: 88px; height: 88px;">
+                        {% if profile and profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="{{ customer.username }}" class="rounded-circle border shadow-xs" style="width: 88px; height: 88px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-primary-subtle text-primary border d-flex align-items-center justify-content-center h-100 fs-2">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <h4 class="fw-bold text-dark mb-1">
+                        {{ customer.get_full_name|default:customer.username }}
+                    </h4>
+                    <span class="badge bg-light text-secondary border font-monospace mb-3">
+                        @{{ customer.username }}
+                    </span>
+
+                    <div class="text-start border-top pt-3">
+                        <div class="mb-2">
+                            <span class="text-muted small d-block">Email Address:</span>
+                            <span class="fw-semibold text-dark">{{ customer.email|default:"Not Provided" }}</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted small d-block">Phone Number:</span>
+                            <span class="fw-semibold text-dark">{{ profile.phone|default:"Not Provided" }}</span>
+                        </div>
+                        <div class="mb-0">
+                            <span class="text-muted small d-block">Registration Date:</span>
+                            <span class="text-secondary small">{{ customer.date_joined|date:"d M Y, h:i A" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Security & Status Toggle Card -->
+            <div class="admin-card mb-4">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">
+                        <i class="fa-solid fa-shield-halved text-warning"></i> Account Status Control
+                    </h3>
+                </div>
+                <div class="admin-card-body">
+                    <p class="text-muted small mb-3">
+                        {% if customer.is_active %}
+                            This customer currently has full access to the storefront. You can restrict their account by blocking them.
+                        {% else %}
+                            This customer is currently blocked from signing in. You can restore access by unblocking them.
+                        {% endif %}
+                    </p>
+
+                    <form action="{% url 'toggle_user_status' customer.id %}" method="POST">
+                        {% csrf_token %}
+                        {% if customer.is_active %}
+                            <button type="submit" class="btn btn-outline-danger w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2" onclick="return confirm('Are you sure you want to block customer \'{{ customer.username|escapejs }}\'?');">
+                                <i class="fa-solid fa-ban"></i> Block Customer
+                            </button>
+                        {% else %}
+                            <button type="submit" class="btn btn-success w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                                <i class="fa-solid fa-circle-check"></i> Unblock Customer
+                            </button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+            <!-- Profile Address Card -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">
+                        <i class="fa-solid fa-location-dot text-danger"></i> Saved Profile Address
+                    </h3>
+                </div>
+                <div class="admin-card-body">
+                    {% if profile and profile.address or profile and profile.city %}
+                        <div class="mb-2">
+                            <span class="text-muted small d-block">Address:</span>
+                            <span class="text-dark">{{ profile.address|default:"N/A" }}</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted small d-block">City & State:</span>
+                            <span class="text-dark">{{ profile.city|default:"" }}, {{ profile.state|default:"" }}</span>
+                        </div>
+                        <div class="mb-0">
+                            <span class="text-muted small d-block">Country & Pincode:</span>
+                            <span class="text-dark">{{ profile.country|default:"" }} - {{ profile.pincode|default:"" }}</span>
+                        </div>
+                    {% else %}
+                        <div class="text-muted small">No profile address saved for this customer.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Orders History Table (8 cols) -->
+        <div class="col-lg-8">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <div class="d-flex align-items-center gap-2">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-cart-shopping text-primary"></i> Order History
+                        </h3>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill small">
+                            {{ total_orders_count }} Lifetime Orders
+                        </span>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table admin-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Total Amount</th>
+                                <th>Fulfillment Status</th>
+                                <th>Placed Date</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ord in orders %}
+                            <tr>
+                                <!-- Order ID -->
+                                <td>
+                                    <span class="badge bg-light text-dark border font-monospace px-2 py-1">
+                                        #{{ ord.order_id|default:ord.id }}
+                                    </span>
+                                </td>
+
+                                <!-- Amount -->
+                                <td>
+                                    <span class="fw-bold text-dark">₹{{ ord.total_amount }}</span>
+                                </td>
+
+                                <!-- Status -->
+                                <td>
+                                    {% if ord.status == 'Delivered' %}
+                                        <span class="badge-pill-custom badge-success-soft">
+                                            <i class="fa-solid fa-circle-check"></i> Delivered
+                                        </span>
+                                    {% elif ord.status == 'Shipped' %}
+                                        <span class="badge-pill-custom badge-purple-soft">
+                                            <i class="fa-solid fa-truck-fast"></i> Shipped
+                                        </span>
+                                    {% elif ord.status == 'Processing' %}
+                                        <span class="badge-pill-custom badge-info-soft">
+                                            <i class="fa-solid fa-gear fa-spin"></i> Processing
+                                        </span>
+                                    {% elif ord.status == 'Cancelled' %}
+                                        <span class="badge-pill-custom badge-danger-soft">
+                                            <i class="fa-solid fa-circle-xmark"></i> Cancelled
+                                        </span>
+                                    {% else %}
+                                        <span class="badge-pill-custom badge-warning-soft">
+                                            <i class="fa-solid fa-hourglass-half"></i> {{ ord.status }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Placed Date -->
+                                <td class="text-muted small">
+                                    <i class="fa-regular fa-calendar me-1"></i>{{ ord.created_at|date:"d M Y" }}
+                                </td>
+
+                                <!-- Action Link -->
+                                <td class="text-end">
+                                    <a href="{% url 'admin_order_detail' ord.id %}" class="btn btn-light btn-sm border px-2 py-1 text-primary" title="View Order Details">
+                                        <i class="fa-solid fa-eye me-1"></i> View Order
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <i class="fa-solid fa-bag-shopping"></i>
+                                        <h6>No Orders Yet</h6>
+                                        <p>This customer has not placed any orders yet.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

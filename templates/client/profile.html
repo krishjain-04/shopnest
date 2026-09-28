@@ -1,0 +1,100 @@
+{% extends "client/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="bg-primary py-4 text-center position-relative">
+                    <h4 class="text-white mb-0">User Profile</h4>
+                </div>
+                <div class="card-body p-4 p-md-5 text-center">
+                    <div class="profile-avatar-wrapper mb-3">
+                        {% if profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="{{ profile.user.username }}" class="profile-avatar rounded-circle border" style="width: 120px; height: 120px; object-fit: cover;">
+                        {% else %}
+                            <div class="profile-avatar bg-light d-flex align-items-center justify-content-center border rounded-circle mx-auto" style="width: 120px; height: 120px;">
+                                <i class="fa-regular fa-user fs-1 text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <h3 class="fw-bold mb-1">
+                        {% if profile.user.first_name %}
+                            {{ profile.user.first_name }} {{ profile.user.last_name }}
+                        {% else %}
+                            {{ profile.user.username }}
+                        {% endif %}
+                    </h3>
+                    <p class="text-muted small mb-4">@{{ profile.user.username }} • Member since {{ profile.created_at|date:"F Y" }}</p>
+
+                    <div class="row g-3 text-start mt-2">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <span class="info-label d-block text-muted small">Email</span>
+                                <span class="fw-medium text-dark">{{ profile.user.email|default:"N/A" }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <span class="info-label d-block text-muted small">Phone</span>
+                                <span class="fw-medium text-dark">{{ profile.phone|default:"N/A" }}</span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="p-3 bg-light rounded-3">
+                                <span class="info-label d-block text-muted small">Address</span>
+                                <span class="fw-medium text-dark">{{ profile.address|default:"N/A" }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="p-3 bg-light rounded-3">
+                                <span class="info-label d-block text-muted small">City</span>
+                                <span class="fw-medium text-dark">{{ profile.city|default:"N/A" }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="p-3 bg-light rounded-3">
+                                <span class="info-label d-block text-muted small">State</span>
+                                <span class="fw-medium text-dark">{{ profile.state|default:"N/A" }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="p-3 bg-light rounded-3">
+                                <span class="info-label d-block text-muted small">Country</span>
+                                <span class="fw-medium text-dark">{{ profile.country|default:"N/A" }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="p-3 bg-light rounded-3">
+                                <span class="info-label d-block text-muted small">Pincode</span>
+                                <span class="fw-medium text-dark">{{ profile.pincode|default:"N/A" }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a href="{% url 'edit_profile' %}" class="btn btn-primary px-4 fw-semibold"><i class="fa-solid fa-pen-to-square me-2"></i>Edit Profile</a>
+                        <a href="{% url 'change_password' %}" class="btn btn-outline-secondary px-4 fw-semibold"><i class="fa-solid fa-key me-2"></i>Change Password</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

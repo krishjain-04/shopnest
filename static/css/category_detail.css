@@ -1,0 +1,40 @@
+.category-detail-wrapper {
+  background-color: #f8fafc;
+  min-height: 85vh;
+}
+
+.category-header-banner {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-left: 6px solid #2563eb;
+}
+
+.subcat-card {
+  border-radius: 14px;
+  transition: all 0.3s ease;
+  background: #ffffff;
+}
+
+.subcat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+.subcat-icon-wrapper {
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  background-color: #f1f5f9;
+  color: #2563eb;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.subcat-card:hover .subcat-icon-wrapper {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.subcat-badge {
+  font-size: 0.72rem;
+  border-radius: 6px;
+}

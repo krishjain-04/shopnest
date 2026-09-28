@@ -1,0 +1,476 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Overview - ShopNest Admin{% endblock %}
+
+{% block nav_dashboard %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <span>Dashboard Overview</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Welcome Greeting Banner -->
+    <section class="welcome-banner">
+        <div class="row align-items-center g-3">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="banner-badge">
+                        <i class="fa-solid fa-shield-halved text-warning me-1"></i> Control Center
+                    </span>
+                </div>
+                <h2>Welcome back, {{ admin_name|default:"Admin" }} 👋</h2>
+                <p>Here is an overview of your store's performance, customer demand, and order pipeline.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex flex-wrap justify-content-lg-end gap-2">
+                    <a href="{% url 'add_product' %}" class="btn btn-primary btn-sm px-3 py-2 shadow-sm fw-semibold">
+                        <i class="fa-solid fa-plus me-1"></i> Add Product
+                    </a>
+                    <a href="{% url 'admin_orders' %}" class="btn btn-outline-light btn-sm px-3 py-2 shadow-sm fw-semibold">
+                        <i class="fa-solid fa-list-check me-1"></i> Manage Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Metrics Cards Row -->
+    <section class="row g-3 mb-4">
+        <!-- Total Revenue -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-title">Total Revenue</div>
+                            <div class="stat-value text-dark">₹{{ total_revenue }}</div>
+                        </div>
+                        <div class="stat-icon revenue">
+                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-footer">
+                    <span class="badge-pill-custom badge-success-soft">
+                        <i class="fa-solid fa-circle-check"></i> Delivered Sales
+                    </span>
+                    <span class="text-muted">Settled income</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Orders -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-title">Total Orders</div>
+                            <div class="stat-value text-dark">{{ total_orders }}</div>
+                        </div>
+                        <div class="stat-icon orders">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-footer">
+                    <span class="badge-pill-custom badge-primary-soft">
+                        <i class="fa-solid fa-box-archive"></i> Lifetime
+                    </span>
+                    <span class="text-muted">All placement logs</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Orders -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-title">Pending Orders</div>
+                            <div class="stat-value text-dark">{{ pending_orders }}</div>
+                        </div>
+                        <div class="stat-icon pending">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-footer">
+                    <span class="badge-pill-custom badge-warning-soft">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Action Required
+                    </span>
+                    <a href="{% url 'admin_orders' %}" class="text-decoration-none text-warning fw-semibold">Review →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Catalog Products -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-title">Total Products</div>
+                            <div class="stat-value text-dark">{{ total_products }}</div>
+                        </div>
+                        <div class="stat-icon products">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-footer">
+                    <span class="badge-pill-custom badge-info-soft">
+                        <i class="fa-solid fa-tags"></i> Active Catalog
+                    </span>
+                    <a href="{% url 'admin_products' %}" class="text-decoration-none text-primary fw-semibold">Manage →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Breakdowns Row -->
+    <section class="row g-3 mb-4">
+        <!-- Order Fulfillment Status Breakdown -->
+        <div class="col-lg-6">
+            <div class="admin-card h-100 mb-0">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">
+                        <i class="fa-solid fa-truck-fast text-primary"></i> Order Status Breakdown
+                    </h3>
+                    <a href="{% url 'admin_orders' %}" class="btn btn-outline-secondary btn-sm py-1 px-2 small">
+                        View All
+                    </a>
+                </div>
+                <div class="admin-card-body">
+                    <!-- Pending -->
+                    <div class="fulfillment-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="fulfillment-icon pending">
+                                <i class="fa-solid fa-hourglass-half"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-dark small">Pending Orders</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Awaiting processing & dispatch</div>
+                            </div>
+                        </div>
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">{{ pending_orders }}</span>
+                    </div>
+
+                    <!-- Delivered -->
+                    <div class="fulfillment-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="fulfillment-icon delivered">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-dark small">Delivered Orders</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Successfully completed fulfillments</div>
+                            </div>
+                        </div>
+                        <span class="badge bg-success px-3 py-2 rounded-pill fw-bold">{{ delivered_orders }}</span>
+                    </div>
+
+                    <!-- Cancelled -->
+                    <div class="fulfillment-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="fulfillment-icon cancelled">
+                                <i class="fa-solid fa-ban"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-dark small">Cancelled Orders</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Voided or aborted placements</div>
+                            </div>
+                        </div>
+                        <span class="badge bg-danger px-3 py-2 rounded-pill fw-bold">{{ cancelled_orders }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Engagement & Catalog Distribution -->
+        <div class="col-lg-6">
+            <div class="admin-card h-100 mb-0">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">
+                        <i class="fa-solid fa-chart-line text-primary"></i> Store Engagement & Structure
+                    </h3>
+                    <span class="badge bg-light text-secondary border small">Live Signals</span>
+                </div>
+                <div class="admin-card-body">
+                    <!-- Items in Carts -->
+                    <div class="fulfillment-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="fulfillment-icon cart">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-dark small">Items in Active Carts</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Current active shopping bag items</div>
+                            </div>
+                        </div>
+                        <span class="badge bg-info text-dark px-3 py-2 rounded-pill fw-bold">{{ total_cart_items }}</span>
+                    </div>
+
+                    <!-- Items in Wishlists -->
+                    <div class="fulfillment-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="fulfillment-icon wishlist">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-dark small">Items in Wishlists</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">High-intent customer bookmarks</div>
+                            </div>
+                        </div>
+                        <span class="badge bg-danger px-3 py-2 rounded-pill fw-bold">{{ total_wishlist_items }}</span>
+                    </div>
+
+                    <!-- Total Categories -->
+                    <div class="fulfillment-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="fulfillment-icon categories">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-dark small">Main Store Categories</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Parent organizational categories</div>
+                            </div>
+                        </div>
+                        <span class="badge bg-secondary px-3 py-2 rounded-pill fw-bold">{{ total_categories }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Wishlisted / High Demand Products Table -->
+    <section class="admin-card mb-4">
+        <div class="admin-card-header">
+            <div class="d-flex align-items-center gap-2">
+                <h3 class="admin-card-title mb-0">
+                    <i class="fa-solid fa-fire text-danger"></i> Top 5 High-Demand Products
+                </h3>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill small ms-1">
+                    Most Wishlisted
+                </span>
+            </div>
+            <a href="{% url 'admin_products' %}" class="btn btn-outline-primary btn-sm py-1 px-3">
+                Manage Catalog <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock Status</th>
+                        <th>Wishlist Interest</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prod in top_wishlisted %}
+                    <tr>
+                        <!-- Product details -->
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                {% if prod.main_image %}
+                                    <img src="{{ prod.main_image.url }}" alt="{{ prod.name }}" class="product-thumb">
+                                {% else %}
+                                    <div class="product-thumb-placeholder">
+                                        <i class="fa-solid fa-image"></i>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <a href="{% url 'edit_product' prod.id %}" class="fw-bold text-dark text-decoration-none">
+                                        {{ prod.name }}
+                                    </a>
+                                    {% if prod.short_description %}
+                                        <div class="text-muted text-truncate" style="max-width: 260px; font-size: 0.76rem;">
+                                            {{ prod.short_description }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Category -->
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                <i class="fa-solid fa-tag me-1 text-muted"></i>{{ prod.category.name|default:"Unassigned" }}
+                            </span>
+                        </td>
+
+                        <!-- Price -->
+                        <td>
+                            <div class="fw-bold text-dark">₹{{ prod.price }}</div>
+                            {% if prod.discount_price and prod.discount_price < prod.price %}
+                                <small class="text-success fw-semibold" style="font-size: 0.75rem;">
+                                    Sale: ₹{{ prod.discount_price }}
+                                </small>
+                            {% endif %}
+                        </td>
+
+                        <!-- Stock Status -->
+                        <td>
+                            {% if prod.stock > 0 %}
+                                <span class="badge-pill-custom badge-success-soft">
+                                    <i class="fa-solid fa-circle-check"></i> {{ prod.stock }} In Stock
+                                </span>
+                            {% else %}
+                                <span class="badge-pill-custom badge-danger-soft">
+                                    <i class="fa-solid fa-circle-xmark"></i> Out of Stock
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Wishlist Count -->
+                        <td>
+                            <span class="badge-pill-custom badge-danger-soft fw-bold">
+                                <i class="fa-solid fa-heart text-danger"></i> {{ prod.wish_count }} Users
+                            </span>
+                        </td>
+
+                        <!-- Action -->
+                        <td class="text-end">
+                            <a href="{% url 'edit_product' prod.id %}" class="btn btn-light btn-sm border px-2 py-1 text-secondary" title="Edit Product">
+                                <i class="fa-solid fa-pen-to-square me-1"></i> Edit
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-heart-crack"></i>
+                                <h6 class="text-dark fw-bold mb-1">No Wishlisted Products Yet</h6>
+                                <p>When customers save products to their wishlist, they will appear here as high-demand items.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Quick Administration Management Hub -->
+    <section class="mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h4 class="h6 fw-bold text-dark text-uppercase tracking-wider mb-0" style="letter-spacing: 0.05em;">
+                <i class="fa-solid fa-bolt text-warning me-2"></i>Quick Management Shortcuts
+            </h4>
+        </div>
+
+        <div class="row g-3">
+            <!-- Products -->
+            <div class="col-6 col-md-4 col-xl-3">
+                <a href="{% url 'admin_products' %}" class="quick-action-tile">
+                    <div class="quick-action-icon bg-primary-subtle text-primary">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold small text-dark">Manage Products</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Catalog & pricing</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Orders -->
+            <div class="col-6 col-md-4 col-xl-3">
+                <a href="{% url 'admin_orders' %}" class="quick-action-tile">
+                    <div class="quick-action-icon bg-warning-subtle text-warning">
+                        <i class="fa-solid fa-truck-ramp-box"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold small text-dark">Orders & Shipping</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Status & fulfillment</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Categories -->
+            <div class="col-6 col-md-4 col-xl-3">
+                <a href="{% url 'admin_categories' %}" class="quick-action-tile">
+                    <div class="quick-action-icon bg-success-subtle text-success">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold small text-dark">Categories</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Structure & groups</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Subcategories -->
+            <div class="col-6 col-md-4 col-xl-3">
+                <a href="{% url 'admin_subcategories' %}" class="quick-action-tile">
+                    <div class="quick-action-icon bg-info-subtle text-info">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold small text-dark">Subcategories</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Sub-level branches</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Third Categories -->
+            <div class="col-6 col-md-4 col-xl-3">
+                <a href="{% url 'admin_thirdcategories' %}" class="quick-action-tile">
+                    <div class="quick-action-icon" style="background-color: #f3e8ff; color: #7e22ce;">
+                        <i class="fa-solid fa-sitemap"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold small text-dark">3rd Categories</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Deep tree hierarchy</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Brands -->
+            <div class="col-6 col-md-4 col-xl-3">
+                <a href="{% url 'admin_brands' %}" class="quick-action-tile">
+                    <div class="quick-action-icon bg-danger-subtle text-danger">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold small text-dark">Brands</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Logos & manufacturers</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Customers -->
+            <div class="col-6 col-md-4 col-xl-3">
+                <a href="{% url 'admin_users' %}" class="quick-action-tile">
+                    <div class="quick-action-icon bg-secondary-subtle text-secondary">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold small text-dark">Customer Accounts</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Active & blocked users</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Add New Product -->
+            <div class="col-6 col-md-4 col-xl-3">
+                <a href="{% url 'add_product' %}" class="quick-action-tile bg-light border-primary-subtle">
+                    <div class="quick-action-icon bg-primary text-white">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold small text-primary">+ New Product</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Create catalog entry</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

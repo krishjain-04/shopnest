@@ -1,0 +1,104 @@
+:root {
+  --primary-accent: #2563eb;
+  --primary-hover: #1d4ed8;
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --card-shadow-hover: 0 12px 30px rgba(37, 99, 235, 0.15);
+}
+
+.all-categories-wrapper {
+  background-color: #f8fafc;
+  min-height: 85vh;
+}
+
+.title-underline {
+  width: 60px;
+  height: 4px;
+  background: var(--primary-accent);
+  border-radius: 2px;
+}
+
+/* Category Card */
+.cat-card {
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.cat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-shadow-hover) !important;
+}
+
+.cat-icon-box {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #eff6ff;
+  color: var(--primary-accent);
+  transition: all 0.3s ease;
+}
+
+.cat-icon {
+  font-size: 1.8rem;
+}
+
+.cat-card:hover .cat-icon-box {
+  background-color: var(--primary-accent);
+  color: #ffffff;
+  transform: scale(1.1) rotate(3deg);
+}
+
+.cat-count-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.transition-icon {
+  transition: transform 0.2s ease;
+}
+
+.cat-card:hover .transition-icon {
+  transform: translateX(4px);
+}
+
+/* Brand Card */
+.brand-card {
+  border-radius: 12px;
+  transition: all 0.25s ease;
+  background: #ffffff;
+}
+
+.brand-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08) !important;
+}
+
+.brand-avatar-box {
+  height: 60px;
+  width: 100%;
+}
+
+.brand-logo-img {
+  max-height: 50px;
+  max-width: 80%;
+  object-fit: contain;
+}
+
+.brand-letter-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fs-7 {
+  font-size: 0.75rem;
+}

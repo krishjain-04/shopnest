@@ -1,0 +1,523 @@
+/* =========================================================
+   SHOPNEST - PRODUCT DETAIL PAGE
+   Product Gallery + Normal Product Detail UI
+========================================================= */
+
+.product-detail-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.product-main-card {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+/* =========================================================
+   PRODUCT GALLERY
+========================================================= */
+
+.product-gallery {
+    width: 100%;
+}
+
+/* =========================================================
+   MAIN PRODUCT IMAGE
+========================================================= */
+
+.main-product-image {
+    width: 100%;
+    height: 500px;
+    background: #f8f9fa;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid #eeeeee;
+}
+
+/*
+   IMPORTANT:
+   Main image ko full container fill nahi karna.
+   Image apne natural ratio mein normal size par rahegi.
+*/
+
+.main-product-image #mainProductImage {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 88%;
+    max-height: 88%;
+    object-fit: contain;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+/* No image state */
+
+.main-product-image > div {
+    min-height: 300px;
+}
+
+
+/* =========================================================
+   DISCOUNT BADGE
+========================================================= */
+
+.main-product-image .badge {
+    z-index: 5;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 12px;
+    border-radius: 7px;
+}
+
+
+/* =========================================================
+   WISHLIST BUTTON
+========================================================= */
+
+.main-product-image .wishlist-btn {
+    z-index: 10;
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+    border: 1px solid #e5e5e5;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.main-product-image .wishlist-btn:hover {
+    transform: scale(1.06);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12) !important;
+}
+
+
+/* =========================================================
+   THUMBNAILS
+   FLIPKART STYLE
+========================================================= */
+
+.product-thumbnails {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    /*
+       IMPORTANT:
+       Never allow thumbnails to wrap into another row.
+    */
+    flex-wrap: nowrap;
+
+    /*
+       If many images exist on mobile,
+       user can horizontally scroll.
+    */
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding: 4px 2px 8px;
+
+    scrollbar-width: thin;
+    scrollbar-color: #cfcfcf transparent;
+}
+
+/* Chrome / Edge scrollbar */
+
+.product-thumbnails::-webkit-scrollbar {
+    height: 5px;
+}
+
+.product-thumbnails::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.product-thumbnails::-webkit-scrollbar-thumb {
+    background: #d0d0d0;
+    border-radius: 20px;
+}
+
+
+/* =========================================================
+   THUMBNAIL BUTTON
+   FIXED 70 x 70
+========================================================= */
+
+.product-thumbnails .product-thumb {
+    /*
+       VERY IMPORTANT
+       flex: 0 0 auto prevents Bootstrap/flex
+       from stretching the thumbnail.
+    */
+    flex: 0 0 70px;
+
+    width: 70px !important;
+    min-width: 70px !important;
+    max-width: 70px !important;
+
+    height: 70px !important;
+    min-height: 70px !important;
+    max-height: 70px !important;
+
+    padding: 3px !important;
+
+    background: #ffffff;
+
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+/* Thumbnail hover */
+
+.product-thumbnails .product-thumb:hover {
+    border-color: #212529;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   THUMBNAIL IMAGE
+   ALSO FIXED INSIDE THE 70x70 BOX
+========================================================= */
+
+.product-thumbnails .product-thumb img {
+    display: block;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    max-width: none !important;
+    max-height: none !important;
+
+    object-fit: contain;
+
+    border-radius: 5px;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   ACTIVE THUMBNAIL
+========================================================= */
+
+.product-thumbnails .product-thumb.active {
+    border: 2px solid #212529 !important;
+
+    box-shadow:
+        0 0 0 1px #212529,
+        0 3px 10px rgba(0, 0, 0, 0.10);
+}
+
+
+/* =========================================================
+   PRODUCT INFORMATION
+========================================================= */
+
+.product-info {
+    height: 100%;
+}
+
+.product-title {
+    font-size: clamp(1.5rem, 2.5vw, 2.15rem);
+    line-height: 1.25;
+    color: #212529;
+}
+
+.product-current-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111111;
+}
+
+
+/* =========================================================
+   QUANTITY BOX
+========================================================= */
+
+.quantity-box {
+    width: 112px !important;
+    max-width: 112px !important;
+    height: 38px;
+}
+
+.quantity-box .btn {
+    width: 34px;
+    min-width: 34px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 12px;
+}
+
+.quantity-box .form-control {
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 38px;
+
+    padding: 0;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    border-left: 0;
+    border-right: 0;
+
+    box-shadow: none;
+}
+
+.quantity-box .form-control:focus {
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   ADD TO CART / BUY NOW
+========================================================= */
+
+#addToCartBtn,
+#buyNowBtn {
+    min-height: 48px;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#addToCartBtn:hover,
+#buyNowBtn:hover {
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   TRUST INFORMATION
+========================================================= */
+
+.product-info .border-top {
+    border-color: #eeeeee !important;
+}
+
+
+/* =========================================================
+   PRODUCT DESCRIPTION
+========================================================= */
+
+.product-description {
+    line-height: 1.75;
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   REVIEW AVATAR
+========================================================= */
+
+.review-avatar {
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   RELATED PRODUCTS
+========================================================= */
+
+.related-product-card {
+    overflow: hidden;
+    border-radius: 12px;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.related-product-card:hover {
+    transform: translateY(-3px);
+}
+
+.related-product-image {
+    height: 230px;
+    background: #f8f9fa;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+.related-product-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    padding: 15px;
+
+    transition: transform 0.25s ease;
+}
+
+.related-product-card:hover .related-product-image img {
+    transform: scale(1.04);
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 991.98px) {
+
+    .main-product-image {
+        height: 440px;
+    }
+
+    .main-product-image #mainProductImage {
+        max-width: 86%;
+        max-height: 86%;
+    }
+
+    .product-title {
+        font-size: 1.7rem;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .product-detail-page .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .product-main-card .card-body {
+        padding: 16px !important;
+    }
+
+    /* Main image smaller on mobile */
+
+    .main-product-image {
+        height: 330px;
+        border-radius: 12px;
+    }
+
+    .main-product-image #mainProductImage {
+        max-width: 84%;
+        max-height: 84%;
+    }
+
+    /* Thumbnail remains EXACTLY 70x70 */
+
+    .product-thumbnails {
+        gap: 8px;
+        margin-top: 12px !important;
+        padding-bottom: 8px;
+    }
+
+    .product-thumbnails .product-thumb {
+        flex: 0 0 70px;
+
+        width: 70px !important;
+        min-width: 70px !important;
+        max-width: 70px !important;
+
+        height: 70px !important;
+        min-height: 70px !important;
+        max-height: 70px !important;
+    }
+
+    .product-title {
+        font-size: 1.45rem;
+    }
+
+    .product-current-price {
+        font-size: 1.65rem;
+    }
+
+    /* Quantity smaller */
+
+    .quantity-box {
+        width: 108px !important;
+        max-width: 108px !important;
+    }
+
+    .quantity-box .btn {
+        width: 32px;
+        min-width: 32px;
+    }
+
+    .quantity-box .form-control {
+        width: 44px !important;
+        min-width: 44px !important;
+    }
+
+    .related-product-image {
+        height: 190px;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .main-product-image {
+        height: 290px;
+    }
+
+    .product-thumbnails .product-thumb {
+        flex: 0 0 70px;
+
+        width: 70px !important;
+        min-width: 70px !important;
+
+        height: 70px !important;
+        min-height: 70px !important;
+    }
+
+}

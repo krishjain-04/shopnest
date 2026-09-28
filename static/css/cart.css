@@ -1,0 +1,71 @@
+/* Premium Ecommerce Cart Layout */
+.cart-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+}
+
+.cart-item-row {
+    transition: background-color 0.2s ease;
+}
+
+.cart-item-row:hover {
+    background-color: #f8f9fa;
+}
+
+.cart-img-wrapper {
+    width: 90px;
+    height: 90px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e9ecef;
+}
+
+.cart-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.qty-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px !important;
+}
+
+.qty-input {
+    width: 45px;
+    text-align: center;
+    font-weight: 600;
+    border: none;
+    background: transparent;
+}
+
+.order-summary-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+    background: #ffffff;
+    position: sticky;
+    top: 100px;
+}
+
+.empty-cart-icon {
+    width: 110px;
+    height: 110px;
+    background: rgba(13, 110, 253, 0.08);
+    color: #0d6efd;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

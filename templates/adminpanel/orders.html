@@ -1,0 +1,153 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Manage Orders - ShopNest Admin{% endblock %}
+
+{% block nav_orders %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <span>Orders</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-cart-shopping text-primary"></i> Customer Orders
+            </h1>
+            <p class="page-subtitle">Track, monitor, and update status for all customer order placements</p>
+        </div>
+        <div>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-light btn-sm border text-secondary d-flex align-items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard Overview
+            </a>
+        </div>
+    </div>
+
+    <!-- Orders Table Card -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="d-flex align-items-center gap-2">
+                <h3 class="admin-card-title">
+                    <i class="fa-solid fa-receipt text-muted"></i> All Orders Log
+                </h3>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill small">
+                    {{ orders|length }} Records
+                </span>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer / Recipient</th>
+                        <th>Total Amount</th>
+                        <th>Payment</th>
+                        <th>Order Status</th>
+                        <th>Placed Date</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <!-- Order ID -->
+                        <td>
+                            <span class="badge bg-light text-dark border font-monospace px-2 py-1">
+                                #{{ order.order_id|default:order.id }}
+                            </span>
+                        </td>
+
+                        <!-- Customer -->
+                        <td>
+                            <div class="fw-bold text-dark">{{ order.address.full_name }}</div>
+                            <small class="text-muted" style="font-size: 0.76rem;">
+                                <i class="fa-solid fa-phone me-1"></i>{{ order.address.phone }}
+                            </small>
+                        </td>
+
+                        <!-- Amount -->
+                        <td>
+                            <div class="fw-bold text-dark">₹{{ order.total_amount }}</div>
+                        </td>
+
+                        <!-- Payment -->
+                        <td>
+                            <div class="d-flex flex-column gap-1 align-items-start">
+                                <span class="badge bg-light text-secondary border small">
+                                    {{ order.payment_method }}
+                                </span>
+                                {% if order.payment_status == 'Paid' %}
+                                    <span class="badge-pill-custom badge-success-soft" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;">
+                                        <i class="fa-solid fa-check"></i> Paid
+                                    </span>
+                                {% elif order.payment_status == 'Failed' %}
+                                    <span class="badge-pill-custom badge-danger-soft" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;">
+                                        <i class="fa-solid fa-xmark"></i> Failed
+                                    </span>
+                                {% else %}
+                                    <span class="badge-pill-custom badge-warning-soft" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;">
+                                        <i class="fa-solid fa-clock"></i> {{ order.payment_status }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <!-- Order Status -->
+                        <td>
+                            {% if order.status == 'Delivered' %}
+                                <span class="badge-pill-custom badge-success-soft">
+                                    <i class="fa-solid fa-circle-check"></i> Delivered
+                                </span>
+                            {% elif order.status == 'Shipped' %}
+                                <span class="badge-pill-custom badge-purple-soft">
+                                    <i class="fa-solid fa-truck-fast"></i> Shipped
+                                </span>
+                            {% elif order.status == 'Processing' %}
+                                <span class="badge-pill-custom badge-info-soft">
+                                    <i class="fa-solid fa-gear fa-spin"></i> Processing
+                                </span>
+                            {% elif order.status == 'Cancelled' %}
+                                <span class="badge-pill-custom badge-danger-soft">
+                                    <i class="fa-solid fa-circle-xmark"></i> Cancelled
+                                </span>
+                            {% else %}
+                                <span class="badge-pill-custom badge-warning-soft">
+                                    <i class="fa-solid fa-hourglass-half"></i> {{ order.status }}
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Placed Date -->
+                        <td class="text-muted small">
+                            <i class="fa-regular fa-calendar me-1"></i>{{ order.created_at|date:"d M Y, h:i A" }}
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="text-end">
+                            <a href="{% url 'admin_order_detail' order.id %}" class="btn btn-primary btn-sm px-3 py-1 shadow-xs fw-semibold" title="View Order Details">
+                                <i class="fa-solid fa-eye me-1"></i> View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-receipt"></i>
+                                <h6>No Orders Found</h6>
+                                <p>When customers place orders on your store, they will be listed here.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

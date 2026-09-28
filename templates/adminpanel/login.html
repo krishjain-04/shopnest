@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal Login - ShopNest</title>
+
+    <!-- FontAwesome 6.5.1 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Dedicated Custom Admin Login Stylesheet -->
+    <link rel="stylesheet" href="{% static 'admincss/adminlogin.css' %}">
+</head>
+<body class="admin-login-page">
+
+    <!-- Ambient Background Glows -->
+    <div class="login-bg-glow glow-1"></div>
+    <div class="login-bg-glow glow-2"></div>
+    <div class="login-bg-glow glow-3"></div>
+
+    <!-- Main Centered Container -->
+    <div class="login-container">
+        <div class="login-glass-card">
+
+            <!-- Brand Header -->
+            <div class="login-brand-wrapper">
+                <div class="brand-emblem">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h1 class="brand-title">
+                    ShopNest <span class="brand-badge">Admin</span>
+                </h1>
+                <p class="brand-subtitle">
+                    Enter your credentials to access the management portal
+                </p>
+            </div>
+
+            <!-- Error Message Alert -->
+            {% if error %}
+                <div class="login-alert-danger" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>{{ error }}</span>
+                </div>
+            {% endif %}
+
+            <!-- Login Form (Backend method, action and field names strictly preserved) -->
+            <form method="POST" autocomplete="off">
+                {% csrf_token %}
+
+                <!-- Username Field -->
+                <div class="login-form-group">
+                    <label class="login-label" for="adminUsernameInput">
+                        Username
+                    </label>
+                    <div class="login-input-group">
+                        <span class="input-icon-prefix">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </span>
+                        <input 
+                            type="text" 
+                            name="username" 
+                            id="adminUsernameInput" 
+                            class="login-input" 
+                            placeholder="Enter admin username" 
+                            required 
+                            autofocus
+                        >
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="login-form-group">
+                    <label class="login-label" for="adminPasswordInput">
+                        Password
+                    </label>
+                    <div class="login-input-group">
+                        <span class="input-icon-prefix">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="adminPasswordInput" 
+                            class="login-input" 
+                            placeholder="Enter secure password" 
+                            required
+                        >
+                        <button 
+                            type="button" 
+                            class="btn-toggle-password" 
+                            id="togglePasswordBtn" 
+                            title="Show password" 
+                            aria-label="Show password"
+                        >
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-login-submit">
+                    <span>Sign In to Dashboard</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <!-- Card Footer -->
+            <div class="login-card-footer">
+                <div class="security-badge">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>256-Bit Encrypted Secure Session</span>
+                </div>
+                <a href="{% url 'home' %}" target="_blank" class="storefront-return-link">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    <span>Return to Storefront</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Dedicated Custom Admin Login JS -->
+    <script src="{% static 'adminjs/adminloginjs.js' %}"></script>
+</body>
+</html>

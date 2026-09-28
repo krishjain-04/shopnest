@@ -1,0 +1,1108 @@
+
+{% extends "client/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product_list.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="product-listing-wrapper py-4 py-lg-5">
+
+    <div class="container">
+
+        <!-- =========================================================
+             BREADCRUMB
+        ========================================================== -->
+
+        <nav aria-label="breadcrumb" class="mb-3">
+
+            <ol class="breadcrumb bg-transparent p-0 mb-0 fs-7">
+
+                <li class="breadcrumb-item">
+
+                    <a href="/"
+                       class="text-decoration-none text-muted">
+
+                        <i class="fa-solid fa-house me-1"></i>
+                        Home
+
+                    </a>
+
+                </li>
+
+
+                <li class="breadcrumb-item">
+
+                    <a href="{% url 'all_categories' %}"
+                       class="text-decoration-none text-muted">
+
+                        Categories
+
+                    </a>
+
+                </li>
+
+
+                <li class="breadcrumb-item">
+
+                    <a href="{% url 'category_detail' thirdcategory.subcategory.category.slug %}"
+                       class="text-decoration-none text-muted">
+
+                        {{ thirdcategory.subcategory.category.name }}
+
+                    </a>
+
+                </li>
+
+
+                <li class="breadcrumb-item">
+
+                    <a href="{% url 'subcategory_detail' thirdcategory.subcategory.category.slug thirdcategory.subcategory.slug %}"
+                       class="text-decoration-none text-muted">
+
+                        {{ thirdcategory.subcategory.name }}
+
+                    </a>
+
+                </li>
+
+
+                <li class="breadcrumb-item active fw-semibold text-primary"
+                    aria-current="page">
+
+                    {{ thirdcategory.name }}
+
+                </li>
+
+            </ol>
+
+        </nav>
+
+
+        <!-- =========================================================
+             HERO / CATEGORY HEADER
+        ========================================================== -->
+
+        <div class="product-listing-hero mb-4 p-4 p-md-5 rounded-4 text-white shadow-sm position-relative overflow-hidden">
+
+            <div class="row align-items-center position-relative z-1">
+
+                <div class="col-lg-8">
+
+                    <span class="badge bg-white text-dark mb-2 px-3 py-2 rounded-pill fw-semibold shadow-sm">
+
+                        <i class="fa-solid fa-tags text-primary me-1"></i>
+
+                        {{ thirdcategory.subcategory.name }}
+
+                    </span>
+
+
+                    <h1 class="display-6 fw-bold mb-2">
+
+                        {{ thirdcategory.name }}
+
+                    </h1>
+
+
+                    <p class="lead mb-0 text-white-50 fs-6">
+
+                        Explore products available in
+                        {{ thirdcategory.name }}.
+
+                    </p>
+
+                </div>
+
+
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+
+                    <div class="d-inline-flex align-items-center gap-2 bg-white bg-opacity-10 rounded-4 px-4 py-3">
+
+                        <i class="fa-solid fa-box-open fs-3"></i>
+
+                        <div class="text-start">
+
+                            <div class="fw-bold fs-5">
+                                {{ products|length }}
+                            </div>
+
+                            <div class="small text-white-50">
+                                Products
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================================
+             TOOLBAR
+        ========================================================== -->
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom gap-3">
+
+            <div>
+
+                <h3 class="fw-bold mb-1 text-dark">
+
+                    {{ thirdcategory.name }}
+
+                </h3>
+
+
+                <p class="text-muted small mb-0">
+
+                    Showing
+                    {{ products|length }}
+                    product{{ products|length|pluralize }}
+
+                </p>
+
+            </div>
+
+
+            <a href="{% url 'product_list' %}"
+               class="btn btn-outline-primary rounded-3 fw-semibold">
+
+                <i class="fa-solid fa-grid-2 me-1"></i>
+
+                All Products
+
+            </a>
+
+        </div>
+
+
+        <!-- =========================================================
+             PRODUCTS
+        ========================================================== -->
+
+        {% if products %}
+
+        <div class="row g-3 g-md-4">
+
+            {% for product in products %}
+
+            <div class="col-6 col-md-4 d-flex align-items-stretch">
+
+                <div class="card product-card w-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative h-100 d-flex flex-column">
+
+
+                    <!-- =================================================
+                         STOCK STATUS
+                    ================================================== -->
+
+                    <div class="position-absolute top-0 end-0 m-2 m-md-3 z-2">
+
+                        {% if product.stock > 0 %}
+
+                        <span class="badge badge-stock-in rounded-pill px-2 py-1 fw-medium shadow-sm fs-8">
+
+                            In Stock
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge badge-stock-out rounded-pill px-2 py-1 fw-medium shadow-sm fs-8">
+
+                            Out of Stock
+
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- =================================================
+                         IMAGE + WISHLIST
+                    ================================================== -->
+
+                    <div class="product-img-wrapper position-relative overflow-hidden">
+
+
+                        <!-- WISHLIST -->
+
+                        <button type="button"
+                                class="btn btn-light btn-sm rounded-circle position-absolute top-0 start-0 m-2 m-md-3 z-3 shadow-sm btn-wishlist border"
+                                data-product-id="{{ product.id }}"
+                                data-url="{% url 'toggle_wishlist' product.id %}"
+                                onclick="toggleWishlistAjax(this)"
+                                title="Toggle Wishlist"
+                                aria-label="Toggle Wishlist">
+
+                            <i class="{% if product.id in user_wishlist_product_ids %}fa-solid fa-heart text-danger{% else %}fa-regular fa-heart{% endif %}">
+                            </i>
+
+                        </button>
+
+
+                        <!-- PRODUCT IMAGE -->
+
+                        <a href="{% url 'product_detail' product.slug %}"
+                           class="d-block w-100 h-100">
+
+                            {% if product.main_image %}
+
+                            <img src="{{ product.main_image.url }}"
+                                 alt="{{ product.name }}"
+                                 class="product-img"
+                                 loading="lazy">
+
+                            {% else %}
+
+                            <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+
+                                <i class="fa-regular fa-image fs-2"></i>
+
+                            </div>
+
+                            {% endif %}
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         CARD BODY
+                    ================================================== -->
+
+                    <div class="card-body p-3 p-md-4 d-flex flex-column justify-content-between">
+
+                        <div>
+
+
+                            <!-- BRAND -->
+
+                            <div class="text-uppercase text-muted fw-semibold fs-8 mb-1">
+
+                                {{ product.brand.name }}
+
+                            </div>
+
+
+                            <!-- PRODUCT NAME -->
+
+                            <h6 class="fw-bold mb-2">
+
+                                <a href="{% url 'product_detail' product.slug %}"
+                                   class="text-dark text-decoration-none line-clamp-2">
+
+                                    {{ product.name }}
+
+                                </a>
+
+                            </h6>
+
+
+                            <!-- RATING -->
+
+                            <div class="d-flex align-items-center gap-1 mb-2 fs-7">
+
+                                <i class="fa-solid fa-star text-warning"></i>
+
+                                <span class="fw-bold text-dark ms-1">
+
+                                    {{ product.avg_rating|default:"0.0" }}
+
+                                </span>
+
+                                <span class="text-muted">
+
+                                    ({{ product.review_count|default:"0" }})
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             PRICE + ACTIONS
+                        ================================================== -->
+
+                        <div class="mt-2 pt-2 border-top">
+
+
+                            <!-- PRICE -->
+
+                            <div class="d-flex align-items-baseline gap-2 mb-3">
+
+                                {% if product.discount_price and product.discount_price < product.price %}
+
+                                <span class="fw-bold text-dark fs-5">
+
+                                    ₹{{ product.discount_price }}
+
+                                </span>
+
+
+                                <span class="text-muted text-decoration-line-through fs-7">
+
+                                    ₹{{ product.price }}
+
+                                </span>
+
+
+                                {% if product.discount_percentage > 0 %}
+
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill fs-8 fw-bold ms-auto">
+
+                                    {{ product.discount_percentage }}% OFF
+
+                                </span>
+
+                                {% endif %}
+
+
+                                {% else %}
+
+                                <span class="fw-bold text-dark fs-5">
+
+                                    ₹{{ product.price }}
+
+                                </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 ADD TO CART
+                            ================================================== -->
+
+                            <div class="d-grid gap-2">
+
+                                {% if product.stock > 0 %}
+
+                                <form action="{% url 'add_to_cart' product.id %}"
+                                      method="POST"
+                                      class="w-100 add-to-cart-form">
+
+                                    {% csrf_token %}
+
+                                    <input type="hidden"
+                                           name="quantity"
+                                           value="1">
+
+
+                                    <button type="submit"
+                                            class="btn btn-primary btn-sm w-100 py-2 rounded-3 fw-bold add-to-cart-btn">
+
+                                        <i class="fa-solid fa-cart-shopping me-1"></i>
+
+                                        <span>
+                                            Add to Cart
+                                        </span>
+
+                                    </button>
+
+                                </form>
+
+
+                                {% else %}
+
+                                <button class="btn btn-secondary btn-sm py-2 rounded-3 fw-bold w-100"
+                                        disabled>
+
+                                    <i class="fa-solid fa-ban me-1"></i>
+
+                                    Out of Stock
+
+                                </button>
+
+                                {% endif %}
+
+
+                                <!-- VIEW DETAILS -->
+
+                                <a href="{% url 'product_detail' product.slug %}"
+                                   class="btn btn-outline-secondary btn-sm py-2 rounded-3 fw-semibold text-center">
+
+                                    <i class="fa-regular fa-eye me-1"></i>
+
+                                    View Details
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        {% else %}
+
+        <!-- =========================================================
+             EMPTY STATE
+        ========================================================== -->
+
+        <div class="text-center py-5 my-4 bg-white rounded-4 border shadow-sm p-4">
+
+            <div class="mb-3 text-primary">
+
+                <i class="fa-solid fa-box-open fs-1"></i>
+
+            </div>
+
+
+            <h4 class="fw-bold text-dark mb-2">
+
+                No Products Available
+
+            </h4>
+
+
+            <p class="text-muted mb-4">
+
+                There are currently no available products
+                in {{ thirdcategory.name }}.
+
+            </p>
+
+
+            <a href="{% url 'product_list' %}"
+               class="btn btn-primary px-4 py-2 rounded-3 fw-bold">
+
+                <i class="fa-solid fa-store me-2"></i>
+
+                Browse All Products
+
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+/* ================================================================
+   CSRF COOKIE
+================================================================ */
+
+function getCookie(name) {
+
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== '') {
+
+        const cookies = document.cookie.split(';');
+
+        for (let i = 0; i < cookies.length; i++) {
+
+            const cookie = cookies[i].trim();
+
+            if (
+                cookie.substring(
+                    0,
+                    name.length + 1
+                ) === (name + '=')
+            ) {
+
+                cookieValue = decodeURIComponent(
+                    cookie.substring(name.length + 1)
+                );
+
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
+
+/* ================================================================
+   WISHLIST AJAX
+================================================================ */
+
+function toggleWishlistAjax(button) {
+
+    const url =
+        button.getAttribute('data-url');
+
+    const icon =
+        button.querySelector('i');
+
+
+    if (!url) {
+        return;
+    }
+
+
+    fetch(url, {
+
+        method: 'POST',
+
+        headers: {
+
+            'X-CSRFToken':
+                getCookie('csrftoken'),
+
+            'X-Requested-With':
+                'XMLHttpRequest',
+
+            'Content-Type':
+                'application/json'
+
+        }
+
+    })
+
+    .then(function(response) {
+
+        if (
+            response.status === 401 ||
+            response.redirected
+        ) {
+
+            window.location.href =
+                "{% url 'login' %}";
+
+            return null;
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                'Wishlist request failed.'
+            );
+
+        }
+
+
+        return response.json();
+
+    })
+
+    .then(function(data) {
+
+        if (!data) {
+            return;
+        }
+
+
+        /* ========================================================
+           WISHLIST ICON
+        ======================================================== */
+
+        if (data.added) {
+
+            icon.classList.remove(
+                'fa-regular'
+            );
+
+            icon.classList.add(
+                'fa-solid',
+                'text-danger'
+            );
+
+        }
+
+        else {
+
+            icon.classList.remove(
+                'fa-solid',
+                'text-danger'
+            );
+
+            icon.classList.add(
+                'fa-regular'
+            );
+
+        }
+
+
+        /* ========================================================
+           NAVBAR WISHLIST COUNT
+        ======================================================== */
+
+        const wishlistBadge =
+            document.getElementById(
+                'navbar-wishlist-count'
+            );
+
+
+        if (
+            wishlistBadge &&
+            data.wishlist_count !== undefined
+        ) {
+
+            wishlistBadge.textContent =
+                data.wishlist_count;
+
+
+            if (
+                Number(data.wishlist_count) > 0
+            ) {
+
+                wishlistBadge.style.display =
+                    '';
+
+            }
+
+            else {
+
+                wishlistBadge.style.display =
+                    'none';
+
+            }
+
+        }
+
+    })
+
+    .catch(function(error) {
+
+        console.error(
+            'Error toggling wishlist:',
+            error
+        );
+
+    });
+
+}
+
+
+/* ================================================================
+   AJAX ADD TO CART
+================================================================ */
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function() {
+
+
+        document
+            .querySelectorAll('.add-to-cart-form')
+            .forEach(function(form) {
+
+
+                form.addEventListener(
+                    'submit',
+                    function(e) {
+
+                        e.preventDefault();
+
+
+                        const button =
+                            form.querySelector(
+                                '.add-to-cart-btn'
+                            );
+
+
+                        if (
+                            !button ||
+                            button.disabled
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const buttonText =
+                            button.querySelector(
+                                'span'
+                            );
+
+
+                        const icon =
+                            button.querySelector(
+                                'i'
+                            );
+
+
+                        const originalText =
+                            buttonText
+                                ? buttonText.textContent.trim()
+                                : 'Add to Cart';
+
+
+                        const originalIcon =
+                            icon
+                                ? icon.className
+                                : 'fa-solid fa-cart-shopping me-1';
+
+
+                        /* =================================================
+                           QUANTITY
+                        ================================================= */
+
+                        const quantityInput =
+                            form.querySelector(
+                                'input[name="quantity"]'
+                            );
+
+
+                        const quantity =
+                            quantityInput
+                                ? parseInt(
+                                    quantityInput.value,
+                                    10
+                                ) || 1
+                                : 1;
+
+
+                        /* =================================================
+                           LOADING
+                        ================================================= */
+
+                        button.disabled =
+                            true;
+
+
+                        if (buttonText) {
+
+                            buttonText.textContent =
+                                'Adding...';
+
+                        }
+
+
+                        if (icon) {
+
+                            icon.className =
+                                'fa-solid fa-spinner fa-spin me-1';
+
+                        }
+
+
+                        /* =================================================
+                           FORM DATA
+                        ================================================= */
+
+                        const formData =
+                            new FormData(form);
+
+
+                        /* =================================================
+                           AJAX REQUEST
+                        ================================================= */
+
+                        fetch(
+                            form.action,
+                            {
+
+                                method: 'POST',
+
+                                body: formData,
+
+                                headers: {
+
+                                    'X-Requested-With':
+                                        'XMLHttpRequest'
+
+                                }
+
+                            }
+                        )
+
+                        .then(function(response) {
+
+
+                            /* ==============================
+                               LOGIN REQUIRED
+                            ============================== */
+
+                            if (
+                                response.status === 401 ||
+                                response.redirected
+                            ) {
+
+                                window.location.href =
+                                    "{% url 'login' %}";
+
+                                return null;
+
+                            }
+
+
+                            /* ==============================
+                               SERVER ERROR
+                            ============================== */
+
+                            if (!response.ok) {
+
+                                throw new Error(
+                                    'Add to cart request failed.'
+                                );
+
+                            }
+
+
+                            return response.json();
+
+                        })
+
+                        .then(function(data) {
+
+                            if (!data) {
+                                return;
+                            }
+
+
+                            /* =================================================
+                               SUCCESS
+                            ================================================= */
+
+                            if (data.success) {
+
+
+                                /* =============================================
+                                   NAVBAR CART COUNT
+                                ============================================= */
+
+                                const cartBadge =
+                                    document.getElementById(
+                                        'navbar-cart-count'
+                                    );
+
+
+                                if (cartBadge) {
+
+
+                                    /* ==============================
+                                       BACKEND SENT CART COUNT
+                                    ============================== */
+
+                                    if (
+                                        data.cart_count !== undefined &&
+                                        data.cart_count !== null
+                                    ) {
+
+                                        cartBadge.textContent =
+                                            data.cart_count;
+
+                                    }
+
+
+                                    /* ==============================
+                                       FALLBACK
+                                    ============================== */
+
+                                    else {
+
+                                        let currentCount =
+                                            parseInt(
+                                                cartBadge.textContent.trim(),
+                                                10
+                                            );
+
+
+                                        if (
+                                            isNaN(
+                                                currentCount
+                                            )
+                                        ) {
+
+                                            currentCount =
+                                                0;
+
+                                        }
+
+
+                                        cartBadge.textContent =
+                                            currentCount +
+                                            quantity;
+
+                                    }
+
+
+                                    /* ==============================
+                                       SHOW BADGE
+                                    ============================== */
+
+                                    cartBadge.style.display =
+                                        '';
+
+                                }
+
+
+                                /* =================================================
+                                   BUTTON SUCCESS
+                                ================================================= */
+
+                                if (buttonText) {
+
+                                    buttonText.textContent =
+                                        'Added';
+
+                                }
+
+
+                                if (icon) {
+
+                                    icon.className =
+                                        'fa-solid fa-check me-1';
+
+                                }
+
+
+                                /* =================================================
+                                   RESTORE BUTTON
+                                ================================================= */
+
+                                setTimeout(
+                                    function() {
+
+
+                                        if (buttonText) {
+
+                                            buttonText.textContent =
+                                                originalText;
+
+                                        }
+
+
+                                        if (icon) {
+
+                                            icon.className =
+                                                originalIcon;
+
+                                        }
+
+
+                                        button.disabled =
+                                            false;
+
+
+                                    },
+                                    1200
+                                );
+
+                            }
+
+
+                            /* =================================================
+                               BACKEND ERROR
+                            ================================================= */
+
+                            else {
+
+
+                                if (buttonText) {
+
+                                    buttonText.textContent =
+                                        data.message ||
+                                        originalText;
+
+                                }
+
+
+                                if (icon) {
+
+                                    icon.className =
+                                        originalIcon;
+
+                                }
+
+
+                                button.disabled =
+                                    false;
+
+                            }
+
+                        })
+
+                        .catch(function(error) {
+
+
+                            console.error(
+                                'Add to cart error:',
+                                error
+                            );
+
+
+                            /* =================================================
+                               ERROR STATE
+                            ================================================= */
+
+                            if (buttonText) {
+
+                                buttonText.textContent =
+                                    'Try Again';
+
+                            }
+
+
+                            if (icon) {
+
+                                icon.className =
+                                    'fa-solid fa-xmark me-1';
+
+                            }
+
+
+                            setTimeout(
+                                function() {
+
+
+                                    if (buttonText) {
+
+                                        buttonText.textContent =
+                                            originalText;
+
+                                    }
+
+
+                                    if (icon) {
+
+                                        icon.className =
+                                            originalIcon;
+
+                                    }
+
+
+                                    button.disabled =
+                                        false;
+
+
+                                },
+                                1500
+                            );
+
+                        });
+
+                    }
+                );
+
+            });
+
+    });
+
+</script>
+
+{% endblock %}

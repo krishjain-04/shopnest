@@ -1,0 +1,101 @@
+{% extends 'client/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/all_categories.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4 all-categories-wrapper">
+  
+  <!-- BREADCRUMB -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">All Categories</li>
+    </ol>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="text-center mb-5">
+    <h2 class="fw-bold text-dark display-6 mb-2">Explore Our Top Categories</h2>
+    <p class="text-muted fs-6">Find the best products across electronics, fashion, footwear, books & more</p>
+    <div class="title-underline mx-auto"></div>
+  </div>
+
+  <!-- CATEGORIES GRID -->
+  <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 g-md-4 mb-5">
+    {% for category in categories %}
+      <div class="col">
+        <a href="{% url 'category_detail' category.slug %}" class="text-decoration-none text-dark">
+          <div class="card h-100 border-0 shadow-sm cat-card position-relative overflow-hidden">
+            <div class="card-body p-3 p-md-4 text-center d-flex flex-column align-items-center justify-content-center">
+              
+              <!-- Badge -->
+              <span class="badge rounded-pill bg-light text-primary border position-absolute top-0 end-0 m-3 px-2 py-1 cat-count-badge">
+                {{ category.products.count }} Products
+              </span>
+
+              <!-- Icon Container with Fallback -->
+              <div class="cat-icon-box mb-3 d-flex align-items-center justify-content-center">
+                  <i class="{{ category.category_icon }}"></i>
+   
+
+              </div>
+
+              <h5 class="card-title fw-bold mb-1 text-truncate w-100">{{ category.name }}</h5>
+              <span class="explore-btn text-primary fw-semibold small mt-2">
+                Explore Category <i class="fa-solid fa-arrow-right ms-1 transition-icon"></i>
+              </span>
+
+            </div>
+          </div>
+        </a>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center py-5">
+        <p class="text-muted">No categories available at the moment.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- BRANDS SECTION -->
+  {% if brands %}
+  <section class="brands-section pt-4 border-top">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <h3 class="fw-bold text-dark mb-1">Popular Brands</h3>
+        <p class="text-muted small mb-0">Shop directly from official store brands</p>
+      </div>
+    </div>
+
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+      {% for brand in brands %}
+        <div class="col">
+          <div class="card h-100 border-0 shadow-sm brand-card text-center">
+            <div class="card-body p-3 d-flex flex-column align-items-center justify-content-center">
+              
+              <!-- Brand Logo or First Letter Avatar -->
+              <div class="brand-avatar-box mb-2 d-flex align-items-center justify-content-center">
+                {% if brand.logo %}
+                  <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" class="img-fluid brand-logo-img">
+                {% else %}
+                  <div class="brand-letter-circle">
+                    {{ brand.name|slice:":1"|upper }}
+                  </div>
+                {% endif %}
+              </div>
+
+              <h6 class="fw-bold mb-0 text-dark text-truncate w-100">{{ brand.name }}</h6>
+              <span class="text-muted small fs-7">{{ brand.products.count }} items</span>
+
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+</div>
+{% endblock %}

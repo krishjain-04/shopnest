@@ -1,0 +1,261 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Edit Brand - ShopNest Admin{% endblock %}
+
+{% block nav_brands %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <a href="{% url 'admin_brands' %}">Brands</a>
+    <span class="text-secondary">/</span>
+    <span>Edit Brand</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-pen-to-square text-primary"></i>
+            Edit Brand
+        </h1>
+
+        <p class="page-subtitle">
+            Update brand information and logo
+        </p>
+    </div>
+
+    <div>
+        <a href="{% url 'admin_brands' %}"
+           class="btn btn-light btn-sm border text-secondary d-flex align-items-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Brands
+        </a>
+    </div>
+</div>
+
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-8 col-xl-6">
+
+        <div class="admin-card">
+
+            <div class="admin-card-header">
+                <h3 class="admin-card-title">
+                    <i class="fa-solid fa-certificate text-danger"></i>
+                    Brand Details
+                </h3>
+            </div>
+
+            <div class="admin-card-body">
+
+                <form action="{% url 'edit_brand' brand.id %}"
+                      method="POST"
+                      enctype="multipart/form-data">
+
+                    {% csrf_token %}
+
+
+                    <!-- Brand Name -->
+                    <div class="mb-4">
+
+                        <label class="form-label-custom" for="brandName">
+                            Brand Name
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            id="brandName"
+                            class="form-control form-control-custom"
+                            value="{{ brand.name }}"
+                            required
+                            autofocus
+                        >
+
+                    </div>
+
+
+                    <!-- Category -->
+                    <div class="mb-4">
+
+                        <label class="form-label-custom" for="categorySelect">
+                            Category
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <select
+                            name="category"
+                            id="categorySelect"
+                            class="form-select form-select-custom"
+                            required
+                        >
+
+                            <option value="">
+                                -- Choose Category --
+                            </option>
+
+                            {% for category in categories %}
+
+                                <option
+                                    value="{{ category.id }}"
+                                    {% if brand.category_id == category.id %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ category.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Current Logo -->
+                    {% if brand.logo %}
+
+                    <div class="mb-4">
+
+                        <label class="form-label-custom">
+                            Current Logo
+                        </label>
+
+                        <div class="image-preview-wrapper">
+                            <img
+                                src="{{ brand.logo.url }}"
+                                alt="{{ brand.name }}"
+                                style="max-width: 180px; max-height: 120px; object-fit: contain;"
+                            >
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <!-- New Logo -->
+                    <div class="mb-4">
+
+                        <label class="form-label-custom">
+                            Change Brand Logo
+                            <span class="text-muted fw-normal">
+                                (Optional)
+                            </span>
+                        </label>
+
+                        <div class="file-upload-box">
+
+                            <i class="fa-solid fa-cloud-arrow-up text-primary fs-2 mb-2 d-block"></i>
+
+                            <span class="fw-semibold text-dark d-block">
+                                Upload New Brand Logo
+                            </span>
+
+                            <small class="text-muted">
+                                PNG, JPG, WEBP or SVG
+                            </small>
+
+                            <input
+                                type="file"
+                                name="logo"
+                                id="imageUploadInput"
+                                accept="image/*"
+                            >
+
+                        </div>
+
+
+                        <!-- New Logo Preview -->
+                        <div
+                            class="mt-3 d-none"
+                            id="imagePreviewContainer"
+                        >
+
+                            <span class="form-label-custom mb-1">
+                                New Logo Preview:
+                            </span>
+
+                            <div class="image-preview-wrapper">
+
+                                <img
+                                    id="imagePreviewImg"
+                                    src=""
+                                    alt="Brand Logo Preview"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Buttons -->
+                    <div class="d-flex align-items-center justify-content-end gap-2 pt-3 border-top">
+
+                        <a
+                            href="{% url 'admin_brands' %}"
+                            class="btn btn-light btn-sm border px-3 py-2 text-secondary"
+                        >
+                            Cancel
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-sm px-4 py-2 fw-semibold shadow-sm"
+                        >
+                            <i class="fa-solid fa-check me-1"></i>
+                            Update Brand
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const imageInput = document.getElementById("imageUploadInput");
+    const previewContainer = document.getElementById("imagePreviewContainer");
+    const previewImage = document.getElementById("imagePreviewImg");
+
+    imageInput.addEventListener("change", function () {
+
+        const file = this.files[0];
+
+        if (!file) {
+            previewContainer.classList.add("d-none");
+            return;
+        }
+
+        previewImage.src = URL.createObjectURL(file);
+
+        previewContainer.classList.remove("d-none");
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

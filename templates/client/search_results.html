@@ -1,0 +1,1295 @@
+
+{% extends "client/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/productsearch.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="search-results-wrapper py-4 py-lg-5">
+    <div class="container-fluid container-xl">
+
+        <!-- BREADCRUMB -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb bg-transparent p-0 mb-0 fs-7">
+                <li class="breadcrumb-item">
+                    <a href="/" class="text-decoration-none text-muted">
+                        <i class="fa-solid fa-house me-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item active fw-semibold text-primary" aria-current="page">
+                    Search Results
+                </li>
+            </ol>
+        </nav>
+
+        <!-- SEARCH HEADER -->
+        <div class="search-header-card p-4 rounded-4 mb-4 border shadow-sm bg-white">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                <div>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold fs-8 mb-2">
+                        <i class="fa-solid fa-magnifying-glass me-1"></i> Search Query
+                    </span>
+
+                    <h1 class="h3 fw-bold mb-1 text-dark">
+                        {% if query %}
+                            Results for "<span class="text-primary">{{ query }}</span>"
+                        {% else %}
+                            All Products
+                        {% endif %}
+                    </h1>
+
+                    <p class="text-muted fs-7 mb-0">
+                        Showing
+                        <strong>{{ page_obj.start_index|default:0 }}–{{ page_obj.end_index|default:0 }}</strong>
+                        of
+                        <strong>{{ page_obj.paginator.count|default:0 }}</strong>
+                        items found
+                    </p>
+                </div>
+
+                <!-- SEARCH BAR -->
+                <form action="{% url 'search_products' %}" method="GET" class="search-input-box">
+
+                    {% for cat in selected_categories %}
+                        <input type="hidden" name="category" value="{{ cat }}">
+                    {% endfor %}
+
+                    {% for subcat in selected_subcategories %}
+                        <input type="hidden" name="subcategory" value="{{ subcat }}">
+                    {% endfor %}
+
+                    {% for thirdcat in selected_thirdcategories %}
+                        <input type="hidden" name="thirdcategory" value="{{ thirdcat }}">
+                    {% endfor %}
+
+                    {% for brand in selected_brands %}
+                        <input type="hidden" name="brand" value="{{ brand }}">
+                    {% endfor %}
+
+                    {% if min_price %}
+                        <input type="hidden" name="min_price" value="{{ min_price }}">
+                    {% endif %}
+
+                    {% if max_price %}
+                        <input type="hidden" name="max_price" value="{{ max_price }}">
+                    {% endif %}
+
+                    {% if rating_filter %}
+                        <input type="hidden" name="rating" value="{{ rating_filter }}">
+                    {% endif %}
+
+                    {% if sort %}
+                        <input type="hidden" name="sort" value="{{ sort }}">
+                    {% endif %}
+
+                    <div class="input-group rounded-pill overflow-hidden border shadow-sm">
+                        <input
+                            type="search"
+                            name="q"
+                            class="form-control border-0 bg-light py-2 ps-3 fs-7 shadow-none"
+                            placeholder="Search products, brands..."
+                            value="{{ query }}"
+                        >
+
+                        <button class="btn btn-primary px-4 fw-semibold fs-7" type="submit">
+                            <i class="fa-solid fa-magnifying-glass me-1"></i>
+                            Search
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- MAIN GRID -->
+        <div class="row g-4">
+
+            <!-- DESKTOP FILTER -->
+            <aside class="col-lg-3 d-none d-lg-block">
+
+                <div class="card border-0 shadow-sm rounded-4 p-3 sticky-filter-sidebar bg-white">
+
+                    <form action="{% url 'search_products' %}" method="GET" id="desktopFilterForm">
+
+                        {% if query %}
+                            <input type="hidden" name="q" value="{{ query }}">
+                        {% endif %}
+
+                        {% if sort %}
+                            <input type="hidden" name="sort" value="{{ sort }}">
+                        {% endif %}
+
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                            <h5 class="fw-bold mb-0 text-dark fs-6">
+                                <i class="fa-solid fa-sliders me-2 text-primary"></i>
+                                Filters
+                            </h5>
+
+                            {% if selected_categories or selected_subcategories or selected_thirdcategories or selected_brands or min_price or max_price or rating_filter %}
+                                <a
+                                    href="{% url 'search_products' %}{% if query %}?q={{ query }}{% endif %}"
+                                    class="text-danger text-decoration-none fs-8 fw-bold"
+                                >
+                                    Clear All
+                                </a>
+                            {% endif %}
+                        </div>
+
+                        <!-- CATEGORIES -->
+                        {% if categories %}
+                        <div class="filter-group mb-4 pb-3 border-bottom">
+                            <h6 class="fw-bold text-dark mb-2 fs-7 text-uppercase">Categories</h6>
+
+                            <div class="filter-scrollable pe-1">
+                                {% for category in categories %}
+                                <div class="form-check mb-2 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <input
+                                            class="form-check-input cursor-pointer auto-submit-filter"
+                                            type="checkbox"
+                                            name="category"
+                                            value="{{ category.id }}"
+                                            id="cat_{{ category.id }}"
+                                            {% if category.id in selected_categories or category.id|stringformat:"i" in selected_categories %}checked{% endif %}
+                                        >
+
+                                        <label
+                                            class="form-check-label fs-7 cursor-pointer text-secondary"
+                                            for="cat_{{ category.id }}"
+                                        >
+                                            {{ category.name }}
+                                        </label>
+                                    </div>
+
+                                    {% if category.product_count is not None %}
+                                    <span class="badge bg-light text-muted rounded-pill fs-8 border">
+                                        {{ category.product_count }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- SUBCATEGORIES -->
+                        {% if subcategories %}
+                        <div class="filter-group mb-4 pb-3 border-bottom">
+                            <h6 class="fw-bold text-dark mb-2 fs-7 text-uppercase">Sub Categories</h6>
+
+                            <div class="filter-scrollable pe-1">
+                                {% for subcategory in subcategories %}
+                                <div class="form-check mb-2 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <input
+                                            class="form-check-input cursor-pointer auto-submit-filter"
+                                            type="checkbox"
+                                            name="subcategory"
+                                            value="{{ subcategory.id }}"
+                                            id="subcat_{{ subcategory.id }}"
+                                            {% if subcategory.id in selected_subcategories or subcategory.id|stringformat:"i" in selected_subcategories %}checked{% endif %}
+                                        >
+
+                                        <label
+                                            class="form-check-label fs-7 cursor-pointer text-secondary"
+                                            for="subcat_{{ subcategory.id }}"
+                                        >
+                                            {{ subcategory.name }}
+                                        </label>
+                                    </div>
+
+                                    {% if subcategory.product_count is not None %}
+                                    <span class="badge bg-light text-muted rounded-pill fs-8 border">
+                                        {{ subcategory.product_count }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- THIRD CATEGORIES -->
+                        {% if thirdcategories %}
+                        <div class="filter-group mb-4 pb-3 border-bottom">
+                            <h6 class="fw-bold text-dark mb-2 fs-7 text-uppercase">Product Types</h6>
+
+                            <div class="filter-scrollable pe-1">
+                                {% for thirdcategory in thirdcategories %}
+                                <div class="form-check mb-2 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <input
+                                            class="form-check-input cursor-pointer auto-submit-filter"
+                                            type="checkbox"
+                                            name="thirdcategory"
+                                            value="{{ thirdcategory.id }}"
+                                            id="thirdcat_{{ thirdcategory.id }}"
+                                            {% if thirdcategory.id in selected_thirdcategories or thirdcategory.id|stringformat:"i" in selected_thirdcategories %}checked{% endif %}
+                                        >
+
+                                        <label
+                                            class="form-check-label fs-7 cursor-pointer text-secondary"
+                                            for="thirdcat_{{ thirdcategory.id }}"
+                                        >
+                                            {{ thirdcategory.name }}
+                                        </label>
+                                    </div>
+
+                                    {% if thirdcategory.product_count is not None %}
+                                    <span class="badge bg-light text-muted rounded-pill fs-8 border">
+                                        {{ thirdcategory.product_count }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- BRANDS -->
+                        {% if brands %}
+                        <div class="filter-group mb-4 pb-3 border-bottom">
+                            <h6 class="fw-bold text-dark mb-2 fs-7 text-uppercase">Brands</h6>
+
+                            <div class="filter-scrollable pe-1">
+                                {% for brand in brands %}
+                                <div class="form-check mb-2 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <input
+                                            class="form-check-input cursor-pointer auto-submit-filter"
+                                            type="checkbox"
+                                            name="brand"
+                                            value="{{ brand.id }}"
+                                            id="brand_{{ brand.id }}"
+                                            {% if brand.id in selected_brands or brand.id|stringformat:"i" in selected_brands %}checked{% endif %}
+                                        >
+
+                                        <label
+                                            class="form-check-label fs-7 cursor-pointer text-secondary"
+                                            for="brand_{{ brand.id }}"
+                                        >
+                                            {{ brand.name }}
+                                        </label>
+                                    </div>
+
+                                    {% if brand.product_count is not None %}
+                                    <span class="badge bg-light text-muted rounded-pill fs-8 border">
+                                        {{ brand.product_count }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- PRICE -->
+                        <div class="filter-group mb-4 pb-3 border-bottom">
+                            <h6 class="fw-bold text-dark mb-2 fs-7 text-uppercase">Price Range (₹)</h6>
+
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input
+                                        type="number"
+                                        name="min_price"
+                                        class="form-control form-control-sm rounded-3 fs-7"
+                                        placeholder="Min"
+                                        value="{{ min_price|default:'' }}"
+                                        min="0"
+                                    >
+                                </div>
+
+                                <div class="col-6">
+                                    <input
+                                        type="number"
+                                        name="max_price"
+                                        class="form-control form-control-sm rounded-3 fs-7"
+                                        placeholder="Max"
+                                        value="{{ max_price|default:'' }}"
+                                        min="0"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RATING -->
+                        <div class="filter-group mb-4 pb-2">
+                            <h6 class="fw-bold text-dark mb-2 fs-7 text-uppercase">Rating</h6>
+
+                            <div class="d-flex flex-column gap-1">
+                                {% for r in "4321" %}
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input cursor-pointer auto-submit-filter"
+                                        type="radio"
+                                        name="rating"
+                                        id="rating_{{ r }}"
+                                        value="{{ r }}"
+                                        {% if rating_filter == r or rating_filter|stringformat:"s" == r %}checked{% endif %}
+                                    >
+
+                                    <label
+                                        class="form-check-label fs-7 cursor-pointer text-secondary"
+                                        for="rating_{{ r }}"
+                                    >
+                                        <i class="fa-solid fa-star text-warning me-1"></i>
+                                        {{ r }} Stars & Above
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-sm w-100 py-2 rounded-3 fw-bold shadow-sm"
+                        >
+                            <i class="fa-solid fa-filter me-1"></i>
+                            Apply Filters
+                        </button>
+
+                    </form>
+                </div>
+            </aside>
+
+            <!-- MOBILE FILTER -->
+            <div
+                class="offcanvas offcanvas-start rounded-end-4"
+                tabindex="-1"
+                id="mobileFilterOffcanvas"
+            >
+                <div class="offcanvas-header border-bottom bg-light py-3">
+                    <h5 class="offcanvas-title fw-bold text-dark fs-6">
+                        <i class="fa-solid fa-sliders me-2 text-primary"></i>
+                        Filter Products
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="offcanvas"
+                        aria-label="Close"
+                    ></button>
+                </div>
+
+                <div class="offcanvas-body p-4">
+                    <div id="mobileFilterContainer"></div>
+                </div>
+
+                <div class="border-top p-3 bg-light d-flex gap-2">
+                    <a
+                        href="{% url 'search_products' %}{% if query %}?q={{ query }}{% endif %}"
+                        class="btn btn-outline-danger btn-sm w-50 py-2 fw-bold rounded-3"
+                    >
+                        Clear All
+                    </a>
+
+                    <button
+                        type="button"
+                        id="mobileSubmitFilterBtn"
+                        class="btn btn-primary btn-sm w-50 py-2 fw-bold rounded-3 shadow-sm"
+                    >
+                        <i class="fa-solid fa-filter me-1"></i>
+                        Apply
+                    </button>
+                </div>
+            </div>
+
+            <!-- PRODUCTS -->
+            <main class="col-lg-9">
+
+                <!-- TOOLBAR -->
+                <div class="d-flex justify-content-between align-items-center mb-3 bg-white p-3 rounded-4 shadow-sm border flex-wrap gap-2">
+
+                    <button
+                        class="btn btn-outline-primary d-lg-none fw-semibold rounded-3 px-3 fs-7"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#mobileFilterOffcanvas"
+                    >
+                        <i class="fa-solid fa-sliders me-2"></i>
+                        Filters
+                    </button>
+
+                    <div class="ms-auto d-flex align-items-center gap-2 sort-container">
+                        <label
+                            for="sortSelect"
+                            class="text-muted fs-7 fw-semibold text-nowrap"
+                        >
+                            Sort By:
+                        </label>
+
+                        <select
+                            id="sortSelect"
+                            class="form-select form-select-sm border bg-light text-dark fw-bold rounded-3 shadow-sm px-3 py-2 cursor-pointer fs-7"
+                            onchange="applySorting(this.value)"
+                        >
+                            <option value="" {% if not sort %}selected{% endif %}>
+                                Relevance / Default
+                            </option>
+
+                            <option value="newest" {% if sort == 'newest' %}selected{% endif %}>
+                                Newest Arrivals
+                            </option>
+
+                            <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>
+                                Price: Low to High
+                            </option>
+
+                            <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>
+                                Price: High to Low
+                            </option>
+
+                            <option value="rating" {% if sort == 'rating' %}selected{% endif %}>
+                                Highest Rated
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ACTIVE FILTERS -->
+                {% if selected_categories or selected_subcategories or selected_thirdcategories or selected_brands or min_price or max_price or rating_filter %}
+
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-3 bg-white p-3 rounded-4 border shadow-sm">
+
+                    <span class="text-muted fs-7 fw-bold me-1">
+                        <i class="fa-solid fa-filter-circle-xmark me-1"></i>
+                        Active:
+                    </span>
+
+                    {% for cat in categories %}
+                        {% if cat.id in selected_categories or cat.id|stringformat:"i" in selected_categories %}
+                        <button
+                            type="button"
+                            onclick="removeFilterParam('category', '{{ cat.id }}')"
+                            class="btn btn-sm bg-primary-subtle text-primary border border-primary-subtle rounded-pill fs-8 fw-semibold py-1 px-3"
+                        >
+                            {{ cat.name }}
+                            <i class="fa-solid fa-xmark ms-1"></i>
+                        </button>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for subcat in subcategories %}
+                        {% if subcat.id in selected_subcategories or subcat.id|stringformat:"i" in selected_subcategories %}
+                        <button
+                            type="button"
+                            onclick="removeFilterParam('subcategory', '{{ subcat.id }}')"
+                            class="btn btn-sm bg-primary-subtle text-primary border border-primary-subtle rounded-pill fs-8 fw-semibold py-1 px-3"
+                        >
+                            {{ subcat.name }}
+                            <i class="fa-solid fa-xmark ms-1"></i>
+                        </button>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for thirdcat in thirdcategories %}
+                        {% if thirdcat.id in selected_thirdcategories or thirdcat.id|stringformat:"i" in selected_thirdcategories %}
+                        <button
+                            type="button"
+                            onclick="removeFilterParam('thirdcategory', '{{ thirdcat.id }}')"
+                            class="btn btn-sm bg-primary-subtle text-primary border border-primary-subtle rounded-pill fs-8 fw-semibold py-1 px-3"
+                        >
+                            {{ thirdcat.name }}
+                            <i class="fa-solid fa-xmark ms-1"></i>
+                        </button>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for brand in brands %}
+                        {% if brand.id in selected_brands or brand.id|stringformat:"i" in selected_brands %}
+                        <button
+                            type="button"
+                            onclick="removeFilterParam('brand', '{{ brand.id }}')"
+                            class="btn btn-sm bg-primary-subtle text-primary border border-primary-subtle rounded-pill fs-8 fw-semibold py-1 px-3"
+                        >
+                            {{ brand.name }}
+                            <i class="fa-solid fa-xmark ms-1"></i>
+                        </button>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if min_price or max_price %}
+                    <button
+                        type="button"
+                        onclick="removeFilterParam('price', '1')"
+                        class="btn btn-sm bg-primary-subtle text-primary border border-primary-subtle rounded-pill fs-8 fw-semibold py-1 px-3"
+                    >
+                        ₹{{ min_price|default:"0" }} - ₹{{ max_price|default:"∞" }}
+                        <i class="fa-solid fa-xmark ms-1"></i>
+                    </button>
+                    {% endif %}
+
+                    {% if rating_filter %}
+                    <button
+                        type="button"
+                        onclick="removeFilterParam('rating', '1')"
+                        class="btn btn-sm bg-primary-subtle text-primary border border-primary-subtle rounded-pill fs-8 fw-semibold py-1 px-3"
+                    >
+                        {{ rating_filter }}+ Stars
+                        <i class="fa-solid fa-xmark ms-1"></i>
+                    </button>
+                    {% endif %}
+
+                    <a
+                        href="{% url 'search_products' %}{% if query %}?q={{ query }}{% endif %}"
+                        class="btn btn-link btn-sm text-danger text-decoration-none fw-bold ms-auto py-0 fs-8"
+                    >
+                        Clear All
+                    </a>
+
+                </div>
+                {% endif %}
+
+                <!-- PRODUCT CARDS -->
+                {% if page_obj.object_list %}
+
+                <div class="row g-3 g-md-4">
+
+                    {% for product in page_obj %}
+
+                    <div class="col-6 col-md-4 d-flex align-items-stretch">
+
+                        <div class="card product-card w-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative h-100 d-flex flex-column">
+
+                            <!-- STOCK BADGE -->
+                            <div class="position-absolute top-0 end-0 m-2 m-md-3 z-2">
+
+                                {% if product.stock > 0 %}
+                                <span class="badge badge-stock-in rounded-pill px-2 py-1 fw-medium shadow-sm fs-8">
+                                    In Stock
+                                </span>
+                                {% else %}
+                                <span class="badge badge-stock-out rounded-pill px-2 py-1 fw-medium shadow-sm fs-8">
+                                    Out of Stock
+                                </span>
+                                {% endif %}
+
+                            </div>
+
+                            <!-- IMAGE + WISHLIST -->
+                            <div class="product-img-wrapper">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-light btn-sm rounded-circle position-absolute top-0 start-0 m-2 m-md-3 z-3 shadow-sm btn-wishlist border"
+                                    data-product-id="{{ product.id }}"
+                                    data-url="{% url 'toggle_wishlist' product.id %}"
+                                    onclick="toggleWishlistAjax(this)"
+                                    title="Toggle Wishlist"
+                                    aria-label="Toggle Wishlist"
+                                >
+                                    <i class="{% if product.id in user_wishlist_product_ids %}fa-solid fa-heart text-danger{% else %}fa-regular fa-heart{% endif %}"></i>
+                                </button>
+
+                                <a
+                                    href="{% url 'product_detail' product.slug %}"
+                                    class="d-block w-100 h-100"
+                                >
+                                    {% if product.main_image %}
+                                    <img
+                                        src="{{ product.main_image.url }}"
+                                        alt="{{ product.name }}"
+                                        class="product-img"
+                                        loading="lazy"
+                                    >
+                                    {% else %}
+                                    <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                        <i class="fa-regular fa-image fs-2"></i>
+                                    </div>
+                                    {% endif %}
+                                </a>
+
+                            </div>
+
+                            <!-- CARD BODY — SAME AS PRODUCT LIST -->
+                            <div class="card-body p-3 p-md-4 d-flex flex-column justify-content-between">
+
+                                <div>
+
+                                    <div class="text-uppercase text-muted fw-semibold fs-8 mb-1">
+                                        {{ product.brand.name }}
+                                    </div>
+
+                                    <h6 class="fw-bold mb-2">
+                                        <a
+                                            href="{% url 'product_detail' product.slug %}"
+                                            class="text-dark text-decoration-none line-clamp-2"
+                                        >
+                                            {{ product.name }}
+                                        </a>
+                                    </h6>
+
+                                    <!-- RATING -->
+                                    <div class="d-flex align-items-center gap-1 mb-2 fs-7">
+                                        <i class="fa-solid fa-star text-warning"></i>
+                                        <span class="fw-bold text-dark ms-1">
+                                            {{ product.avg_rating|default:"0.0" }}
+                                        </span>
+                                        <span class="text-muted">
+                                            ({{ product.review_count|default:"0" }})
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                                <div class="mt-2 pt-2 border-top">
+
+                                    <!-- PRICE -->
+                                    <div class="d-flex align-items-baseline gap-2 mb-3">
+
+                                        {% if product.discount_price and product.discount_price < product.price %}
+
+                                        <span class="fw-bold text-dark fs-5">
+                                            ₹{{ product.discount_price }}
+                                        </span>
+
+                                        <span class="text-muted text-decoration-line-through fs-7">
+                                            ₹{{ product.price }}
+                                        </span>
+
+                                        {% if product.discount_percentage > 0 %}
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill fs-8 fw-bold ms-auto">
+                                            {{ product.discount_percentage }}% OFF
+                                        </span>
+                                        {% endif %}
+
+                                        {% else %}
+
+                                        <span class="fw-bold text-dark fs-5">
+                                            ₹{{ product.price }}
+                                        </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                    <!-- ACTION BUTTONS -->
+                                    <div class="d-grid gap-2">
+
+                                        {% if product.stock > 0 %}
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-primary btn-sm w-100 py-2 rounded-3 fw-bold add-to-cart-btn ajax-add-to-cart"
+                                            data-product-id="{{ product.id }}"
+                                            data-url="{% url 'add_to_cart' product.id %}"
+                                        >
+                                            <i class="fa-solid fa-cart-shopping me-1"></i>
+                                            <span>Add to Cart</span>
+                                        </button>
+
+                                        {% else %}
+
+                                        <button
+                                            class="btn btn-secondary btn-sm py-2 rounded-3 fw-bold w-100"
+                                            disabled
+                                        >
+                                            <i class="fa-solid fa-ban me-1"></i>
+                                            Out of Stock
+                                        </button>
+
+                                        {% endif %}
+
+                                        <a
+                                            href="{% url 'product_detail' product.slug %}"
+                                            class="btn btn-outline-secondary btn-sm py-2 rounded-3 fw-semibold text-center"
+                                        >
+                                            <i class="fa-regular fa-eye me-1"></i>
+                                            View Details
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- PAGINATION -->
+                {% if page_obj.has_other_pages %}
+
+                <nav class="mt-5" aria-label="Page navigation">
+
+                    <ul class="pagination justify-content-center gap-1">
+
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <button
+                                class="page-link rounded-3 px-3 py-2 fw-semibold"
+                                onclick="goToPage({{ page_obj.previous_page_number }})"
+                            >
+                                <i class="fa-solid fa-chevron-left me-1"></i>
+                                Prev
+                            </button>
+                        </li>
+                        {% endif %}
+
+                        {% for page_num in page_obj.paginator.page_range %}
+
+                            {% if page_obj.number == page_num %}
+
+                            <li class="page-item active">
+                                <span class="page-link rounded-3 px-3 py-2 fw-bold bg-primary border-primary text-white">
+                                    {{ page_num }}
+                                </span>
+                            </li>
+
+                            {% elif page_num > page_obj.number|add:'-3' and page_num < page_obj.number|add:'3' %}
+
+                            <li class="page-item">
+                                <button
+                                    class="page-link rounded-3 px-3 py-2 fw-semibold text-dark"
+                                    onclick="goToPage({{ page_num }})"
+                                >
+                                    {{ page_num }}
+                                </button>
+                            </li>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <button
+                                class="page-link rounded-3 px-3 py-2 fw-semibold"
+                                onclick="goToPage({{ page_obj.next_page_number }})"
+                            >
+                                Next
+                                <i class="fa-solid fa-chevron-right ms-1"></i>
+                            </button>
+                        </li>
+                        {% endif %}
+
+                    </ul>
+
+                </nav>
+
+                {% endif %}
+
+                {% else %}
+
+                <!-- EMPTY STATE -->
+                <div class="text-center py-5 my-4 bg-white rounded-4 border shadow-sm p-4">
+                    <div class="mb-3 text-primary">
+                        <i class="fa-solid fa-boxes-packing fs-1"></i>
+                    </div>
+
+                    <h4 class="fw-bold text-dark mb-2">
+                        No Matching Products
+                    </h4>
+
+                    <p class="text-muted mb-4">
+                        No products were found matching your search or filters.
+                    </p>
+
+                    <a
+                        href="{% url 'search_products' %}{% if query %}?q={{ query }}{% endif %}"
+                        class="btn btn-primary px-4 py-2 rounded-3 fw-bold"
+                    >
+                        <i class="fa-solid fa-rotate-left me-2"></i>
+                        Reset Filters
+                    </a>
+                </div>
+
+                {% endif %}
+
+            </main>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(
+                    cookie.substring(name.length + 1)
+                );
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
+
+/* =========================================================
+   SORTING
+   ========================================================= */
+
+function applySorting(sortValue) {
+    const url = new URL(window.location.href);
+
+    if (sortValue) {
+        url.searchParams.set('sort', sortValue);
+    } else {
+        url.searchParams.delete('sort');
+    }
+
+    url.searchParams.delete('page');
+
+    window.location.href = url.toString();
+}
+
+
+/* =========================================================
+   FILTER CHIP REMOVAL
+   ========================================================= */
+
+function removeFilterParam(paramType, paramValue) {
+    const url = new URL(window.location.href);
+    const searchParams = url.searchParams;
+
+    if (paramType === 'price') {
+
+        searchParams.delete('min_price');
+        searchParams.delete('max_price');
+
+    } else if (paramType === 'rating') {
+
+        searchParams.delete('rating');
+
+    } else {
+
+        const values = searchParams.getAll(paramType);
+
+        searchParams.delete(paramType);
+
+        values.forEach(function (value) {
+            if (value !== String(paramValue)) {
+                searchParams.append(paramType, value);
+            }
+        });
+    }
+
+    searchParams.delete('page');
+
+    window.location.href = url.toString();
+}
+
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+
+function goToPage(pageNumber) {
+    const url = new URL(window.location.href);
+
+    url.searchParams.set('page', pageNumber);
+
+    window.location.href = url.toString();
+}
+
+
+/* =========================================================
+   WISHLIST AJAX
+   ========================================================= */
+
+function toggleWishlistAjax(button) {
+
+    const url = button.getAttribute('data-url');
+    const icon = button.querySelector('i');
+
+    if (!url) return;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(function (response) {
+
+        if (response.status === 401) {
+            window.location.href = "{% url 'login' %}";
+            return null;
+        }
+
+        return response.json();
+    })
+    .then(function (data) {
+
+        if (!data) return;
+
+        if (data.added || data.status === 'added') {
+
+            icon.classList.remove('fa-regular');
+            icon.classList.add('fa-solid', 'text-danger');
+
+        } else if (data.removed || data.status === 'removed') {
+
+            icon.classList.remove('fa-solid', 'text-danger');
+            icon.classList.add('fa-regular');
+        }
+
+        /* Update wishlist navbar count */
+      const wishlistBadge =
+    document.getElementById('navbar-wishlist-count');
+
+if (wishlistBadge && data.wishlist_count !== undefined) {
+
+    wishlistBadge.textContent = data.wishlist_count;
+
+    if (Number(data.wishlist_count) > 0) {
+        wishlistBadge.style.display = '';
+    } else {
+        wishlistBadge.style.display = 'none';
+    }
+}
+    })
+    .catch(function (error) {
+        console.error('Wishlist toggle error:', error);
+    });
+}
+
+
+/* =========================================================
+   AJAX ADD TO CART
+   ========================================================= */
+
+function updateNavbarCartCount(count) {
+
+    /*
+     * Primary selector used by the project.
+     */
+    const cartBadge =
+        document.getElementById('navbar-cart-count');
+
+    if (cartBadge) {
+        cartBadge.textContent = count;
+        return;
+    }
+
+    /*
+     * Fallback for the existing navbar structure
+     * if the badge has not been given an ID.
+     */
+    const cartLink = document.querySelector(
+        '.btn-icon[href*="cart"]'
+    );
+
+    if (!cartLink) return;
+
+    let badge = cartLink.querySelector('.badge');
+
+    if (!badge && Number(count) > 0) {
+
+        badge = document.createElement('span');
+
+        badge.className =
+            'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary';
+
+        cartLink.appendChild(badge);
+    }
+
+    if (badge) {
+        badge.textContent = count;
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    /* =====================================================
+       DESKTOP FILTER AUTO SUBMIT
+       ===================================================== */
+
+    const desktopForm =
+        document.getElementById('desktopFilterForm');
+
+    if (desktopForm) {
+
+        desktopForm
+            .querySelectorAll('.auto-submit-filter')
+            .forEach(function (input) {
+
+                input.addEventListener('change', function () {
+                    desktopForm.submit();
+                });
+
+            });
+    }
+
+
+    /* =====================================================
+       MOBILE FILTER CLONE
+       ===================================================== */
+
+    const mobileContainer =
+        document.getElementById('mobileFilterContainer');
+
+    const mobileSubmitBtn =
+        document.getElementById('mobileSubmitFilterBtn');
+
+    if (desktopForm && mobileContainer) {
+
+        const clonedForm =
+            desktopForm.cloneNode(true);
+
+        clonedForm.id = 'mobileFilterForm';
+
+        /*
+         * Prevent duplicate IDs.
+         */
+        clonedForm
+            .querySelectorAll('[id]')
+            .forEach(function (element) {
+
+                const oldId = element.id;
+                const newId = 'mobile_' + oldId;
+
+                element.id = newId;
+
+                clonedForm
+                    .querySelectorAll(
+                        'label[for="' + oldId + '"]'
+                    )
+                    .forEach(function (label) {
+
+                        label.setAttribute(
+                            'for',
+                            newId
+                        );
+
+                    });
+
+            });
+
+        /*
+         * Mobile filters should NOT auto-submit.
+         */
+        clonedForm
+            .querySelectorAll('.auto-submit-filter')
+            .forEach(function (input) {
+
+                input.classList.remove(
+                    'auto-submit-filter'
+                );
+
+            });
+
+        /*
+         * Remove cloned desktop submit button.
+         */
+        const clonedSubmit =
+            clonedForm.querySelector(
+                'button[type="submit"]'
+            );
+
+        if (clonedSubmit) {
+            clonedSubmit.remove();
+        }
+
+        mobileContainer.appendChild(clonedForm);
+
+
+        if (mobileSubmitBtn) {
+
+            mobileSubmitBtn.addEventListener(
+                'click',
+                function () {
+
+                    const mobileForm =
+                        document.getElementById(
+                            'mobileFilterForm'
+                        );
+
+                    if (mobileForm) {
+                        mobileForm.submit();
+                    }
+
+                }
+            );
+        }
+    }
+
+
+    /* =====================================================
+       ADD TO CART
+       ===================================================== */
+
+    document
+        .querySelectorAll('.ajax-add-to-cart')
+        .forEach(function (button) {
+
+            button.addEventListener(
+                'click',
+                function () {
+
+                    if (button.disabled) return;
+
+                    const url =
+                        button.getAttribute('data-url');
+
+                    if (!url) return;
+
+                    const icon =
+                        button.querySelector('i');
+
+                    const text =
+                        button.querySelector('span');
+
+                    const originalText =
+                        text.textContent;
+
+                    const originalIcon =
+                        icon.className;
+
+                    button.disabled = true;
+
+                    text.textContent = 'Adding...';
+
+                    icon.className =
+                        'fa-solid fa-spinner fa-spin me-1';
+
+
+                    fetch(url, {
+                        method: 'POST',
+
+                        headers: {
+                            'X-CSRFToken':
+                                getCookie('csrftoken'),
+
+                            'X-Requested-With':
+                                'XMLHttpRequest',
+
+                            'Content-Type':
+                                'application/x-www-form-urlencoded'
+                        },
+
+                        body: new URLSearchParams({
+                            quantity: '1'
+                        })
+                    })
+
+                    .then(function (response) {
+
+                        if (response.status === 401) {
+                            window.location.href =
+                                "{% url 'login' %}";
+
+                            return null;
+                        }
+
+                        if (!response.ok) {
+                            throw new Error(
+                                'Failed to add product to cart.'
+                            );
+                        }
+
+                        return response.json();
+                    })
+
+                    .then(function (data) {
+
+                        if (!data) return;
+
+
+                        if (
+                            data.success ||
+                            data.added
+                        ) {
+
+                            /*
+                             * IMPORTANT:
+                             * Update navbar immediately.
+                             */
+                            if (
+                                data.cart_count !==
+                                undefined
+                            ) {
+
+                                updateNavbarCartCount(
+                                    data.cart_count
+                                );
+                            }
+
+
+                            icon.className =
+                                'fa-solid fa-check me-1';
+
+                            text.textContent =
+                                'Added';
+
+
+                            setTimeout(
+                                function () {
+
+                                    icon.className =
+                                        originalIcon;
+
+                                    text.textContent =
+                                        originalText;
+
+                                    button.disabled =
+                                        false;
+
+                                },
+                                1200
+                            );
+
+                        } else {
+
+                            icon.className =
+                                originalIcon;
+
+                            text.textContent =
+                                originalText;
+
+                            button.disabled =
+                                false;
+                        }
+
+                    })
+
+                    .catch(function (error) {
+
+                        console.error(
+                            'Add to cart error:',
+                            error
+                        );
+
+                        icon.className =
+                            originalIcon;
+
+                        text.textContent =
+                            originalText;
+
+                        button.disabled =
+                            false;
+
+                    });
+
+                }
+            );
+
+        });
+
+});
+</script>
+{% endblock %}
+

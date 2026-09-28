@@ -1,0 +1,115 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Add Brand - ShopNest Admin{% endblock %}
+
+{% block nav_brands %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <a href="{% url 'admin_brands' %}">Brands</a>
+    <span class="text-secondary">/</span>
+    <span>Add Brand</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-plus-circle text-danger"></i> Add New Brand
+            </h1>
+            <p class="page-subtitle">Create a brand entry with an optional logo graphic</p>
+        </div>
+        <div>
+            <a href="{% url 'admin_brands' %}" class="btn btn-light btn-sm border text-secondary d-flex align-items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Back to Brands
+            </a>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">
+                        <i class="fa-solid fa-certificate text-danger"></i> Brand Details
+                    </h3>
+                </div>
+                <div class="admin-card-body">
+                    <form action="{% url 'add_brand' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- Brand Category -->
+<div class="mb-4">
+    <label class="form-label-custom" for="categorySelect">
+        Brand Category <span class="text-danger">*</span>
+    </label>
+
+    <select name="category"
+            id="categorySelect"
+            class="form-select form-select-custom"
+            required>
+
+        <option value="">-- Choose Category --</option>
+
+        {% for cat in categories %}
+            <option value="{{ cat.id }}">{{ cat.name }}</option>
+        {% endfor %}
+
+    </select>
+
+    <div class="form-hint">
+        Select the category this brand belongs to.
+    </div>
+</div>
+
+                        <!-- Brand Name -->
+                        <div class="mb-4">
+                            <label class="form-label-custom" for="brandName">
+                                Brand Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="name" id="brandName" class="form-control form-control-custom" placeholder="e.g. Apple, Nike, Samsung, Sony" required autofocus>
+                            <div class="form-hint">
+                                A unique slug will be automatically created from this brand name.
+                            </div>
+                        </div>
+
+                        <!-- Brand Logo Upload -->
+                        <div class="mb-4">
+                            <label class="form-label-custom">
+                                Brand Logo <span class="text-muted fw-normal">(Optional)</span>
+                            </label>
+                            <div class="file-upload-box">
+                                <i class="fa-solid fa-cloud-arrow-up text-primary fs-2 mb-2 d-block"></i>
+                                <span class="fw-semibold text-dark d-block">Click or drag & drop brand logo</span>
+                                <small class="text-muted">Supports PNG, JPG, WEBP or SVG</small>
+                                <input type="file" name="logo" id="imageUploadInput" accept="image/*">
+                            </div>
+                            
+                            <!-- Instant Live Preview -->
+                            <div class="mt-3 d-none" id="imagePreviewContainer">
+                                <span class="form-label-custom mb-1">Selected Preview:</span>
+                                <div class="image-preview-wrapper">
+                                    <img id="imagePreviewImg" src="" alt="Brand Logo Preview">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex align-items-center justify-content-end gap-2 pt-3 border-top">
+                            <a href="{% url 'admin_brands' %}" class="btn btn-light btn-sm border px-3 py-2 text-secondary">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-sm px-4 py-2 fw-semibold shadow-sm">
+                                <i class="fa-solid fa-check me-1"></i> Save Brand
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

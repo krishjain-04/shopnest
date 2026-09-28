@@ -1,0 +1,515 @@
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top py-3 main-navbar">
+    <div class="container">
+
+        <!-- =====================================================
+             BRAND LOGO
+        ====================================================== -->
+        <a class="navbar-brand fw-bold fs-3 text-dark logo-text"
+           href="{% url 'product_list' %}">
+            SHOP<span class="text-primary">NEST</span>
+        </a>
+
+
+        <!-- =====================================================
+             MOBILE ACTIONS
+             Wishlist + Cart + User + Menu
+             
+             These stay OUTSIDE the collapse so they remain
+             visible directly on mobile.
+        ====================================================== -->
+        <div class="mobile-navbar-actions d-lg-none">
+
+            <!-- WISHLIST -->
+            <a href="{% url 'wishlist_detail' %}"
+               class="mobile-nav-icon position-relative text-dark text-decoration-none"
+               title="Wishlist">
+
+                <i class="fa-regular fa-heart"></i>
+
+                <span
+                    id="mobile-wishlist-count"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    {% if wishlist_count <= 0 %}style="display: none;"{% endif %}
+                >
+                    {{ wishlist_count }}
+                </span>
+
+            </a>
+
+
+            <!-- CART -->
+            <a href="{% url 'cart_view' %}"
+               class="mobile-nav-icon position-relative text-dark text-decoration-none"
+               title="Shopping Cart">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                <span
+                    id="mobile-cart-count"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"
+                    {% if cart_count <= 0 %}style="display: none;"{% endif %}
+                >
+                    {{ cart_count }}
+                </span>
+
+            </a>
+
+
+            <!-- USER -->
+            <div class="dropdown">
+
+                <a href="#"
+                   class="mobile-nav-icon text-dark d-flex align-items-center text-decoration-none dropdown-toggle-no-caret"
+                   id="mobileUserMenuDropdown"
+                   role="button"
+                   data-bs-toggle="dropdown"
+                   aria-expanded="false"
+                   title="Account">
+
+                    {% if user.is_authenticated and user.profile.profile_image %}
+
+                        <img
+                            src="{{ user.profile.profile_image.url }}"
+                            alt="{{ user.username }}"
+                            class="rounded-circle object-fit-cover border"
+                            width="30"
+                            height="30"
+                        >
+
+                    {% else %}
+
+                        <i class="fa-regular fa-user"></i>
+
+                    {% endif %}
+
+                </a>
+
+
+                <!-- MOBILE USER DROPDOWN -->
+                <ul
+                    class="dropdown-menu dropdown-menu-end border-0 shadow mt-2 py-2 text-small mobile-user-dropdown"
+                    aria-labelledby="mobileUserMenuDropdown"
+                >
+
+                    {% if user.is_authenticated %}
+
+                        <li class="px-3 py-2 border-bottom mb-1">
+
+                            <span class="d-block text-muted small">
+                                Signed in as
+                            </span>
+
+                            <strong class="text-dark">
+                                {{ user.username }}
+                            </strong>
+
+                        </li>
+
+
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{% url 'profile' %}">
+                                <i class="fa-regular fa-id-card me-2 text-primary"></i>
+                                My Profile
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{% url 'wishlist_detail' %}">
+                                <i class="fa-regular fa-heart me-2 text-danger"></i>
+                                My Wishlist
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{% url 'my_orders' %}">
+                                <i class="fa-solid fa-box-archive me-2 text-primary"></i>
+                                My Orders
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{% url 'address_list' %}">
+                                <i class="fa-solid fa-address-book me-2 text-primary"></i>
+                                My Addresses
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{% url 'edit_profile' %}">
+                                <i class="fa-solid fa-user-pen me-2 text-muted"></i>
+                                Edit Profile
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{% url 'change_password' %}">
+                                <i class="fa-solid fa-key me-2 text-muted"></i>
+                                Change Password
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <hr class="dropdown-divider my-1">
+                        </li>
+
+
+                        <li>
+
+                            <form
+                                action="{% url 'logout' %}"
+                                method="POST"
+                                class="d-inline w-100"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="dropdown-item py-2 text-danger border-0 bg-transparent w-100 text-start"
+                                >
+                                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>
+                                    Logout
+                                </button>
+
+                            </form>
+
+                        </li>
+
+                    {% else %}
+
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{% url 'login' %}">
+                                <i class="fa-solid fa-right-to-bracket me-2 text-primary"></i>
+                                Login
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{% url 'register' %}">
+                                <i class="fa-solid fa-user-plus me-2 text-success"></i>
+                                Register
+                            </a>
+                        </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </div>
+
+
+            <!-- MOBILE MENU TOGGLE -->
+            <button
+                class="navbar-toggler border-0 shadow-none p-0 mobile-menu-toggle"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMain"
+                aria-controls="navbarMain"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             COLLAPSIBLE NAVBAR CONTENT
+             Desktop + Mobile Menu
+        ====================================================== -->
+        <div class="collapse navbar-collapse" id="navbarMain">
+
+
+            <!-- =================================================
+                 NAV LINKS
+            ================================================== -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-lg-2">
+
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold"
+                       href="/">
+                        Home
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold"
+                       href="{% url 'product_list' %}">
+                        Products
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold"
+                       href="{% url 'all_categories' %}">
+                        Categories
+                    </a>
+                </li>
+
+            </ul>
+
+
+            <!-- =================================================
+                 SEARCH FORM
+            ================================================== -->
+            <form
+                class="d-flex mx-lg-4 my-2 my-lg-0 flex-grow-1 max-w-md search-form"
+                action="{% url 'search_products' %}"
+                method="GET"
+            >
+
+                <div class="input-group">
+
+                    <input
+                        class="form-control border-end-0 bg-light"
+                        type="search"
+                        name="q"
+                        value="{{ request.GET.q }}"
+                        placeholder="Search products..."
+                        aria-label="Search"
+                    >
+
+                    <button
+                        class="btn btn-outline-secondary border-start-0 bg-light text-muted"
+                        type="submit"
+                    >
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- =================================================
+                 DESKTOP ACTION ICONS
+                 
+                 Hidden on mobile because mobile actions are
+                 already outside the collapse.
+            ================================================== -->
+            <div class="d-none d-lg-flex align-items-center gap-3 mt-3 mt-lg-0 ms-auto">
+
+
+                <!-- WISHLIST -->
+                <a
+                    href="{% url 'wishlist_detail' %}"
+                    class="position-relative text-dark fs-5 text-decoration-none"
+                    title="Wishlist"
+                >
+
+                    <i class="fa-regular fa-heart"></i>
+
+                    <span
+                        id="navbar-wishlist-count"
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                        {% if wishlist_count <= 0 %}style="display: none;"{% endif %}
+                    >
+                        {{ wishlist_count }}
+                    </span>
+
+                </a>
+
+
+                <!-- CART -->
+                <a
+                    href="{% url 'cart_view' %}"
+                    class="btn-icon text-dark position-relative"
+                    title="Shopping Cart"
+                >
+
+                    <i class="fa-solid fa-bag-shopping fs-5"></i>
+
+                    <span
+                        id="navbar-cart-count"
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"
+                        {% if cart_count <= 0 %}style="display: none;"{% endif %}
+                    >
+                        {{ cart_count }}
+                    </span>
+
+                </a>
+
+
+                <!-- USER -->
+                <div class="dropdown">
+
+                    <a
+                        href="#"
+                        class="btn-icon text-dark d-flex align-items-center text-decoration-none dropdown-toggle-no-caret"
+                        id="userMenuDropdown"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        title="Account"
+                    >
+
+                        {% if user.is_authenticated and user.profile.profile_image %}
+
+                            <img
+                                src="{{ user.profile.profile_image.url }}"
+                                alt="{{ user.username }}"
+                                class="rounded-circle object-fit-cover border"
+                                width="32"
+                                height="32"
+                            >
+
+                        {% else %}
+
+                            <i class="fa-regular fa-user fs-5"></i>
+
+                        {% endif %}
+
+                    </a>
+
+
+                    <!-- DESKTOP USER DROPDOWN -->
+                    <ul
+                        class="dropdown-menu dropdown-menu-end border-0 shadow mt-2 py-2 text-small"
+                        aria-labelledby="userMenuDropdown"
+                    >
+
+                        {% if user.is_authenticated %}
+
+                            <li class="px-3 py-2 border-bottom mb-1">
+
+                                <span class="d-block text-muted small">
+                                    Signed in as
+                                </span>
+
+                                <strong class="text-dark">
+                                    {{ user.username }}
+                                </strong>
+
+                            </li>
+
+
+                            <li>
+                                <a class="dropdown-item py-2"
+                                   href="{% url 'profile' %}">
+                                    <i class="fa-regular fa-id-card me-2 text-primary"></i>
+                                    My Profile
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a class="dropdown-item py-2"
+                                   href="{% url 'wishlist_detail' %}">
+                                    <i class="fa-regular fa-heart me-2 text-danger"></i>
+                                    My Wishlist
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a class="dropdown-item py-2"
+                                   href="{% url 'my_orders' %}">
+                                    <i class="fa-solid fa-box-archive me-2 text-primary"></i>
+                                    My Orders
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a class="dropdown-item py-2"
+                                   href="{% url 'address_list' %}">
+                                    <i class="fa-solid fa-address-book me-2 text-primary"></i>
+                                    My Addresses
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a class="dropdown-item py-2"
+                                   href="{% url 'edit_profile' %}">
+                                    <i class="fa-solid fa-user-pen me-2 text-muted"></i>
+                                    Edit Profile
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a class="dropdown-item py-2"
+                                   href="{% url 'change_password' %}">
+                                    <i class="fa-solid fa-key me-2 text-muted"></i>
+                                    Change Password
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <hr class="dropdown-divider my-1">
+                            </li>
+
+
+                            <li>
+
+                                <form
+                                    action="{% url 'logout' %}"
+                                    method="POST"
+                                    class="d-inline w-100"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="dropdown-item py-2 text-danger border-0 bg-transparent w-100 text-start"
+                                    >
+                                        <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>
+                                        Logout
+                                    </button>
+
+                                </form>
+
+                            </li>
+
+                        {% else %}
+
+                            <li>
+                                <a class="dropdown-item py-2"
+                                   href="{% url 'login' %}">
+                                    <i class="fa-solid fa-right-to-bracket me-2 text-primary"></i>
+                                    Login
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a class="dropdown-item py-2"
+                                   href="{% url 'register' %}">
+                                    <i class="fa-solid fa-user-plus me-2 text-success"></i>
+                                    Register
+                                </a>
+                            </li>
+
+                        {% endif %}
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</nav>

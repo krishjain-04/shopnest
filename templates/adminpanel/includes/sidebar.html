@@ -1,0 +1,70 @@
+<!-- Sidebar Navigation -->
+<aside class="admin-sidebar" id="adminSidebar">
+    <!-- Brand Header -->
+    <a href="{% url 'admin_dashboard' %}" class="sidebar-brand">
+        <div class="brand-icon">
+            <i class="fa-solid fa-bag-shopping"></i>
+        </div>
+        <div class="brand-text">
+            <h4>ShopNest</h4>
+            <span>Admin Console</span>
+        </div>
+    </a>
+
+    <!-- Sidebar Navigation Menu -->
+    <div class="sidebar-menu">
+        <div class="menu-label">Main Navigation</div>
+        <a href="{% url 'admin_dashboard' %}" class="nav-link-admin {% block nav_dashboard %}{% endblock %}">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <div class="menu-label">Catalog Management</div>
+        <a href="{% url 'admin_products' %}" class="nav-link-admin {% block nav_products %}{% endblock %}">
+            <i class="fa-solid fa-box-open"></i>
+            <span>Products</span>
+        </a>
+        <a href="{% url 'admin_categories' %}" class="nav-link-admin {% block nav_categories %}{% endblock %}">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>Categories</span>
+        </a>
+        <a href="{% url 'admin_subcategories' %}" class="nav-link-admin {% block nav_subcategories %}{% endblock %}">
+            <i class="fa-solid fa-network-wired"></i>
+            <span>Subcategories</span>
+        </a>
+        <a href="{% url 'admin_thirdcategories' %}" class="nav-link-admin {% block nav_thirdcategories %}{% endblock %}">
+            <i class="fa-solid fa-sitemap"></i>
+            <span>Third Categories</span>
+        </a>
+        <a href="{% url 'admin_brands' %}" class="nav-link-admin {% block nav_brands %}{% endblock %}">
+            <i class="fa-solid fa-certificate"></i>
+            <span>Brands</span>
+        </a>
+
+        <div class="menu-label">Sales & Customers</div>
+        <a href="{% url 'admin_orders' %}" class="nav-link-admin {% block nav_orders %}{% endblock %}">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Orders</span>
+        </a>
+        <a href="{% url 'admin_users' %}" class="nav-link-admin {% block nav_users %}{% endblock %}">
+            <i class="fa-solid fa-users"></i>
+            <span>Customers</span>
+        </a>
+    </div>
+
+    <!-- Sidebar Footer / Admin Identity -->
+    <div class="sidebar-user">
+        <div class="d-flex align-items-center gap-2 text-truncate">
+            <div class="user-avatar">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div class="text-truncate">
+                <div class="text-white fw-semibold small text-truncate">{{ admin_name|default:"Admin" }}</div>
+                <div class="text-secondary" style="font-size: 0.72rem;">Super Administrator</div>
+            </div>
+        </div>
+        <a href="{% url 'admin_logout' %}" class="btn btn-outline-danger btn-sm p-1 px-2" title="Logout">
+            <i class="fa-solid fa-power-off"></i>
+        </a>
+    </div>
+</aside>

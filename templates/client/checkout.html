@@ -1,0 +1,636 @@
+{% extends 'client/base.html' %}
+{% load static %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+```
+<h2 class="fw-bold mb-4">
+    <i class="fa-solid fa-cart-shopping text-primary me-2"></i>
+    Checkout
+</h2>
+
+<form
+    action="{% url 'place_order' %}"
+    method="POST"
+    id="checkoutForm"
+    novalidate
+>
+
+    {% csrf_token %}
+
+    <div class="row g-4">
+
+        <!-- =====================================================
+             LEFT COLUMN
+             SHIPPING ADDRESS + PAYMENT
+        ====================================================== -->
+
+        <div class="col-lg-7">
+
+            <!-- SHIPPING ADDRESS -->
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+
+                        <h5 class="fw-bold m-0">
+                            <i class="fa-solid fa-location-dot text-primary me-2"></i>
+                            Shipping Address
+                        </h5>
+
+                        <button
+                            class="btn btn-sm btn-outline-primary"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#newAddressFormCollapse"
+                        >
+                            <i class="fa-solid fa-plus me-1"></i>
+                            Add New Address
+                        </button>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         SAVED ADDRESSES
+                    ================================================== -->
+
+                    {% if addresses %}
+
+                        <div class="row g-3 mb-3">
+
+                            {% for addr in addresses %}
+
+                                <div class="col-md-6">
+
+                                    <div
+                                        class="
+                                            card
+                                            address-card
+                                            p-3
+                                            rounded-3
+                                            h-100
+                                            {% if addr.is_default %}selected{% endif %}
+                                        "
+                                    >
+
+                                        <div class="form-check">
+
+                                            <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="selected_address"
+                                                id="addr_{{ addr.id }}"
+                                                value="{{ addr.id }}"
+                                                {% if addr.is_default or forloop.first %}
+                                                    checked
+                                                {% endif %}
+                                            >
+
+                                            <label
+                                                class="form-check-label w-100"
+                                                for="addr_{{ addr.id }}"
+                                            >
+
+                                                <div class="fw-bold text-dark">
+
+                                                    {{ addr.full_name }}
+
+                                                    {% if addr.is_default %}
+
+                                                        <span class="badge bg-primary ms-1">
+                                                            Default
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                                <div class="small text-muted mt-1">
+                                                    {{ addr.address_line }}
+                                                </div>
+
+                                                <div class="small text-muted">
+                                                    {{ addr.city }},
+                                                    {{ addr.state }}
+                                                    -
+                                                    {{ addr.pincode }}
+                                                </div>
+
+                                                <div class="small text-muted">
+
+                                                    <i class="fa-solid fa-phone me-1 mt-1"></i>
+
+                                                    {{ addr.phone }}
+
+                                                </div>
+
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% else %}
+
+                        <p class="text-muted small">
+                            No saved addresses found.
+                            Please add an address below.
+                        </p>
+
+                    {% endif %}
+
+
+                    <!-- =================================================
+                         NEW ADDRESS FORM
+                    ================================================== -->
+
+                    <div
+                        class="collapse {% if not addresses %}show{% endif %}"
+                        id="newAddressFormCollapse"
+                    >
+
+                        <div class="border-top pt-3 mt-3">
+
+                            <h6 class="fw-bold mb-3">
+                                Add New Address
+                            </h6>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label small fw-semibold">
+                                        Full Name
+                                    </label>
+
+                                    {{ form.full_name }}
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label small fw-semibold">
+                                        Phone Number
+                                    </label>
+
+                                    {{ form.phone }}
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <label class="form-label small fw-semibold">
+                                        Address Line
+                                    </label>
+
+                                    {{ form.address_line }}
+
+                                </div>
+
+
+                                <div class="col-md-4">
+
+                                    <label class="form-label small fw-semibold">
+                                        City
+                                    </label>
+
+                                    {{ form.city }}
+
+                                </div>
+
+
+                                <div class="col-md-4">
+
+                                    <label class="form-label small fw-semibold">
+                                        State
+                                    </label>
+
+                                    {{ form.state }}
+
+                                </div>
+
+
+                                <div class="col-md-4">
+
+                                    <label class="form-label small fw-semibold">
+                                        Pincode
+                                    </label>
+
+                                    {{ form.pincode }}
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <label class="form-label small fw-semibold">
+                                        Landmark (Optional)
+                                    </label>
+
+                                    {{ form.landmark }}
+
+                                </div>
+
+
+                                <div class="col-12 form-check ms-2">
+
+                                    {{ form.is_default }}
+
+                                    <label
+                                        class="form-check-label small"
+                                        for="{{ form.is_default.id_for_label }}"
+                                    >
+                                        Set as default address
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 PAYMENT METHOD
+            ====================================================== -->
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h5 class="fw-bold mb-3">
+
+                        <i class="fa-solid fa-credit-card text-primary me-2"></i>
+
+                        Payment Method
+
+                    </h5>
+
+
+                    <div class="form-check border p-3 rounded-3 mb-2 bg-light">
+
+                        <input
+                            class="form-check-input"
+                            type="radio"
+                            name="payment_method"
+                            id="cod"
+                            value="Cash on Delivery"
+                            checked
+                        >
+
+                        <label
+                            class="form-check-label fw-semibold text-dark"
+                            for="cod"
+                        >
+
+                            <i class="fa-solid fa-money-bill-wave me-2 text-success"></i>
+
+                            Cash on Delivery (COD)
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             RIGHT COLUMN
+             ORDER SUMMARY
+        ====================================================== -->
+
+        <div class="col-lg-5">
+
+            <div
+                class="card border-0 shadow-sm sticky-top checkout-summary-card"
+                style="top: 90px;"
+            >
+
+                <div class="card-body p-4">
+
+                    <hr>
+
+
+                    <!-- =================================================
+                         ORDER SUMMARY TITLE
+                    ================================================== -->
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <h5 class="fw-bold mb-0">
+                            Order Summary
+                        </h5>
+
+                        {% if checkout_type == 'buy_now' %}
+
+                            <span class="badge bg-primary">
+                                {{ buy_now_item.quantity }}
+                                Item{{ buy_now_item.quantity|pluralize }}
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-primary">
+                                {{ product_count }}
+                                Product{{ product_count|pluralize }}
+                                •
+                                {{ total_quantity }}
+                                Item{{ total_quantity|pluralize }}
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- =================================================
+                         ITEMS WRAPPER
+                    ================================================== -->
+
+                    <div
+                        class="cart-items-wrapper pe-1"
+                        style="max-height: 320px; overflow-y: auto;"
+                    >
+
+
+                        <!-- =================================================
+                             BUY NOW
+                        ================================================== -->
+
+                        {% if checkout_type == 'buy_now' and buy_now_item %}
+
+                            <div class="d-flex align-items-center mb-3">
+
+                                <!-- PRODUCT IMAGE -->
+
+                                {% if buy_now_item.product.main_image %}
+
+                                    <img
+                                        src="{{ buy_now_item.product.main_image.url }}"
+                                        alt="{{ buy_now_item.product.name }}"
+                                        class="rounded object-fit-cover me-3 border"
+                                        width="60"
+                                        height="60"
+                                    >
+
+                                {% else %}
+
+                                    <div
+                                        class="bg-light rounded me-3 d-flex align-items-center justify-content-center border"
+                                        style="width:60px; height:60px;"
+                                    >
+
+                                        <i class="fa-solid fa-image text-muted"></i>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- PRODUCT DETAILS -->
+
+                                <div class="flex-grow-1 min-width-0">
+
+                                    <h6 class="mb-0 text-truncate fw-semibold">
+
+                                        {{ buy_now_item.product.name }}
+
+                                    </h6>
+
+                                    <small class="text-muted d-block">
+
+                                        Qty:
+                                        {{ buy_now_item.quantity }}
+
+                                    </small>
+
+                                    <div class="small text-muted">
+
+                                        ₹{{ buy_now_item.unit_price }}
+                                        ×
+                                        {{ buy_now_item.quantity }}
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- ITEM TOTAL -->
+
+                                <div class="text-end fw-bold ms-2">
+
+                                    ₹{{ buy_now_item.total_price }}
+
+                                </div>
+
+                            </div>
+
+
+                        <!-- =================================================
+                             NORMAL CART
+                        ================================================== -->
+
+                        {% else %}
+
+                            {% for item in cart_items %}
+
+                                <div class="d-flex align-items-center mb-3">
+
+                                    <!-- PRODUCT IMAGE -->
+
+                                    {% if item.product.main_image %}
+
+                                        <img
+                                            src="{{ item.product.main_image.url }}"
+                                            alt="{{ item.product.name }}"
+                                            class="rounded object-fit-cover me-3 border"
+                                            width="60"
+                                            height="60"
+                                        >
+
+                                    {% else %}
+
+                                        <div
+                                            class="bg-light rounded me-3 d-flex align-items-center justify-content-center border"
+                                            style="width:60px; height:60px;"
+                                        >
+
+                                            <i class="fa-solid fa-image text-muted"></i>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <!-- PRODUCT DETAILS -->
+
+                                    <div class="flex-grow-1 min-width-0">
+
+                                        <h6 class="mb-0 text-truncate fw-semibold">
+
+                                            {{ item.product.name }}
+
+                                        </h6>
+
+                                        <small class="text-muted d-block">
+
+                                            Qty:
+                                            {{ item.quantity }}
+
+                                        </small>
+
+                                        <div class="small text-muted">
+
+                                            ₹{{ item.unit_price }}
+                                            ×
+                                            {{ item.quantity }}
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- ITEM TOTAL -->
+
+                                    <div class="text-end fw-bold ms-2">
+
+                                        ₹{{ item.total_price }}
+
+                                    </div>
+
+                                </div>
+
+                            {% empty %}
+
+                                <p class="text-muted small mb-0">
+                                    No items found.
+                                </p>
+
+                            {% endfor %}
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <!-- =================================================
+                         SUBTOTAL
+                    ================================================== -->
+
+                    <div class="d-flex justify-content-between mb-2">
+
+                        <span class="text-muted">
+                            Subtotal
+                        </span>
+
+                        <span class="fw-semibold">
+                            ₹{{ grand_total }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         SHIPPING
+                    ================================================== -->
+
+                    <div class="d-flex justify-content-between mb-2">
+
+                        <span class="text-muted">
+                            Shipping
+                        </span>
+
+                        <span class="text-success fw-semibold">
+                            FREE
+                        </span>
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <!-- =================================================
+                         GRAND TOTAL
+                    ================================================== -->
+
+                    <div class="d-flex justify-content-between fs-5 fw-bold mb-4">
+
+                        <span>
+                            Grand Total
+                        </span>
+
+                        <span class="text-primary">
+                            ₹{{ grand_total }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PLACE ORDER
+                    ================================================== -->
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-lg w-100 fw-bold"
+                    >
+
+                        <i class="fa-solid fa-lock me-2"></i>
+                        Place Order
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>
+
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'js/checkout.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Add Third Category - ShopNest Admin{% endblock %}
+
+{% block nav_thirdcategories %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <a href="{% url 'admin_thirdcategories' %}">Third Categories</a>
+    <span class="text-secondary">/</span>
+    <span>Add Third Category</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-plus-circle text-purple" style="color: #8b5cf6;"></i> Add Third Category
+            </h1>
+            <p class="page-subtitle">Create a leaf category linked to an existing parent subcategory</p>
+        </div>
+        <div>
+            <a href="{% url 'admin_thirdcategories' %}" class="btn btn-light btn-sm border text-secondary d-flex align-items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Back to Third Categories
+            </a>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">
+                        <i class="fa-solid fa-pen-nib text-purple" style="color: #8b5cf6;"></i> Third Category Details
+                    </h3>
+                </div>
+                <div class="admin-card-body">
+                    <form action="{% url 'add_thirdcategory' %}" method="POST">
+                        {% csrf_token %}
+
+                        <!-- Parent SubCategory Selection -->
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="parentSubCategorySelect">
+                                Parent Subcategory <span class="text-danger">*</span>
+                            </label>
+                            <select name="subcategory" id="parentSubCategorySelect" class="form-select form-select-custom" required>
+                                <option value="">-- Choose Subcategory --</option>
+                                {% for sub in subcategories %}
+                                    <option value="{{ sub.id }}">{{ sub.name }} (Parent: {{ sub.category.name }})</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-hint">
+                                Select which subcategory branch this category belongs to.
+                            </div>
+                        </div>
+
+                        <!-- Third Category Name -->
+                        <div class="mb-4">
+                            <label class="form-label-custom" for="thirdCategoryName">
+                                Third Category Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="name" id="thirdCategoryName" class="form-control form-control-custom" placeholder="e.g. Android Phones, Gaming Laptops, Cotton T-Shirts" required>
+                            <div class="form-hint">
+                                A URL slug will be automatically created from this title.
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex align-items-center justify-content-end gap-2 pt-3 border-top">
+                            <a href="{% url 'admin_thirdcategories' %}" class="btn btn-light btn-sm border px-3 py-2 text-secondary">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-sm px-4 py-2 fw-semibold shadow-sm">
+                                <i class="fa-solid fa-check me-1"></i> Save Third Category
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

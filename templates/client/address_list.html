@@ -1,0 +1,78 @@
+{% extends 'client/base.html' %}
+{% load static %}
+
+{% block title %}Manage Addresses{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="fa-solid fa-address-book text-primary me-2"></i>My Addresses</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+            <i class="fa-solid fa-plus me-1"></i> Add New Address
+        </button>
+    </div>
+
+    <div class="row g-3">
+        {% for addr in addresses %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 p-3 position-relative">
+                    {% if addr.is_default %}
+                        <span class="badge bg-primary position-absolute top-0 end-0 m-3">Default</span>
+                    {% endif %}
+                    <h6 class="fw-bold text-dark">{{ addr.full_name }}</h6>
+                    <p class="text-muted small mb-1">{{ addr.address_line }}</p>
+                    <p class="text-muted small mb-1">{{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
+                    <p class="text-muted small mb-3"><i class="fa-solid fa-phone me-1"></i>{{ addr.phone }}</p>
+
+                    <div class="mt-auto d-flex gap-2">
+                        <a href="{% url 'edit_address' addr.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <form action="{% url 'delete_address' addr.id %}" method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete address?')">Delete</button>
+                        </form>
+                        {% if not addr.is_default %}
+                            <form action="{% url 'set_default_address' addr.id %}" method="POST" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-light border">Set Default</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted">No addresses saved yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Modal for New Address -->
+<div class="modal fade" id="addAddressModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{% url 'add_address' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Add Address</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body row g-3">
+                    <div class="col-12">{{ form.full_name }}</div>
+                    <div class="col-12">{{ form.phone }}</div>
+                    <div class="col-12">{{ form.address_line }}</div>
+                    <div class="col-md-4">{{ form.city }}</div>
+                    <div class="col-md-4">{{ form.state }}</div>
+                    <div class="col-md-4">{{ form.pincode }}</div>
+                    <div class="col-12">{{ form.landmark }}</div>
+                    <div class="col-12 form-check ms-2">
+                        {{ form.is_default }}
+                        <label class="form-check-label small" for="{{ form.is_default.id_for_label }}">Set as default</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary w-100">Save Address</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

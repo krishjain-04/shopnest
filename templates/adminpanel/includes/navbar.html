@@ -1,0 +1,64 @@
+<!-- Top Header / Navigation Bar -->
+<header class="admin-header">
+    <div class="header-left">
+        <button type="button" class="btn-sidebar-toggle" id="btnToggleSidebar" aria-label="Toggle Sidebar">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="d-none d-sm-flex align-items-center gap-2 text-muted small">
+            <i class="fa-solid fa-shield-halved text-primary"></i>
+            <span class="fw-semibold text-dark">Admin Console</span>
+            <span class="text-secondary">/</span>
+            {% block breadcrumbs %}
+                <span>Dashboard</span>
+            {% endblock %}
+        </div>
+    </div>
+
+    <div class="header-right">
+        <!-- Live Storefront Preview -->
+        <a href="{% url 'home' %}" target="_blank" class="btn btn-light btn-sm border d-flex align-items-center gap-2 text-secondary" title="Open live storefront">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span class="d-none d-md-inline">View Storefront</span>
+        </a>
+
+        <!-- Admin Profile Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-light btn-sm border d-flex align-items-center gap-2 dropdown-toggle py-1 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="user-avatar" style="width: 26px; height: 26px; font-size: 0.7rem;">
+                    <i class="fa-solid fa-user"></i>
+                </span>
+                <span class="fw-semibold text-dark small d-none d-sm-inline">{{ admin_name|default:"Admin" }}</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                <li>
+                    <h6 class="dropdown-header small text-uppercase text-muted">Signed in as</h6>
+                </li>
+                <li>
+                    <span class="dropdown-item-text fw-bold text-dark">{{ admin_name|default:"Admin" }}</span>
+                </li>
+                <li><hr class="dropdown-divider my-1"></li>
+                <li>
+                    <a class="dropdown-item small d-flex align-items-center gap-2" href="{% url 'admin_products' %}">
+                        <i class="fa-solid fa-box text-secondary"></i> Products Catalog
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item small d-flex align-items-center gap-2" href="{% url 'admin_orders' %}">
+                        <i class="fa-solid fa-receipt text-secondary"></i> Orders List
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item small d-flex align-items-center gap-2" href="{% url 'admin_users' %}">
+                        <i class="fa-solid fa-users text-secondary"></i> Customer Accounts
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider my-1"></li>
+                <li>
+                    <a class="dropdown-item small text-danger d-flex align-items-center gap-2" href="{% url 'admin_logout' %}">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>

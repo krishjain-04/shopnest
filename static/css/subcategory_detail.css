@@ -1,0 +1,39 @@
+.subcategory-detail-wrapper {
+  background-color: #f8fafc;
+  min-height: 85vh;
+}
+
+.tracking-wide {
+  letter-spacing: 1px;
+}
+
+.thirdcat-card {
+  border-radius: 16px;
+  background: #ffffff;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.thirdcat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08) !important;
+}
+
+.thirdcat-badge-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 10px;
+  background-color: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.thirdcat-arrow {
+  transition: transform 0.2s ease;
+}
+
+.thirdcat-card:hover .thirdcat-arrow {
+  transform: translateX(5px);
+}

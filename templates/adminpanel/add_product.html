@@ -1,0 +1,351 @@
+{% extends 'adminpanel/base.html' %}
+{% load static %}
+
+{% block title %}Add Product - ShopNest Admin{% endblock %}
+
+{% block nav_products %}active{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+    <span class="text-secondary">/</span>
+    <a href="{% url 'admin_products' %}">Products</a>
+    <span class="text-secondary">/</span>
+    <span>Add Product</span>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-box-open text-primary"></i> Add New Product
+            </h1>
+            <p class="page-subtitle">Create a new item in your store's inventory catalog</p>
+        </div>
+        <div>
+            <a href="{% url 'admin_products' %}" class="btn btn-light btn-sm border text-secondary d-flex align-items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Back to Products
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Add Product Form -->
+    <form action="{% url 'add_product' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="row g-4">
+            <!-- Left Column: Core Info & Media (8 cols) -->
+            <div class="col-lg-8">
+                <!-- Basic Product Information Card -->
+                <div class="admin-card mb-4">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-info-circle text-primary"></i> General Information
+                        </h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <!-- Product Name -->
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="productName">
+                                Product Title <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="name" id="productName" class="form-control form-control-custom" placeholder="e.g. Apple iPhone 15 Pro Max 256GB" required autofocus>
+                        </div>
+
+                        <!-- Short Description -->
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="shortDesc">
+                                Short Summary Description <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="short_description" id="shortDesc" class="form-control form-control-custom" placeholder="Brief one-line highlights (e.g. Titanium build, A17 Pro chip)" required>
+                        </div>
+
+                        <!-- Full Detailed Description -->
+                        <div class="mb-0">
+                            <label class="form-label-custom" for="fullDesc">
+                                Full Product Description <span class="text-danger">*</span>
+                            </label>
+                            <textarea name="description" id="fullDesc" rows="6" class="form-control form-control-custom" placeholder="Write full specifications, features, in-the-box items..." required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pricing & Inventory Card -->
+                <div class="admin-card mb-4">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-indian-rupee-sign text-success"></i> Pricing & Inventory
+                        </h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="row g-3">
+                            <!-- Regular Price -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label-custom" for="prodPrice">
+                                    Original Price (₹) <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">₹</span>
+                                    <input type="number" step="0.01" name="price" id="prodPrice" class="form-control form-control-custom" placeholder="99999.00" required>
+                                </div>
+                            </div>
+
+                            <!-- Discount Price -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label-custom" for="prodDiscountPrice">
+                                    Discount / Sale Price (₹) <span class="text-muted fw-normal">(Optional)</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">₹</span>
+                                    <input type="number" step="0.01" name="discount_price" id="prodDiscountPrice" class="form-control form-control-custom" placeholder="89999.00">
+                                </div>
+                            </div>
+
+                            <!-- Stock Quantity -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label-custom" for="prodStock">
+                                    Stock Quantity <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" name="stock" id="prodStock" class="form-control form-control-custom" value="10" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Media Upload Card -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-image text-purple" style="color: #8b5cf6;"></i> Main Product Image
+                        </h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="file-upload-box">
+                            <i class="fa-solid fa-cloud-arrow-up text-primary fs-2 mb-2 d-block"></i>
+                            <span class="fw-semibold text-dark d-block">Upload Main Cover Image <span class="text-danger">*</span></span>
+                            <small class="text-muted">High resolution JPG, PNG, or WEBP recommended</small>
+                            <input type="file" name="main_image" id="imageUploadInput" accept="image/*" required>
+                        </div>
+
+                        <!-- Live Preview -->
+                        <div class="mt-3 d-none" id="imagePreviewContainer">
+                            <span class="form-label-custom mb-1">Selected Cover Image:</span>
+                            <div class="image-preview-wrapper">
+                                <img id="imagePreviewImg" src="" alt="Product Cover Preview">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Taxonomy, Brand & Action (4 cols) -->
+            <div class="col-lg-4">
+                <!-- Taxonomy Selection Card -->
+                <div class="admin-card mb-4">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-sitemap text-primary"></i> Category Hierarchy
+                        </h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <!-- Primary Category -->
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="catSelect">
+                                Main Category <span class="text-danger">*</span>
+                            </label>
+                            <select name="category" id="catSelect" class="form-select form-select-custom" required>
+                                <option value="">-- Choose Category --</option>
+                                {% for cat in categories %}
+                                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Subcategory -->
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="subCatSelect">
+                                Subcategory <span class="text-danger">*</span>
+                            </label>
+                            <select name="subcategory" id="subCatSelect" class="form-select form-select-custom" required>
+                                <option value="">-- Choose Subcategory --</option>
+                                {% for sub in subcategories %}
+                                    <option value="{{ sub.id }}">{{ sub.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Third Category -->
+                        <div class="mb-0">
+                            <label class="form-label-custom" for="thirdCatSelect">
+                                Third Category <span class="text-danger">*</span>
+                            </label>
+                            <select name="thirdcategory" id="thirdCatSelect" class="form-select form-select-custom" required>
+                                <option value="">-- Choose Third Category --</option>
+                                {% for tc in thirdcategories %}
+                                    <option value="{{ tc.id }}">{{ tc.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brand Card -->
+                <div class="admin-card mb-4">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-certificate text-danger"></i> Brand Association
+                        </h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <label class="form-label-custom" for="brandSelect">
+                            Select Brand <span class="text-danger">*</span>
+                        </label>
+
+                        <select name="brand" id="brandSelect" class="form-select form-select-custom" required>
+    <option value="">-- Choose Brand --</option>
+</select>
+                     
+                    </div>
+                </div>
+
+                <!-- Publish / Save Action Card -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fa-solid fa-paper-plane text-success"></i> Publishing
+                        </h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary py-2 fw-semibold shadow-sm">
+                                <i class="fa-solid fa-check me-1"></i> Save Product
+                            </button>
+                            <a href="{% url 'admin_products' %}" class="btn btn-light border py-2 text-secondary">
+                                Discard & Cancel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const categorySelect = document.getElementById("catSelect");
+    const subcategorySelect = document.getElementById("subCatSelect");
+    const thirdCategorySelect = document.getElementById("thirdCatSelect");
+    const brandSelect = document.getElementById("brandSelect");
+
+
+    // CATEGORY → SUBCATEGORY + BRAND
+    categorySelect.addEventListener("change", function () {
+
+        const categoryId = this.value;
+
+        // Reset Subcategory
+        subcategorySelect.innerHTML =
+            '<option value="">-- Choose Subcategory --</option>';
+
+        // Reset Third Category
+        thirdCategorySelect.innerHTML =
+            '<option value="">-- Choose Third Category --</option>';
+
+        // Reset Brand
+        brandSelect.innerHTML =
+            '<option value="">-- Choose Brand --</option>';
+
+
+        if (!categoryId) {
+            return;
+        }
+
+
+        // CATEGORY → SUBCATEGORY
+        fetch("{% url 'get_subcategories' %}?category_id=" + categoryId)
+            .then(response => response.json())
+            .then(data => {
+
+                data.forEach(subcategory => {
+
+                    const option = document.createElement("option");
+
+                    option.value = subcategory.id;
+                    option.textContent = subcategory.name;
+
+                    subcategorySelect.appendChild(option);
+                });
+
+            })
+            .catch(error => {
+                console.error("Error loading subcategories:", error);
+            });
+
+
+        // CATEGORY → BRAND
+        fetch("{% url 'get_brands' %}?category_id=" + categoryId)
+            .then(response => response.json())
+            .then(data => {
+
+                data.forEach(brand => {
+
+                    const option = document.createElement("option");
+
+                    option.value = brand.id;
+                    option.textContent = brand.name;
+
+                    brandSelect.appendChild(option);
+                });
+
+            })
+            .catch(error => {
+                console.error("Error loading brands:", error);
+            });
+
+    });
+
+
+    // SUBCATEGORY → THIRD CATEGORY
+    subcategorySelect.addEventListener("change", function () {
+
+        const subcategoryId = this.value;
+
+        thirdCategorySelect.innerHTML =
+            '<option value="">-- Choose Third Category --</option>';
+
+
+        if (!subcategoryId) {
+            return;
+        }
+
+
+        fetch("{% url 'get_thirdcategories' %}?subcategory_id=" + subcategoryId)
+            .then(response => response.json())
+            .then(data => {
+
+                data.forEach(thirdCategory => {
+
+                    const option = document.createElement("option");
+
+                    option.value = thirdCategory.id;
+                    option.textContent = thirdCategory.name;
+
+                    thirdCategorySelect.appendChild(option);
+                });
+
+            })
+            .catch(error => {
+                console.error("Error loading third categories:", error);
+            });
+
+    });
+
+});
+</script>
+
+{% endblock %}

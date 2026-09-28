@@ -1,0 +1,119 @@
+/* ==========================================================================
+   PRODUCT LISTING PAGE STYLES
+   ========================================================================== */
+
+/* Utility Classes */
+.fs-7 { font-size: 0.875rem !important; }
+.fs-8 { font-size: 0.75rem !important; }
+.cursor-pointer { cursor: pointer; }
+
+/* Line Clamp with Fallback */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 2.6em;
+    line-height: 1.3em;
+}
+
+/* Hero Banner Styling */
+.product-listing-hero {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 60%, #032830 100%);
+    box-shadow: 0 10px 30px rgba(13, 110, 253, 0.15);
+}
+
+/* Sidebar & Sticky Filters */
+.sticky-filter-sidebar {
+    position: sticky;
+    top: 90px;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+}
+
+/* Custom Scrollbar for Long Filters */
+.filter-scrollable {
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.filter-scrollable::-webkit-scrollbar,
+.sticky-filter-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.filter-scrollable::-webkit-scrollbar-thumb,
+.sticky-filter-sidebar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.filter-scrollable::-webkit-scrollbar-track,
+.sticky-filter-sidebar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+/* Product Card Interactions */
+.product-card {
+    transition: transform 0.25s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                box-shadow 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    background-color: #ffffff;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Product Image Aspect Ratio & Zoom Effect */
+.product-img-wrapper {
+    width: 100%;
+    padding-top: 100%; /* 1:1 Aspect Ratio Square */
+    background-color: #f8f9fa;
+}
+
+.product-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.06);
+}
+
+/* Stock Badges */
+.badge-stock-in {
+    background-color: rgba(25, 135, 84, 0.9);
+    color: #ffffff;
+    backdrop-filter: blur(4px);
+}
+
+.badge-stock-out {
+    background-color: rgba(220, 53, 69, 0.9);
+    color: #ffffff;
+    backdrop-filter: blur(4px);
+}
+
+/* Custom Form Controls */
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.search-box-wrapper .form-control:focus {
+    box-shadow: none;
+}
+
+/* Mobile Offcanvas Customization */
+@media (max-width: 991.98px) {
+    .offcanvas-start {
+        width: 320px !important;
+    }
+}

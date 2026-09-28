@@ -1,0 +1,224 @@
+{% extends 'client/base.html' %}
+{% load static %}
+
+{% block title %}Order #{{ order.order_id }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0">
+            Order Details
+        </h3>
+        <a href="{% url 'my_orders' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fa-solid fa-arrow-left me-1"></i>
+            Back to Orders
+        </a>
+    </div>
+
+    <!-- ORDER STATUS -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <h6 class="fw-bold mb-3">
+                Order Status:
+                {% if order.status == 'Cancelled' %}
+                    <span class="text-danger">
+                        <i class="fa-solid fa-circle-xmark me-1"></i>
+                        Cancelled
+                    </span>
+                {% elif order.status == 'Delivered' %}
+                    <span class="text-success">
+                        <i class="fa-solid fa-circle-check me-1"></i>
+                        Delivered
+                    </span>
+                {% elif order.status == 'Shipped' %}
+                    <span class="text-info">
+                        <i class="fa-solid fa-truck me-1"></i>
+                        Shipped
+                    </span>
+                {% else %}
+                    <span class="text-primary">
+                        {{ order.status }}
+                    </span>
+                {% endif %}
+            </h6>
+
+            {% if order.status == 'Cancelled' %}
+                <!-- CANCELLED STATE -->
+                <div class="alert alert-danger d-flex align-items-center mb-0">
+                    <i class="fa-solid fa-circle-xmark fs-4 me-3"></i>
+                    <div>
+                        <strong>Order Cancelled</strong>
+                        <div class="small mt-1">
+                            This order has been cancelled successfully.
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                                <div class="status-timeline">
+    {% for st in statuses %}
+        <div class="timeline-step 
+            {% if forloop.counter0 < current_status_index %}completed{% endif %}
+            {% if forloop.counter0 == current_status_index %}active{% endif %}">
+            
+            <div class="step-icon">
+                {% if forloop.counter0 <= current_status_index %}
+                    <i class="fa-solid fa-check"></i>
+                {% else %}
+                    {{ forloop.counter }}
+                {% endif %}
+            </div>
+
+            <div class="small fw-semibold mt-2">
+                {{ st }}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- PRODUCTS -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="fw-bold m-0">
+                        Ordered Items
+                    </h5>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Qty</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if item.product.main_image %}
+                                                    <img
+                                                        src="{{ item.product.main_image.url }}"
+                                                        alt="{{ item.product.name }}"
+                                                        class="rounded me-3 border"
+                                                        width="50"
+                                                        height="50"
+                                                        style="object-fit: cover;"
+                                                    >
+                                                {% endif %}
+                                                <span class="fw-semibold">
+                                                    {{ item.product.name }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>₹{{ item.price }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td class="text-end fw-bold">₹{{ item.subtotal }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CANCEL ORDER -->
+            {% if can_cancel %}
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                            <div>
+                                <h6 class="fw-bold mb-1">Need to cancel this order?</h6>
+                                <p class="text-muted small mb-0">
+                                    You can cancel this order while it is {{ order.status|lower }}.
+                                </p>
+                            </div>
+
+                            <form action="{% url 'cancel_order' order.order_id %}" method="POST" onsubmit="return confirmCancelOrder();">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger fw-semibold">
+                                    <i class="fa-solid fa-xmark me-1"></i>
+                                    Cancel Order
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="col-lg-4">
+            <!-- SHIPPING ADDRESS -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Shipping Address</h5>
+                    <p class="fw-bold mb-1">{{ order.address.full_name }}</p>
+                    <p class="text-muted small mb-1">{{ order.address.address_line }}</p>
+                    <p class="text-muted small mb-1">
+                        {{ order.address.city }}, {{ order.address.state }} - {{ order.address.pincode }}
+                    </p>
+                    <p class="text-muted small mb-0">
+                        <i class="fa-solid fa-phone me-1"></i>
+                        {{ order.address.phone }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- PAYMENT -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Payment Summary</h5>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Payment Method</span>
+                        <span class="fw-semibold">{{ order.payment_method }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Payment Status</span>
+                        {% if order.status == 'Cancelled' %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                Cancelled
+                            </span>
+                        {% else %}
+                            <span class="badge bg-light text-dark border">
+                                {{ order.payment_status }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between fs-5 fw-bold">
+                        <span>Total</span>
+                        <span class="text-primary">₹{{ order.total_amount }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmCancelOrder() {
+    return confirm("Are you sure you want to cancel this order?");
+}
+</script>
+
+{% endblock %}
