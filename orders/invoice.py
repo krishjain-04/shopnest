@@ -199,6 +199,6 @@ SHOPNEST Support
         "application/pdf",
     )
 
-    email.send(fail_silently=False)
+    email.send(fail_silently=True)
 
     return True
