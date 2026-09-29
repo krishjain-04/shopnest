@@ -217,10 +217,7 @@ def place_order_view(request):
         product.stock -= quantity
         product.save(update_fields=['stock'])
 
-        transaction.on_commit(
-                lambda: send_invoice_email(order),
-
-        )
+       
 
         request.session.pop('buy_now', None)
         request.session.modified = True
@@ -281,10 +278,7 @@ def place_order_view(request):
         product.stock -= item.quantity
         product.save(update_fields=['stock'])
 
-    transaction.on_commit(
-    lambda: send_invoice_email(order)
-
-    )
+   
 
     cart.items.all().delete()
 
