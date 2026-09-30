@@ -1388,24 +1388,21 @@
 
             /* Update navbar wishlist count */
 
-          const badge =
-    document.getElementById(
-        'navbar-wishlist-count'
-    );
+         if (data.wishlist_count !== undefined) {
 
-if (
-    badge &&
-    data.wishlist_count !== undefined
-) {
+    document.querySelectorAll(
+        '#navbar-wishlist-count, #mobile-wishlist-count'
+    ).forEach(function (badge) {
 
-    badge.textContent =
-        data.wishlist_count;
+        badge.textContent = data.wishlist_count;
 
-    if (data.wishlist_count > 0) {
-        badge.style.display = '';
-    } else {
-        badge.style.display = 'none';
-    }
+        if (data.wishlist_count > 0) {
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
+
+    });
 
 }
 
@@ -1544,57 +1541,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     /* =============================================
                        UPDATE NAVBAR CART COUNT
                     ============================================= */
+                         if (data.cart_count !== undefined) {
 
-                    const cartBadge =
-                        document.getElementById(
-                            'navbar-cart-count'
-                        );
+    document.querySelectorAll(
+        '#navbar-cart-count, #mobile-cart-count'
+    ).forEach(function (badge) {
 
+        badge.textContent = data.cart_count;
 
-                    if (cartBadge) {
+        if (data.cart_count > 0) {
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
 
-                        /*
-                         * If backend already sends cart_count,
-                         * use that exact value.
-                         */
-                        if (
-                            data.cart_count !== undefined &&
-                            data.cart_count !== null
-                        ) {
+    });
 
-                            cartBadge.textContent =
-                                data.cart_count;
-
-                        }
-
-                        /*
-                         * If backend doesn't send cart_count,
-                         * increment existing navbar count.
-                         */
-                        else {
-
-                            let currentCount =
-                                parseInt(
-                                    cartBadge.textContent.trim(),
-                                    10
-                                );
-
-                            if (isNaN(currentCount)) {
-                                currentCount = 0;
-                            }
-
-                            cartBadge.textContent =
-                                currentCount + quantity;
-
-                        }
-
-
-                        /*
-                         * Make sure badge is visible
-                         */
-                        cartBadge.style.display = '';
-
-                    }
+}
 
 
                     /* =============================================

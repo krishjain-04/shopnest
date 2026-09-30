@@ -424,7 +424,7 @@
 
                         <select
                             id="sortSelect"
-                            class="form-select form-select-sm border bg-light text-dark fw-bold rounded-3 shadow-sm px-3 py-2 cursor-pointer fs-7"
+                            class="form-select form-select-sm border bg-light text-dark fw-bold rounded-3 shadow-sm px-3 py-2 pe-5 cursor-pointer fs-7"
                             onchange="applySorting(this.value)"
                         >
                             <option value="" {% if not sort %}selected{% endif %}>
@@ -947,18 +947,22 @@ function toggleWishlistAjax(button) {
         }
 
         /* Update wishlist navbar count */
-      const wishlistBadge =
-    document.getElementById('navbar-wishlist-count');
+  if (data.wishlist_count !== undefined) {
 
-if (wishlistBadge && data.wishlist_count !== undefined) {
+    document.querySelectorAll(
+        '#navbar-wishlist-count, #mobile-wishlist-count'
+    ).forEach(function (badge) {
 
-    wishlistBadge.textContent = data.wishlist_count;
+        badge.textContent = data.wishlist_count;
 
-    if (Number(data.wishlist_count) > 0) {
-        wishlistBadge.style.display = '';
-    } else {
-        wishlistBadge.style.display = 'none';
-    }
+        if (Number(data.wishlist_count) > 0) {
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
+
+    });
+
 }
     })
     .catch(function (error) {
@@ -973,42 +977,20 @@ if (wishlistBadge && data.wishlist_count !== undefined) {
 
 function updateNavbarCartCount(count) {
 
-    /*
-     * Primary selector used by the project.
-     */
-    const cartBadge =
-        document.getElementById('navbar-cart-count');
+    document.querySelectorAll(
+        '#navbar-cart-count, #mobile-cart-count'
+    ).forEach(function (badge) {
 
-    if (cartBadge) {
-        cartBadge.textContent = count;
-        return;
-    }
-
-    /*
-     * Fallback for the existing navbar structure
-     * if the badge has not been given an ID.
-     */
-    const cartLink = document.querySelector(
-        '.btn-icon[href*="cart"]'
-    );
-
-    if (!cartLink) return;
-
-    let badge = cartLink.querySelector('.badge');
-
-    if (!badge && Number(count) > 0) {
-
-        badge = document.createElement('span');
-
-        badge.className =
-            'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary';
-
-        cartLink.appendChild(badge);
-    }
-
-    if (badge) {
         badge.textContent = count;
-    }
+
+        if (Number(count) > 0) {
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
+
+    });
+
 }
 
 

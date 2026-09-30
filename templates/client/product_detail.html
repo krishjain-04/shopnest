@@ -12,7 +12,6 @@
 
 <div class="product-detail-page">
 
-```
 <div class="container py-4">
 
     <!-- Breadcrumb -->
@@ -917,55 +916,22 @@ document.addEventListener('DOMContentLoaded', function () {
     /* =========================================
        NAVBAR CART COUNT
     ========================================= */
+function updateNavbarCartCount(count) {
 
-    function updateNavbarCartCount(count) {
+    document.querySelectorAll(
+        '#navbar-cart-count, #mobile-cart-count'
+    ).forEach(function (badge) {
 
-        const cartBadge =
-            document.getElementById('navbar-cart-count');
+        badge.textContent = count;
 
-        if (cartBadge) {
-
-            cartBadge.textContent = count;
-
-            return;
+        if (Number(count) > 0) {
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
         }
 
-
-        /*
-         * Fallback if navbar badge does not have
-         * navbar-cart-count ID.
-         */
-
-        const cartLink =
-            document.querySelector(
-                '.btn-icon[href*="cart"]'
-            );
-
-        if (!cartLink) return;
-
-
-        let badge =
-            cartLink.querySelector('.badge');
-
-
-        if (!badge && Number(count) > 0) {
-
-            badge =
-                document.createElement('span');
-
-            badge.className =
-                'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary';
-
-            cartLink.appendChild(badge);
-        }
-
-
-        if (badge) {
-
-            badge.textContent = count;
-
-        }
-    }
+    });
+}
 
 
     /* =========================================
@@ -1690,24 +1656,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     }
                   
-                    const badge =
-    document.getElementById(
-        'navbar-wishlist-count'
-    );
+          if (data.wishlist_count !== undefined) {
 
-if (
-    badge &&
-    data.wishlist_count !== undefined
-) {
+    document.querySelectorAll(
+        '#navbar-wishlist-count, #mobile-wishlist-count'
+    ).forEach(function (badge) {
 
-    badge.textContent =
-        data.wishlist_count;
+        badge.textContent = data.wishlist_count;
 
-    if (data.wishlist_count > 0) {
-        badge.style.display = '';
-    } else {
-        badge.style.display = 'none';
-    }
+        if (data.wishlist_count > 0) {
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
+
+    });
 
 }
 

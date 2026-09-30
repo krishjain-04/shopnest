@@ -1,10 +1,13 @@
-
 {% extends "client/base.html" %}
+
 {% load static %}
 
 {% block extra_css %}
+
 <link rel="stylesheet" href="{% static 'css/product_list.css' %}">
+
 {% endblock %}
+
 
 {% block content %}
 
@@ -26,6 +29,7 @@
                        class="text-decoration-none text-muted">
 
                         <i class="fa-solid fa-house me-1"></i>
+
                         Home
 
                     </a>
@@ -126,11 +130,15 @@
                         <div class="text-start">
 
                             <div class="fw-bold fs-5">
+
                                 {{ products|length }}
+
                             </div>
 
                             <div class="small text-white-50">
+
                                 Products
+
                             </div>
 
                         </div>
@@ -162,7 +170,9 @@
                 <p class="text-muted small mb-0">
 
                     Showing
+
                     {{ products|length }}
+
                     product{{ products|length|pluralize }}
 
                 </p>
@@ -241,8 +251,7 @@
                                 title="Toggle Wishlist"
                                 aria-label="Toggle Wishlist">
 
-                            <i class="{% if product.id in user_wishlist_product_ids %}fa-solid fa-heart text-danger{% else %}fa-regular fa-heart{% endif %}">
-                            </i>
+                            <i class="{% if product.id in user_wishlist_product_ids %}fa-solid fa-heart text-danger{% else %}fa-regular fa-heart{% endif %}"></i>
 
                         </button>
 
@@ -405,7 +414,9 @@
                                         <i class="fa-solid fa-cart-shopping me-1"></i>
 
                                         <span>
+
                                             Add to Cart
+
                                         </span>
 
                                     </button>
@@ -455,6 +466,7 @@
 
         {% else %}
 
+
         <!-- =========================================================
              EMPTY STATE
         ========================================================== -->
@@ -503,6 +515,7 @@
 {% endblock %}
 
 
+
 {% block extra_js %}
 
 <script>
@@ -544,6 +557,58 @@ function getCookie(name) {
 
 
 /* ================================================================
+   UPDATE NAVBAR WISHLIST COUNT
+================================================================ */
+
+function updateNavbarWishlistCount(count) {
+
+    document.querySelectorAll(
+        '#navbar-wishlist-count, #mobile-wishlist-count'
+    ).forEach(function(badge) {
+
+        badge.textContent = count;
+
+        if (Number(count) > 0) {
+
+            badge.style.display = '';
+
+        } else {
+
+            badge.style.display = 'none';
+
+        }
+
+    });
+}
+
+
+/* ================================================================
+   UPDATE NAVBAR CART COUNT
+================================================================ */
+
+function updateNavbarCartCount(count) {
+
+    document.querySelectorAll(
+        '#navbar-cart-count, #mobile-cart-count'
+    ).forEach(function(badge) {
+
+        badge.textContent = count;
+
+        if (Number(count) > 0) {
+
+            badge.style.display = '';
+
+        } else {
+
+            badge.style.display = 'none';
+
+        }
+
+    });
+}
+
+
+/* ================================================================
    WISHLIST AJAX
 ================================================================ */
 
@@ -556,9 +621,21 @@ function toggleWishlistAjax(button) {
         button.querySelector('i');
 
 
-    if (!url) {
+    if (!url || !icon) {
+
         return;
+
     }
+
+
+    if (button.disabled) {
+
+        return;
+
+    }
+
+
+    button.disabled = true;
 
 
     fetch(url, {
@@ -571,16 +648,14 @@ function toggleWishlistAjax(button) {
                 getCookie('csrftoken'),
 
             'X-Requested-With':
-                'XMLHttpRequest',
-
-            'Content-Type':
-                'application/json'
+                'XMLHttpRequest'
 
         }
 
     })
 
     .then(function(response) {
+
 
         if (
             response.status === 401 ||
@@ -591,6 +666,7 @@ function toggleWishlistAjax(button) {
                 "{% url 'login' %}";
 
             return null;
+
         }
 
 
@@ -609,8 +685,11 @@ function toggleWishlistAjax(button) {
 
     .then(function(data) {
 
+
         if (!data) {
+
             return;
+
         }
 
 
@@ -649,36 +728,14 @@ function toggleWishlistAjax(button) {
            NAVBAR WISHLIST COUNT
         ======================================================== */
 
-        const wishlistBadge =
-            document.getElementById(
-                'navbar-wishlist-count'
-            );
-
-
         if (
-            wishlistBadge &&
-            data.wishlist_count !== undefined
+            data.wishlist_count !== undefined &&
+            data.wishlist_count !== null
         ) {
 
-            wishlistBadge.textContent =
-                data.wishlist_count;
-
-
-            if (
-                Number(data.wishlist_count) > 0
-            ) {
-
-                wishlistBadge.style.display =
-                    '';
-
-            }
-
-            else {
-
-                wishlistBadge.style.display =
-                    'none';
-
-            }
+            updateNavbarWishlistCount(
+                data.wishlist_count
+            );
 
         }
 
@@ -690,6 +747,12 @@ function toggleWishlistAjax(button) {
             'Error toggling wishlist:',
             error
         );
+
+    })
+
+    .finally(function() {
+
+        button.disabled = false;
 
     });
 
@@ -714,7 +777,14 @@ document.addEventListener(
                     'submit',
                     function(e) {
 
+
+                        /* =============================================
+                           STOP NORMAL FORM SUBMISSION
+                        ============================================= */
+
                         e.preventDefault();
+
+                        e.stopPropagation();
 
 
                         const button =
@@ -780,8 +850,7 @@ document.addEventListener(
                            LOADING
                         ================================================= */
 
-                        button.disabled =
-                            true;
+                        button.disabled = true;
 
 
                         if (buttonText) {
@@ -815,7 +884,6 @@ document.addEventListener(
                         fetch(
                             form.action,
                             {
-
                                 method: 'POST',
 
                                 body: formData,
@@ -829,6 +897,7 @@ document.addEventListener(
 
                             }
                         )
+
 
                         .then(function(response) {
 
@@ -867,10 +936,14 @@ document.addEventListener(
 
                         })
 
+
                         .then(function(data) {
 
+
                             if (!data) {
+
                                 return;
+
                             }
 
 
@@ -882,78 +955,24 @@ document.addEventListener(
 
 
                                 /* =============================================
-                                   NAVBAR CART COUNT
+                                   CART COUNT
                                 ============================================= */
 
-                                const cartBadge =
-                                    document.getElementById(
-                                        'navbar-cart-count'
+                                if (
+                                    data.cart_count !== undefined &&
+                                    data.cart_count !== null
+                                ) {
+
+                                    updateNavbarCartCount(
+                                        data.cart_count
                                     );
-
-
-                                if (cartBadge) {
-
-
-                                    /* ==============================
-                                       BACKEND SENT CART COUNT
-                                    ============================== */
-
-                                    if (
-                                        data.cart_count !== undefined &&
-                                        data.cart_count !== null
-                                    ) {
-
-                                        cartBadge.textContent =
-                                            data.cart_count;
-
-                                    }
-
-
-                                    /* ==============================
-                                       FALLBACK
-                                    ============================== */
-
-                                    else {
-
-                                        let currentCount =
-                                            parseInt(
-                                                cartBadge.textContent.trim(),
-                                                10
-                                            );
-
-
-                                        if (
-                                            isNaN(
-                                                currentCount
-                                            )
-                                        ) {
-
-                                            currentCount =
-                                                0;
-
-                                        }
-
-
-                                        cartBadge.textContent =
-                                            currentCount +
-                                            quantity;
-
-                                    }
-
-
-                                    /* ==============================
-                                       SHOW BADGE
-                                    ============================== */
-
-                                    cartBadge.style.display =
-                                        '';
 
                                 }
 
 
-                                /* =================================================
-                                   BUTTON SUCCESS
-                                ================================================= */
+                                /* =============================================
+                                   BUTTON → ADDED
+                                ============================================= */
 
                                 if (buttonText) {
 
@@ -971,9 +990,9 @@ document.addEventListener(
                                 }
 
 
-                                /* =================================================
+                                /* =============================================
                                    RESTORE BUTTON
-                                ================================================= */
+                                ============================================= */
 
                                 setTimeout(
                                     function() {
@@ -997,7 +1016,6 @@ document.addEventListener(
 
                                         button.disabled =
                                             false;
-
 
                                     },
                                     1200
@@ -1037,6 +1055,7 @@ document.addEventListener(
 
                         })
 
+
                         .catch(function(error) {
 
 
@@ -1046,9 +1065,9 @@ document.addEventListener(
                             );
 
 
-                            /* =================================================
+                            /* =============================================
                                ERROR STATE
-                            ================================================= */
+                            ============================================= */
 
                             if (buttonText) {
 
@@ -1088,7 +1107,6 @@ document.addEventListener(
 
                                     button.disabled =
                                         false;
-
 
                                 },
                                 1500

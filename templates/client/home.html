@@ -1139,18 +1139,21 @@ function toggleWishlistAjax(button) {
 
         }
 
-     const badge =document.getElementById('navbar-wishlist-count');
+    if (data.wishlist_count !== undefined) {
 
-              if ( badge && data.wishlist_count !== undefined) {
+    document.querySelectorAll(
+        '#navbar-wishlist-count, #mobile-wishlist-count'
+    ).forEach(function (badge) {
 
-    badge.textContent =
-        data.wishlist_count;
+        badge.textContent = data.wishlist_count;
 
-    if (data.wishlist_count > 0) {
-        badge.style.display = '';
-    } else {
-        badge.style.display = 'none';
-    }
+        if (data.wishlist_count > 0) {
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
+
+    });
 
 }
 
@@ -1287,49 +1290,24 @@ document.addEventListener(
 
                             if (data.success) {
 
-                                const cartBadge =
-                                    document.getElementById(
-                                        'navbar-cart-count'
-                                    );
+                                
+                                if (data.cart_count !== undefined) {
 
+                                document.querySelectorAll(
+        '#navbar-cart-count, #mobile-cart-count'
+    ).forEach(function (badge) {
 
-                                if (cartBadge) {
+        badge.textContent = data.cart_count;
 
-                                    if (
-                                        data.cart_count !==
-                                        undefined
-                                    ) {
+        if (data.cart_count > 0) {
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
 
-                                        cartBadge.textContent =
-                                            data.cart_count;
+    });
 
-                                    } else {
-
-                                        let currentCount =
-                                            parseInt(
-                                                cartBadge.textContent,
-                                                10
-                                            );
-
-                                        if (
-                                            isNaN(
-                                                currentCount
-                                            )
-                                        ) {
-
-                                            currentCount = 0;
-
-                                        }
-
-                                        cartBadge.textContent =
-                                            currentCount + 1;
-
-                                    }
-
-                                    cartBadge.style.display =
-                                        '';
-
-                                }
+}
 
 
                                 if (buttonText) {
