@@ -381,6 +381,8 @@
     justify-content: center;
 
     overflow: hidden;
+
+    position: relative;
 }
 
 .related-product-image img {
@@ -388,16 +390,34 @@
     height: 100%;
 
     object-fit: contain;
-
     padding: 15px;
 
     transition: transform 0.25s ease;
+
+    position: relative;
+    z-index: 1;
 }
 
 .related-product-card:hover .related-product-image img {
     transform: scale(1.04);
 }
 
+/* Related product LIKE button */
+.related-product-image .wishlist-btn {
+    position: absolute !important;
+    z-index: 10 !important;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    pointer-events: auto !important;
+}
 
 /* =========================================================
    RESPONSIVE - TABLET
