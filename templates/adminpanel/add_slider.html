@@ -1,0 +1,263 @@
+{% extends "adminpanel/base.html" %}
+
+{% block nav_sliders %}active{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Breadcrumb -->
+    <div class="mb-4">
+        <div class="text-muted small">
+            Dashboard / Content Management / Home Sliders / Add Slider
+        </div>
+    </div>
+
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">Add New Slider</h2>
+            <p class="text-muted mb-0">
+                Create a promotional slider for the homepage
+            </p>
+        </div>
+
+        <a href="{% url 'admin_sliders' %}" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-1"></i>
+            Back
+        </a>
+
+    </div>
+
+
+    <!-- Form Card -->
+    <div class="admin-card">
+
+        <form method="POST"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="row g-4">
+
+                <!-- Title -->
+                <div class="col-12">
+
+                    <label class="form-label fw-semibold">
+                        Slider Title
+                    </label>
+
+                    <input type="text"
+                           name="title"
+                           class="form-control"
+                           placeholder="Example: Summer Sale"
+                           required>
+
+                </div>
+
+
+                <!-- Description -->
+                <div class="col-12">
+
+                    <label class="form-label fw-semibold">
+                        Description
+                    </label>
+
+                    <textarea name="description"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Enter a short description for the slider"></textarea>
+
+                </div>
+
+
+                <!-- Button Text -->
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold">
+                        Button Text
+                    </label>
+
+                    <input type="text"
+                           name="button_text"
+                           class="form-control"
+                           placeholder="Example: Shop Now">
+
+                </div>
+
+
+                <!-- Button URL -->
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold">
+                        Button URL
+                    </label>
+
+                    <input type="text"
+                           name="button_url"
+                           class="form-control"
+                           placeholder="Example: /products/">
+
+                </div>
+
+
+                <!-- Display Order -->
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold">
+                        Display Order
+                    </label>
+
+                    <input type="number"
+                           name="display_order"
+                           class="form-control"
+                           value="0"
+                           min="0">
+
+                    <div class="form-text">
+                        Lower number appears first.
+                    </div>
+
+                </div>
+
+
+                <!-- Active Status -->
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold d-block">
+                        Status
+                    </label>
+
+                    <div class="form-check form-switch mt-2">
+
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="is_active"
+                               id="is_active"
+                               checked>
+
+                        <label class="form-check-label"
+                               for="is_active">
+                            Active
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Image -->
+                <div class="col-12">
+
+                    <label class="form-label fw-semibold">
+                        Slider Image
+                    </label>
+
+                    <input type="file"
+                           name="image"
+                           id="sliderImage"
+                           class="form-control"
+                           accept="image/*"
+                           required>
+
+                    <div class="form-text">
+                        Upload a wide banner image for the homepage slider.
+                    </div>
+
+                </div>
+
+
+                <!-- Image Preview -->
+                <div class="col-12">
+
+                    <div id="imagePreviewContainer"
+                         class="d-none">
+
+                        <label class="form-label fw-semibold">
+                            Image Preview
+                        </label>
+
+                        <div>
+                            <img id="imagePreview"
+                                 src=""
+                                 alt="Slider Preview"
+                                 class="img-fluid rounded border"
+                                 style="
+                                    max-height: 300px;
+                                    width: 100%;
+                                    object-fit: cover;
+                                 ">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Buttons -->
+                <div class="col-12">
+
+                    <hr class="my-2">
+
+                    <div class="d-flex flex-column flex-sm-row gap-2 justify-content-end">
+
+                        <a href="{% url 'admin_sliders' %}"
+                           class="btn btn-outline-secondary">
+
+                            <i class="fa-solid fa-xmark me-1"></i>
+                            Cancel
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa-solid fa-check me-1"></i>
+                            Save Slider
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- Image Preview Script -->
+<script>
+
+document.getElementById('sliderImage').addEventListener('change', function(event) {
+
+    const file = event.target.files[0];
+
+    const preview = document.getElementById('imagePreview');
+    const container = document.getElementById('imagePreviewContainer');
+
+    if (file) {
+
+        preview.src = URL.createObjectURL(file);
+
+        container.classList.remove('d-none');
+
+    } else {
+
+        preview.src = '';
+
+        container.classList.add('d-none');
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

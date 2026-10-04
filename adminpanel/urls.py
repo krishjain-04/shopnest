@@ -60,5 +60,19 @@ urlpatterns=[
    path('brands/edit/<int:id>/', edit_brand, name='edit_brand'),
 
 
+
+
+
+
+
+
+
+path('sliders/', slider_list, name='admin_sliders'),
+path('sliders/add/', add_slider, name='add_slider'),
+path('sliders/edit/<int:id>/', edit_slider, name='edit_slider'),
+path('sliders/delete/<int:id>/', delete_slider, name='delete_slider'),
+path('sliders/toggle/<int:id>/', toggle_slider, name='toggle_slider'),
+
+
    
    ]

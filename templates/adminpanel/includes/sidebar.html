@@ -41,6 +41,15 @@
             <span>Brands</span>
         </a>
 
+  
+<div class="menu-label">Content Management</div>
+
+<a href="{% url 'admin_sliders' %}" class="nav-link-admin {% block nav_sliders %}{% endblock %}">
+    <i class="fa-solid fa-images"></i>
+    <span>Home Sliders</span>
+</a>
+
+
         <div class="menu-label">Sales & Customers</div>
         <a href="{% url 'admin_orders' %}" class="nav-link-admin {% block nav_orders %}{% endblock %}">
             <i class="fa-solid fa-cart-shopping"></i>

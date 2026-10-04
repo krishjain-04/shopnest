@@ -1,0 +1,239 @@
+{% extends "adminpanel/base.html" %}
+
+{% block nav_sliders %}active{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Breadcrumb -->
+    <div class="mb-4">
+        <div class="text-muted small">
+            Dashboard / Content Management / Home Sliders
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Home Sliders</h2>
+            <p class="text-muted mb-0">
+                Manage homepage promotional sliders
+            </p>
+        </div>
+
+        <a href="{% url 'add_slider' %}" class="btn btn-primary">
+            <i class="fa-solid fa-plus me-1"></i>
+            Add New Slider
+        </a>
+    </div>
+
+
+    <!-- Sliders Table -->
+    <div class="admin-card">
+
+        {% if sliders %}
+
+        <div class="table-responsive">
+
+            <table class="table align-middle mb-0">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Order</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for slider in sliders %}
+
+                    <tr>
+
+                        <!-- ID -->
+                        <td>
+                            <span class="fw-semibold">
+                                #{{ slider.id }}
+                            </span>
+                        </td>
+
+
+                        <!-- Image -->
+                        <td>
+
+                            {% if slider.image %}
+
+                            <img src="{{ slider.image.url }}"
+                                 alt="{{ slider.title }}"
+                                 style="
+                                    width: 110px;
+                                    height: 55px;
+                                    object-fit: cover;
+                                    border-radius: 8px;
+                                    border: 1px solid #e5e7eb;
+                                 ">
+
+                            {% else %}
+
+                            <div class="bg-light d-flex align-items-center justify-content-center"
+                                 style="
+                                    width: 110px;
+                                    height: 55px;
+                                    border-radius: 8px;
+                                 ">
+                                <i class="fa-solid fa-image text-muted"></i>
+                            </div>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Title -->
+                        <td>
+
+                            <div class="fw-semibold">
+                                {{ slider.title }}
+                            </div>
+
+                            {% if slider.description %}
+
+                            <div class="text-muted small text-truncate"
+                                 style="max-width: 280px;">
+                                {{ slider.description }}
+                            </div>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Order -->
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                {{ slider.display_order }}
+                            </span>
+                        </td>
+
+
+                        <!-- Status -->
+                        <td>
+
+                            {% if slider.is_active %}
+
+                            <span class="badge bg-success-subtle text-success">
+                                <i class="fa-solid fa-circle-check me-1"></i>
+                                Active
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-secondary-subtle text-secondary">
+                                <i class="fa-solid fa-circle-xmark me-1"></i>
+                                Inactive
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Created -->
+                        <td>
+                            <span class="text-muted small">
+                                {{ slider.created_at|date:"d M Y" }}
+                            </span>
+                        </td>
+
+
+                        <!-- Actions -->
+                        <td class="text-end">
+
+                            <div class="d-flex justify-content-end gap-2">
+
+                                <!-- Toggle -->
+                                <a href="{% url 'toggle_slider' slider.id %}"
+                                   class="btn btn-sm btn-outline-success"
+                                   title="{% if slider.is_active %}Deactivate{% else %}Activate{% endif %}">
+
+                                    {% if slider.is_active %}
+                                    <i class="fa-solid fa-eye-slash"></i>
+                                    {% else %}
+                                    <i class="fa-solid fa-eye"></i>
+                                    {% endif %}
+
+                                </a>
+
+
+                                <!-- Edit -->
+                                <a href="{% url 'edit_slider' slider.id %}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Edit">
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                </a>
+
+
+                                <!-- Delete -->
+                                <a href="{% url 'delete_slider' slider.id %}"
+                                   class="btn btn-sm btn-outline-danger"
+                                   title="Delete"
+                                   onclick="return confirm('Are you sure you want to delete this slider?');">
+
+                                    <i class="fa-solid fa-trash"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <!-- Empty State -->
+
+        <div class="text-center py-5">
+
+            <div class="mb-3">
+                <i class="fa-solid fa-images fa-3x text-muted"></i>
+            </div>
+
+            <h5 class="fw-semibold">
+                No sliders found
+            </h5>
+
+            <p class="text-muted mb-4">
+                Create your first homepage slider to display promotional content.
+            </p>
+
+            <a href="{% url 'add_slider' %}" class="btn btn-primary">
+                <i class="fa-solid fa-plus me-1"></i>
+                Add New Slider
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

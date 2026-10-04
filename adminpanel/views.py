@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from cart.models import Cart
 from django.db.models import Sum, Count
 from django.http import HttpResponse, JsonResponse
+from core.models import Slider
 
 
 
@@ -618,3 +619,99 @@ def get_thirdcategories(request):
     ).values('id', 'name')
 
     return JsonResponse(list(thirdcategories), safe=False)
+
+
+# =========================
+# HOME SLIDER MANAGEMENT
+# =========================
+
+def slider_list(request):
+    if 'admin_id' not in request.session:
+        return redirect('admin_login')
+
+    sliders = Slider.objects.all().order_by('display_order', '-created_at')
+
+    return render(request, 'adminpanel/sliders.html', {
+        'sliders': sliders,
+        'admin_name': request.session.get('admin_username'),
+    })
+
+
+def add_slider(request):
+    if 'admin_id' not in request.session:
+        return redirect('admin_login')
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        button_text = request.POST.get('button_text')
+        button_url = request.POST.get('button_url')
+        image = request.FILES.get('image')
+        display_order = request.POST.get('display_order') or 0
+        is_active = request.POST.get('is_active') == 'on'
+
+        Slider.objects.create(
+            title=title,
+            description=description,
+            button_text=button_text,
+            button_url=button_url,
+            image=image,
+            display_order=display_order,
+            is_active=is_active,
+        )
+
+        return redirect('admin_sliders')
+
+    return render(request, 'adminpanel/add_slider.html', {
+        'admin_name': request.session.get('admin_username'),
+    })
+
+
+def edit_slider(request, id):
+    if 'admin_id' not in request.session:
+        return redirect('admin_login')
+
+    slider = get_object_or_404(Slider, id=id)
+
+    if request.method == 'POST':
+        slider.title = request.POST.get('title')
+        slider.description = request.POST.get('description')
+        slider.button_text = request.POST.get('button_text')
+        slider.button_url = request.POST.get('button_url')
+        slider.display_order = request.POST.get('display_order') or 0
+        slider.is_active = request.POST.get('is_active') == 'on'
+
+        image = request.FILES.get('image')
+
+        if image:
+            slider.image = image
+
+        slider.save()
+
+        return redirect('admin_sliders')
+
+    return render(request, 'adminpanel/edit_slider.html', {
+        'slider': slider,
+        'admin_name': request.session.get('admin_username'),
+    })
+
+
+def delete_slider(request, id):
+    if 'admin_id' not in request.session:
+        return redirect('admin_login')
+
+    slider = get_object_or_404(Slider, id=id)
+    slider.delete()
+
+    return redirect('admin_sliders')
+
+
+def toggle_slider(request, id):
+    if 'admin_id' not in request.session:
+        return redirect('admin_login')
+
+    slider = get_object_or_404(Slider, id=id)
+    slider.is_active = not slider.is_active
+    slider.save()
+
+    return redirect('admin_sliders')

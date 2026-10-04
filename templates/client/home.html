@@ -9,160 +9,198 @@
 {% block content %}
 
 <!-- =========================================================
-     HERO SECTION
+     HOME SLIDER
 ========================================================= -->
+{% if sliders %}
+<section class="home-slider-section">
+    <div id="shopNestHeroSlider"
+         class="carousel slide"
+         data-bs-ride="carousel"
+         data-bs-interval="3000">
 
-<section class="home-hero-section">
+        <!-- Indicators -->
+        <div class="carousel-indicators">
+            {% for slider in sliders %}
+            <button type="button"
+                    data-bs-target="#shopNestHeroSlider"
+                    data-bs-slide-to="{{ forloop.counter0 }}"
+                    {% if forloop.first %}class="active" aria-current="true"{% endif %}
+                    aria-label="Slide {{ forloop.counter }}">
+            </button>
+            {% endfor %}
+        </div>
 
+        <!-- Slides -->
+        <div class="carousel-inner">
 
-<div class="container">
+            {% for slider in sliders %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
 
-    <div class="home-hero-content">
+                <img src="{{ slider.image.url }}"
+                     class="d-block w-100 home-slider-image"
+                     alt="{{ slider.title }}">
 
-        <div class="row align-items-center g-4">
+                <!-- Dark overlay -->
+                <div class="home-slider-overlay"></div>
 
-            <div class="col-lg-7">
+                <!-- Content -->
+                <div class="home-slider-content">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-7 col-md-8">
 
-                <span class="hero-badge">
-                    <i class="fa-solid fa-bolt me-2"></i>
-                    Premium Shopping Experience
-                </span>
+                                {% if slider.title %}
+                                <h1 class="home-slider-title">
+                                    {{ slider.title }}
+                                </h1>
+                                {% endif %}
 
-                <h1 class="hero-title">
-                    Discover Products
-                    <span>You'll Love.</span>
-                </h1>
+                                {% if slider.description %}
+                                <p class="home-slider-description">
+                                    {{ slider.description }}
+                                </p>
+                                {% endif %}
 
-                <p class="hero-description">
-                    Explore our latest collection of premium products,
-                    exclusive deals and customer favourites — all in one place.
-                </p>
+                                {% if slider.button_text and slider.button_url %}
+                                <a href="{{ slider.button_url }}"
+                                   class="btn home-slider-btn">
+                                    {{ slider.button_text }}
+                                    <i class="fa-solid fa-arrow-right ms-2"></i>
+                                </a>
+                                {% endif %}
 
-                <div class="hero-actions">
-
-                    <a href="{% url 'product_list' %}"
-                       class="btn btn-primary hero-shop-btn">
-                        <i class="fa-solid fa-bag-shopping me-2"></i>
-                        Shop Now
-                    </a>
-
-                    <a href="{% url 'all_categories' %}"
-                       class="btn btn-outline-light hero-category-btn">
-                        Explore Categories
-                        <i class="fa-solid fa-arrow-right ms-2"></i>
-                    </a>
-
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
-
-            <div class="col-lg-5">
-
-                <div class="hero-visual">
-
-                    <div class="hero-floating-card hero-card-one">
-                        <i class="fa-solid fa-truck-fast"></i>
-                        <div>
-                            <strong>Fast Delivery</strong>
-                            <small>Quick & reliable</small>
-                        </div>
-                    </div>
-
-                    <div class="hero-product-circle">
-                        <i class="fa-solid fa-bag-shopping"></i>
-                    </div>
-
-                    <div class="hero-floating-card hero-card-two">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <div>
-                            <strong>Secure Shopping</strong>
-                            <small>Safe & trusted</small>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
+            {% endfor %}
 
         </div>
 
+        <!-- Previous -->
+        <button class="carousel-control-prev"
+                type="button"
+                data-bs-target="#shopNestHeroSlider"
+                data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"
+                  aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+
+        <!-- Next -->
+        <button class="carousel-control-next"
+                type="button"
+                data-bs-target="#shopNestHeroSlider"
+                data-bs-slide="next">
+            <span class="carousel-control-next-icon"
+                  aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+
     </div>
-
-</div>
-
 </section>
-
-<!-- =========================================================
-     SHOP BY CATEGORY
-========================================================= -->
-
-<section class="home-category-section py-5">
+{% endif %}
 
 
-<div class="container">
+<!-- =====================================================
+     SHOP BY CATEGORY — PREMIUM SHOPNEST
+===================================================== -->
 
-    <div class="section-heading-row">
+<section class="home-category-section">
+    <div class="container">
 
-        <div>
-            <span class="section-eyebrow">
-                EXPLORE
-            </span>
+        <!-- Section Heading -->
+        <div class="category-heading">
 
-            <h2 class="section-title">
-                Shop by Category
-            </h2>
-
-            <p class="section-subtitle">
-                Find exactly what you're looking for.
-            </p>
-        </div>
-
-        <a href="{% url 'all_categories' %}"
-           class="section-view-all">
-            View All
-            <i class="fa-solid fa-arrow-right ms-1"></i>
-        </a>
-
-    </div>
-
-
-    <div class="row g-3 g-md-4">
-
-        {% for category in categories|slice:":6" %}
-
-        <div class="col-6 col-md-4 col-lg-2">
-
-            <a href="{% url 'category_detail' category.slug %}"
-               class="home-category-card text-decoration-none">
-
-             <div class="category-icon-wrapper">
- 
-                
-                <i class="{{ category.category_icon }}"></i>
-   
-
-</div>
-
-                <h6>
-                    {{ category.name }}
-                </h6>
-
-                <span>
-                    {{ category.product_count }} Products
+            <div class="category-heading-content">
+                <span class="category-eyebrow">
+                    <span class="category-eyebrow-line"></span>
+                    DISCOVER YOUR STYLE
                 </span>
 
+                <h2 class="category-main-title">
+                    Shop by <span>Category</span>
+                </h2>
+
+                <p class="category-main-subtitle">
+                    Explore our collections and find something
+                    you'll love.
+                </p>
+            </div>
+
+            <a href="{% url 'all_categories' %}"
+               class="category-view-all">
+                Explore All
+                <span class="category-view-arrow">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </span>
             </a>
 
         </div>
 
-        {% endfor %}
+
+        <!-- Category Cards -->
+        <div class="row g-3 g-md-4">
+
+            {% for category in categories|slice:":6" %}
+
+            <div class="col-6 col-md-4 col-lg-2">
+
+                <a href="{% url 'category_detail' category.slug %}"
+                   class="premium-category-card text-decoration-none">
+
+                    <!-- Decorative Background -->
+                    <span class="category-card-glow"></span>
+
+                    <!-- Category Icon -->
+                    <div class="premium-category-icon">
+                        <i class="{{ category.category_icon }}"></i>
+                    </div>
+
+                    <!-- Category Information -->
+                    <div class="premium-category-info">
+
+                        <h3>{{ category.name }}</h3>
+
+                        <p>
+                            {{ category.product_count }}
+                            {% if category.product_count == 1 %}
+                                Product
+                            {% else %}
+                                Products
+                            {% endif %}
+                        </p>
+
+                    </div>
+
+                    <!-- Explore Arrow -->
+                    <span class="premium-category-arrow">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </span>
+
+                </a>
+
+            </div>
+
+            {% empty %}
+
+            <div class="col-12">
+                <div class="category-empty-state">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <h5>Collections Coming Soon</h5>
+                    <p>Our categories will appear here shortly.</p>
+                </div>
+            </div>
+
+            {% endfor %}
+
+        </div>
 
     </div>
-
-</div>
-
-
 </section>
+
 
 <!-- =========================================================
      FEATURED PRODUCTS
@@ -940,6 +978,19 @@
 <section class="home-features-section py-5">
 
 <div class="container">
+   <div class="features-heading">
+
+    <h2 class="features-title">
+        Everything You Need,
+        <span>All in One Place.</span>
+    </h2>
+
+    <p class="features-subtitle">
+        Fast delivery, secure payments, easy returns and reliable support —
+        designed to make every SHOPNEST experience simple and stress-free.
+    </p>
+
+</div>
 
     <div class="row g-3 g-md-4">
 

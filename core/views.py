@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.db.models import Avg, Count, Sum,Q 
  
 from products.models import Product, Category 
+from core.models import Slider
 from orders.models import OrderItem 
 from products.utils import add_category_icons
  
@@ -121,6 +122,11 @@ def home(request):
     )
 
     categories = add_category_icons(categories)
+    sliders = (
+        Slider.objects
+        .filter(is_active=True)
+        .order_by('display_order', 'id')
+    )
    
     # ========================================================= 
     # 5. CURRENT USER WISHLIST 
@@ -151,6 +157,8 @@ def home(request):
         'best_sellers': best_sellers, 
         'categories': categories, 
         'user_wishlist_product_ids': user_wishlist_product_ids, 
+        'sliders': sliders,
+
     } 
  
     # ========================================================= 

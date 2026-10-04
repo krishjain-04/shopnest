@@ -29,6 +29,21 @@ body {
 /* ==========================================================================
    NAVBAR COMPONENT STYLES
    ========================================================================== */
+
+
+.navbar-brand .shopy {
+    height: 55px !important; 
+    width: auto !important;
+    display: block !important;
+    object-fit: contain;
+}
+
+@media (max-width: 576px) {
+    .navbar-brand .shopy {
+        height: 40px;
+    }
+}
+
 .logo-text {
     letter-spacing: -0.5px;
 }
