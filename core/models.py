@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary_storage.storage import MediaCloudinaryStorage
 
 
 
@@ -7,8 +8,11 @@ class Slider(models.Model):
     description = models.TextField(blank=True)
     button_text = models.CharField(max_length=100, blank=True)
     button_url = models.CharField(max_length=255, blank=True)
+    image = models.ImageField(
+    upload_to='sliders/',
+    storage=MediaCloudinaryStorage()
+)
 
-    image = models.ImageField(upload_to='sliders/')
 
     is_active = models.BooleanField(default=True)
     display_order = models.PositiveIntegerField(default=0)
